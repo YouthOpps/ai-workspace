@@ -5,8 +5,8 @@ This repository defines reusable, YouthOpps-specific agent skills and a shared w
 ## Repositories and work scope
 
 - `ai-workspace`: agent instructions, skills, documentation and submodule configuration.
-- `data-pipeline/`: each adapter lives in `adaptors/<pretty-source-name>/` (prefer a single `adapter.js` or `adapter.py` containing its source configuration and collection logic), with one dedicated GitHub Action per adapter.
-- `data-source/`: after a successful adapter run, `datas/<pretty-source-name>/data.json` holds validated opportunities, while `datas/<pretty-source-name>/metadata.json` holds run outcome (`success` or `fail`), explanation and UTC timestamps. Last-good data survives failure; the shared catalog stays consistent. No Actions.
+- `data-pipeline/`: each adapter lives in `adaptors/<pretty-source-name>/` (prefer a single `adapter.js` or `adapter.py` containing its source details and collection logic), with **at most one adapter-local test file** (`adapter.test.js` or `test_adapter.py`) and one dedicated GitHub Action per adapter.
+- `data-source/`: `datas/<pretty-source-name>/data.json` holds last-good validated opportunities; sibling `metadata.json` records every run's `success`/`fail`, explanation and UTC timestamps. **No `catalog.json`, aggregate source index, or Actions**; failures must preserve last-good data.
 - `website/`: static site; its `data-source` submodule is pinned.
 
 Initialize with `git submodule update --init --recursive`.
