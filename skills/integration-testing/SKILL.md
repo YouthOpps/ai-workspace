@@ -1,6 +1,6 @@
 ---
 name: integration-testing
-description: Act as independent QA gatekeeper for one YouthOpps source integration; test completeness, correctness and safe access before production release.
+description: Independently QA a single Node.js or Python connector and its clean, source-scoped data-pipeline PR, without merging or prematurely publishing production data.
 ---
 
 # Opportunity Integration QA — Independent Test Agent
@@ -15,15 +15,20 @@ This file **defines a reusable QA process only**. While maintaining `ai-workspac
 - Validate every record against canonical schema; verify stable IDs, deduplication, category/country accuracy, timestamps and freshness behavior, JSON readability, deterministic output where appropriate, and safe failure handling.
 - An inaccessible or disallowed publisher means **BLOCKED**, not `PASS`. Do not bypass restrictions or relabel the issue as complete.
 
+## Runtime and change-scope review
+- Verify the engineer evaluated Node.js versus Python and chose an appropriate primary runtime for the connector. Check its one-to-one Action setup (`setup-node` or `setup-python`), pinned dependencies, tests and explicit integration with the existing canonical schema/publishing interface.
+- Reject orphan files, temporary probes, debug output, dead branches, speculative backwards-compatibility code, unused dependencies, irrelevant documentation, duplicate adapters and unrelated changes; protect still-used shared code from accidental deletion.
+- Confirm **only `data-pipeline/` changes are committed and proposed in the integration PR**. `data-source` and `website` remain untouched in the development branch; no `ai-workspace` gitlink update is committed.
+
 ## Gate 2 — Safe network behavior
 - Count every upstream HTTP request, including retries, redirects and linked-page fetches. Rate limit each target to **no more than 10 requests in any rolling 60 seconds**, plus minimum 6 seconds between requests; honor tighter source limits, `Retry-After` and throttling errors.
 - Inspect concurrency, timeout, bounded retries, failures and zero-result handling. A successful response to aggressive crawling is still a QA failure.
 
 ## Gate 3 — Test environment ladder (explicit authorization)
-1. Run `npm ci --ignore-scripts`, `npm run validate`, `npm test`, plus source-specific fixtures and collection in the **existing sandbox**. Check that actual valid data can be collected; fixtures alone do not prove a live integration.
+1. In the **existing sandbox**, run the pipeline-wide Node validation/tests (`npm ci --ignore-scripts`, `npm run validate`, `npm test`) and the **chosen connector runtime's tests**: Node's source-specific tests or Python's pinned-dependency installation and Python unit tests/pytest as appropriate. Test source-specific fixtures and controlled permitted real collection. Check that valid real data can be collected; fixtures alone do not prove a live integration.
 2. If manual review shows no evident code/data errors but the sandbox cannot reach the internet/source, use another **authorized, internet-connected environment** to run the same targeted tests and controlled real collection. Distinguish network restrictions from extractor failures.
-3. **Only if no workable alternative remains, GitHub Actions may be used to test in the live runner**. This is expressly permitted by the project owner. Trigger only the one source's Action; avoid triggering unrelated jobs or production publication with unverified data. Respect the traffic cap in every environment and do not repeatedly trigger jobs to circumvent it.
-4. Confirm real results in both `data-source/sources/<source-id>/metadata.json`, `opportunities.json`, and unified `catalog.json` after controlled publication. Confirm pipeline status, run logs, data accuracy and no unrelated data loss.
+3. **Only if no workable alternative remains, GitHub Actions may be used as a last-resort testing runner**, as permitted by the project owner. **Before the PR is merged, use an isolated, non-publishing test** of the targeted connector (no writes to `data-source` and no production data-source token); never trigger the production-publishing flow for an unmerged branch. Respect the traffic cap and do not repeatedly trigger jobs to circumvent it.
+4. Before PR handoff, validate the adapter's **temporary/test output** against `data-source/sources/<source-id>/metadata.json`, `opportunities.json`, and `catalog.json` contract, including success/failure behavior and no unrelated data loss. Live publication is **not** part of PR acceptance; verify actual `data-source` results only in a separately authorized **post-merge** task.
 
 ## Per-connector publication and unresolved-source verification
 - Confirm that **each integrated adapter has one independent `fetch-<connector-id>` GitHub Action** and it executes only that source adapter.
@@ -37,6 +42,6 @@ This file **defines a reusable QA process only**. While maintaining `ai-workspac
 - **REJECT**: any reproducible extraction, schema, coverage, safety or quality defect; provide exact evidence and a developer correction request.
 - **BLOCKED**: some viable option or missing permission is still being investigated; document attempts and preconditions, keep existing published data safe.
 - **UNSOLVABLE**: reasonable lawful collection routes have been exhausted and no workable route exists; post detailed evidence to the issue, mark it unsolvable, leave it out of the live source registry and stop work.
-- **ACCEPT**: authorized access, demonstrated coverage, source-backed records, tests and real collection pass, bounded traffic proven. Then permit developer commit and targeted Action run, followed by a second post-deployment check.
+- **ACCEPT (PR-ready)**: authorized access, demonstrated coverage, source-backed records, runtime-specific tests and real collection pass, bounded traffic proven, clean diff and independent Action verified. Permit a **data-pipeline-only commit and issue-linked PR**, not merge or production publication. Another maintainer will merge; any post-merge production QA is separately authorized.
 
-Record in the issue: tested revision/SHA, commands, environment, sample source links, record counts, missed items, rate evidence, Action URL/status (if used), output paths, QA decision and unresolved risks. No empty, synthetic or homepage-only publication counts as acceptance.
+Record in the issue/PR: tested revision/SHA, chosen runtime, commands, environment, sample source links, record counts, missed items, rate evidence, isolated Action test URL/status (if used), expected output paths, clean-diff review, QA decision and unresolved risks. Confirm the PR is **open and unmerged** and no other repository was committed. No empty, synthetic or homepage-only collection counts as acceptance.
