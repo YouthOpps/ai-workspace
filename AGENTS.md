@@ -1,31 +1,42 @@
 # YouthOpps AI Agent Workspace
 
-This repository defines reusable, YouthOpps-specific agent skills and a shared working environment. Read this file and the relevant skill before each task. All skills are available; select only those needed.
+Shared rules for work in this workspace. Read the applicable skill and only the references required for the task. Reuse instructions already read in this session unless they changed.
+
+## Provider-independent scope
+
+These rules and all project skills apply to every AI agent and AI-assisted developer, including Claude, Codex, Gemini and other providers, regardless of model, editor or execution environment. `AGENTS.md` and the Markdown skill files are authoritative project instructions; provider-specific entry files only point here and must not duplicate or override the rules.
+
+Use equivalent available capabilities for file access, Git, PR APIs, shell execution, browser testing and independent review. Named tools, `$skill-name` invocation syntax and `agents/openai.yaml` UI metadata are optional host integrations, not provider requirements. Without native skill discovery, explicitly read the relevant `skills/<name>/SKILL.md` and its required references. Missing optional integrations do not block work; missing required evidence or permissions does, and must never be reported as a pass. Tool substitutions do not expand authorization or bypass host restrictions.
+
+Throughout these rules, an independent subagent may be a native delegated agent or a separately assigned reviewer agent/session from any provider. It must independently examine the revision and evidence and must not be the implementation author performing another self-review. If neither route is available, report the review dependency rather than weakening acceptance.
+
+## Mandatory AI workspace gate
+
+Development must use [ai-workspace](https://github.com/YouthOpps/ai-workspace) and its registered submodules; standalone project development is prohibited. Reuse an existing checkout or clone it and run `git submodule update --init --recursive`. Skills and workspace rules are maintained here. If required instructions or the workspace are unavailable, stop development and report the blocker.
 
 ## Repositories and work scope
 
-- `ai-workspace`: agent instructions, skills, documentation and submodule configuration.
-- `data-pipeline/`: each adapter lives in `adaptors/<pretty-source-name>/` (prefer a single `adapter.js` or `adapter.py` containing its source details and collection logic), with **at most one adapter-local test file** (`adapter.test.js` or `test_adapter.py`) and one dedicated GitHub Action per adapter.
-- `data-source/`: published data repository, **not a development or PR target**. Only the authorized `data-pipeline` publication automation may commit output to `datas/<pretty-source-name>/{data,metadata}.json`; administrators may commit manually only in exceptional recovery cases. Agents must never open PRs, push branches, or directly commit to `data-source`. No `catalog.json`, aggregate index, or Actions; failures preserve last-good data.
-- `website/`: static site; its `data-source` submodule is pinned.
+| Target | Authority and boundary |
+|---|---|
+| `ai-workspace` | Shared rules, skills, docs and deliberate submodule revisions |
+| `data-pipeline/` | [Adapter skill](skills/adapter/SKILL.md); mandatory standalone two-file architecture |
+| `website/` | [Website skill](skills/website/SKILL.md); static site with pinned data-source input |
+| PR review | [PR Review skill](skills/pr-review/SKILL.md); evidence-based review and authorized publication, combined with the affected project's skill |
+| `data-source/`, including website's nested checkout | Publication-only: authorized pipeline automation or exceptional manual administrator recovery. No agent development, branches, direct commits/pushes or PRs. No aggregate catalog or Actions. Correct data through data-pipeline. |
 
-Initialize with `git submodule update --init --recursive`.
+Choose the task mode before acting:
 
-**Workspace-maintenance mode:** change only workspace rules, skills, docs and explicitly requested setup. Do not implement project issues as part of workspace maintenance.
-
-**Project-execution mode:** only when a project issue is explicitly assigned, work inside the owning submodule. **Fetch and verify that repository's current `origin/main` before creating the issue branch; always branch from `origin/main`, not the workspace-pinned gitlink.** Inspect and preserve any existing uncommitted changes instead of resetting them. Commit and open the PR in **that project's repository** only; never stage or commit the changed `ai-workspace` submodule pointer. Other submodules are read-only. Finish and obtain acceptance for one project's task before starting another.
+- **Review/audit:** inspect the requested revision and applicable rules. Do not align branches, mark an issue in progress or start implementation merely to review. Read the workflow's review section and relevant project acceptance criteria.
+- **Implementation:** one explicitly assigned issue in its owning submodule. Follow [workflow](docs/WORKFLOW.md) for branch setup, independent QA and PR handoff.
+- **Workspace maintenance:** edit requested skills/rules and necessary public reference links. Follow the workflow's maintenance route. This does not assign a product issue or authorize production execution.
 
 ## Universal agent rules
 
-1. **English only:** all agent communication, issue/PR updates, code comments, documentation, commit messages and review notes. Use simple, clear wording without unnecessary detail.
-2. **One active task:** choose one explicitly assigned issue in one project. Mark it `in progress` and keep meaningful findings, decisions, blockers, tests and milestones in the issue. Do not switch projects before that task has reached its accepted outcome.
-3. **Role-based review:** use the necessary subset of Product Owner, Architect, Developer, DevOps Engineer and QA. When independent subagents are available, separate roles and require cross-review. A developer must not approve their own work as independent QA. If subagents are unavailable, use distinct review passes and disclose that limitation.
-4. **Holistic, minimal changes:** inspect the relevant existing code, tests, data contracts and authoritative docs together before designing a solution. Fix the complete affected flow, not just the visible symptom. Prefer simple, maintainable code and reuse shared facilities. Remove unused files, debug artifacts, dead code, unnecessary documents/dependencies and speculative backward-compatibility branches. Preserve supported behavior unless an explicit contract change is approved.
-5. **Token efficiency:** read only relevant files and diffs, limit log output and avoid repetitive scans or verbose exchanges. Never omit essential evidence or tests to save tokens.
-6. **Evidence and documentation:** base choices on verifiable code, schemas and official documentation. Update **all affected sections of existing authoritative project documentation** as part of the same PR; do not leave the code and docs inconsistent. Keep docs concise and avoid repeating them across repositories. Keep source-specific details beside their adapter, using the smallest useful documentation surface. Record decision references and rationale on the issue **and in relevant commit messages/bodies**.
-7. **Issue-linked branches and PRs:** each PR references exactly one primary issue and stays unmerged for an authorized maintainer. After a confirmed merge and required acceptance, the maintainer or authorized automation documents the outcome, deletes obsolete issue branches and closes the issue. The developing agent never merges their own PR or closes an unaccepted issue.
-8. **Respect repository boundaries:** `data-source` accepts commits **only from `data-pipeline` publication automation** or **exceptional manual administrator operations**. Agent-initiated PRs, direct pushes or development branches in `data-source` are forbidden. This restriction also applies during multi-project work. Automated publication is not a second development task.
+- Use English for project communication, issue/PR updates, documentation, code comments, commits and reviews. Keep wording concise and factual.
+- Preserve existing user work and supported contracts. Inspect the complete affected flow, fix the underlying problem, and remove obsolete code or artifacts only within the assigned scope.
+- Apply [code style](docs/CODE_STYLE.md) to authored code and code reviews. Project architecture and public contracts take precedence over generic style advice.
+- Update every affected section of authoritative documentation with the change. Keep source-specific adapter notes inside its implementation. Record decision evidence and references in the issue and relevant commit bodies.
+- Independent subagent evaluation is required for delivery, including rules maintenance and an unsolvable conclusion. The author cannot independently accept their own work; internal QA is separate from repository approval. See the workflow for responsibilities and outcomes.
+- Keep reads, tool output and reviewer context proportional to the task. Load specific sections, summarize repetitive logs and validate large datasets programmatically without discarding coverage. Recheck changed evidence rather than repeating unchanged scans.
 
-For the full lifecycle see [docs/WORKFLOW.md](docs/WORKFLOW.md). For source adapters, including requests described as integrations or connectors, use the single [Adapter skill](skills/adapter/SKILL.md) with its [development](skills/adapter/references/development.md) and [testing](skills/adapter/references/testing.md) references.
-
-These rules are instructions for later authorized work; merely changing a skill does not authorize executing an issue.
+The project skills own domain acceptance rules; the workflow owns lifecycle rules. The website skill's current requirements supersede conflicting older website conventions. Editing a skill does not authorize executing it. Do not merge your own PR or develop directly on `main`.

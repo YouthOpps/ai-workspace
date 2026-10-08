@@ -1,31 +1,27 @@
-# Adapter Testing Reference
+# Adapter review and independent QA
 
-Read [Adapter Skill](../SKILL.md) and [workflow](../../../docs/WORKFLOW.md). This is independent QA for exactly one assigned adapter issue, not a separate skill. Use English throughout. Do not claim independent-agent review if only a single agent was available.
+Read for adapter acceptance after the parent architecture gate and applicable [contract](contract.md). Use the workspace workflow for outcome ownership and issue/PR handoff. A reviewer checks their assigned evidence; independent reviewers do not recursively delegate the same review.
 
-## Verify the source and implementation
-- Verify permitted real publisher listings, pagination and representative first/last and edge records. Compare actual source titles, stable IDs, URLs, attribution, categories, countries, dates and completeness. Never approve a homepage, directory, synthetic data or unjustified inferred eligibility.
-- Verify the branch started from the target project's fetched current `origin/main`, the workspace gitlink was not committed, and unrelated projects were untouched.
-- Confirm `data-pipeline/adaptors/<pretty-source-name>/adapter.js` **or** `adapter.py` contains source details and implementation, preferably in **one file**. Extra files need a reason. No separate per-adapter configuration JSON.
-- Confirm **one independent `fetch-<pretty-source-name>.yml` Action** invokes the exact adapter file with the selected Python/Node.js runtime and only that source.
-- Inspect the full impacted validation, per-adapter publishing, metadata and downstream-consumer contracts. Require documentation updates and a clean diff. Verify there is **at most one test file inside each adapter folder** (`adapter.test.js` or `test_adapter.py`) and that its single invocation covers the necessary scenarios; use existing shared regression tests instead of multiplying adapter tests.
+## Static review
 
-## Safe testing sequence
-1. In the existing **sandbox**, run current pipeline-wide validation and unit tests, **the single adapter-local test entry point if present**, and a controlled real-source retrieval when possible.
-2. If sandbox connectivity alone prevents real collection, use an **authorized internet-connected** environment and repeat targeted checks.
-3. Only if no workable alternative exists, run the adapter in an **isolated, non-publishing GitHub Actions test**. Do not expose production write tokens or trigger privileged publishing before merge.
-4. Count upstream requests: **at most 10 per target in any rolling minute**, at least 6 seconds between requests, counting retries, redirects and concurrent paths; respect stricter upstream controls.
+- Establish the reviewed revision and affected paths. Verify the issue branch's upstream basis, unchanged workspace gitlink and repository scope from evidence; do not change the checkout to perform review.
+- Apply the parent architecture gate using a complete baseline plus scoped rechecks. Check independent folder operation, imports, the sole live test and each matching Action's routing. No publication credentials or local/remote data writes in tests.
+- Inspect the complete affected validation, metadata and publication path against the contract, including first-run failure, later failure preservation, atomic writes and pacing across overlapping runs. Read existing published data/metadata only when useful; do not invoke publication to test it.
+- Check authored code style and affected documentation. Formatting tools stay outside data-pipeline and cannot add repository files or Action steps.
 
-## Validate outputs and failures
-- Check generated test `data-source/datas/<pretty-source-name>/data.json` against the canonical opportunity schema and source inventory.
-- Check sibling `metadata.json` for source attribution, UTC timestamps, `status: "success"` or `status: "fail"`, clear `message`, and sanitized `error` for failures. A successful retrieval advances `last_success_at`; a failure advances `last_attempt_at` and preserves previous `last_success_at` and all last-good data.
-- Confirm **no `data-source/catalog.json` or root source index is created or updated**. The adapter's `metadata.json` alone reports run status, error detail and timestamps; failures preserve its previous `data.json`. No unrelated adapter's output is rewritten.
-- Never open PRs or perform direct commits in `data-source`; only the `data-pipeline` publisher writes there, except for exceptional manual administrator action.
-- These are temporary/test artifacts before merge. A passing PR test does **not** prove a production publication.
+## Live evidence
+
+Live evidence is required for acceptance of implementation changes affecting collection, runtime, validation, publication or data behavior. Documentation-only and static reviews assess relevant claims and existing evidence without starting collection or requiring unrelated live checks; they do not certify runtime behavior. Reuse valid evidence for unchanged behavior under the workspace workflow.
+
+When live execution is required, run `python -B adapters/<pretty-source-name>/test_adapter.py` in the sandbox. If connectivity alone blocks it, retry only in an authorized networked environment. A blocked endpoint is not a passing test. Observe the contract's request allowance, including overlapping production runs; never invoke Actions or expose publication credentials.
+
+Validate the complete stdout JSON in memory without creating output files. Use programmatic checks for every record and report count, validation failures, duplicates, coverage and representative first/last/edge records with publisher links. Independent QA must inspect actual record samples against the real inventory, not merely an exit code or count. Bound displayed output to relevant samples; do not paste an entire large dataset into model context. Expand inspection when samples, counts or source coverage reveal anomalies. If output is truncated before full validation, recover complete in-memory evidence or report the gap; never present a sample as full validation.
+
+Verify titles, stable IDs, URLs, attribution, categories, countries, dates and completeness against the actual publisher, including pagination. A homepage/directory alone, synthetic records or unjustified inferred eligibility cannot establish acceptance. Report missing provenance and incomplete coverage.
 
 ## Decision
-- **REJECT** if source quality, permissions, completeness, validation, failure behavior, request pacing, workflow routing, docs or code scope are wrong. Give reproducible evidence and return to the developer.
-- **BLOCKED** if a plausible official access/test route remains pending. Explain the blocker.
-- **UNSOLVABLE** if reasonable lawful collection routes are exhausted: require detailed issue evidence and the `unsolvable` mark, without an empty publication.
-- **ACCEPT (PR-ready)** only after successful real-data checks, safe traffic, correct failure handling, clean scope and documented results. Approve an unmerged issue-linked PR, not a merge/deployment.
 
-Record concise issue/PR evidence: revision, commands, source sample links, actual counts/coverage, failures, request limits, per-adapter data/metadata results and decision. Another maintainer handles merge and post-merge acceptance.
+- **REJECT:** confirmed architecture, source quality/access, completeness, validation, pacing, failure handling, workflow, style, documentation or scope violation. Give reproducible evidence and requested correction.
+- **BLOCKED:** material evidence or a plausible permitted access/testing route remains unavailable or pending. State what is needed.
+- **ACCEPT (PR-ready):** checks required for the change's scope pass with independent evidence. Report revision, commands, sample links when live testing applies, coverage and limits. A documentation-only acceptance certifies the prose change, not runtime or production publication. This is not repository approval.
+- **UNSOLVABLE:** use only the workflow's independently confirmed exhausted-attempt procedure, leaving the issue open and PR unmerged.

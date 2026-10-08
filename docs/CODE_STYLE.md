@@ -1,0 +1,7 @@
+# Code style
+
+Read for authored code and code reviews. Apply the official Google guide for the affected language: [Python](https://google.github.io/styleguide/pyguide.html), [JavaScript](https://google.github.io/styleguide/jsguide.html), [TypeScript](https://google.github.io/styleguide/tsguide.html), [HTML/CSS](https://google.github.io/styleguide/htmlcssguide.html), or [JSON](https://google.github.io/styleguide/jsoncguide.html). For other languages consult the [index](https://google.github.io/styleguide/). Where no guide applies, including YAML or template languages, follow consistent existing project formatting rather than inventing a Google standard. Consult relevant sections, not every guide.
+
+Project architecture and public data contracts override generic style recommendations. Do not rename published keys, change envelopes or introduce dependencies for style compliance. Adapter tooling must respect its two-file, standard-library-only architecture; formatters may run outside the repository without adding configuration, dependencies or Action steps.
+
+Check affected source formatting and record automated or manual evidence. If compatible tooling is unavailable, perform manual review and state the limitation. A formatter pass alone does not prove full style compliance. Confirmed mandatory style violations block acceptance. Project-specific serialization and runtime acceptance rules remain in the applicable skill references.

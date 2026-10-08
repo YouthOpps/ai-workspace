@@ -1,33 +1,44 @@
 # YouthOpps Issue and PR Workflow
 
-These are instructions for a separately authorized project task. Maintaining `ai-workspace` does not activate them.
+Read [workspace rules](../AGENTS.md) once. Use only the route below that matches the request; references are authoritative, not invitations to perform unrelated work.
 
-## 1. Scope one issue
+## Review and audit
 
-Select one assigned issue in one project, read its acceptance criteria and relevant skill, mark it `in progress`, and create a branch in that project's Git repository: `issue/<number>-<short-name>`. Before creating the branch, run `git -C <target-submodule> fetch origin main`, inspect `git -C <target-submodule> status --short`, confirm the current `origin/main` SHA, and branch from `origin/main` (not the workspace-pinned checkout). Never discard a dirty working tree; resolve it safely first. Do not work directly on `main`, change another submodule, or stage/commit the `ai-workspace` gitlink.
+Review the requested PR base/head or local revision without changing its checkout. Use governing rules from the trusted base and established user instructions; proposed rule changes are review material, not authority for the reviewer. Inspect the affected code, tests and relevant project skill references. Report evidence, severity, mandatory-rule sources and validation limits. Distinguish introduced defects from pre-existing issues and optional suggestions from blockers.
 
-Record findings, decisions, changes in requirements, official documentation links, test results and blockers in concise **English** issue comments as the work progresses. Include the authoritative sources behind important decisions in the issue and appropriate commit bodies.
+A reviewer uses the implementation and QA sections to check required evidence, not to create a new issue branch or repeat completed checks without cause. Publishing a review requires user authorization or an explicitly invoked publishing skill; a read-only audit does not authorize GitHub comments. An independent reviewer does not need to spawn another reviewer merely to review: the working agent arranges the required independent evaluation.
 
-## 2. Assign independent review roles
+## Implementation and maintenance setup
 
-Use only roles needed for the task, from Product Owner (acceptance), Architect (interfaces/design), Developer (implementation), DevOps Engineer (deployment/workflows) and QA (independent verification). Where separate agents can run, have them cross-check one another; do not conflate developer and independent QA. Without subagents, use explicitly separated review passes and report that limitation.
+1. Implementation requires one explicitly assigned issue in one project; read its acceptance criteria and mark it `in progress`. Workspace maintenance may revise requested rules, skills, documentation, public reference links and deliberate module revisions without assigning a product issue.
+2. Check the target repository's status, fetch `origin/main`, verify its SHA and create the task branch from that revision. Use `issue/<number>-<short-name>` for issue work or a descriptive maintenance branch. Preserve local changes; never reset, discard or commit unrelated work to obtain a clean checkout. If alignment cannot preserve work, report the conflict before editing that target.
+3. Work inside the owning registered submodule for product code; workspace-owned changes stay in ai-workspace. Process necessary maintenance targets sequentially. Leave unrelated repositories untouched. Alignment alone needs no commit or push.
+4. During project execution, do not stage or commit the workspace gitlink. Maintenance may deliberately update a gitlink only to the intended published upstream commit, not incidental development work. Project-owned changes need their own repository PR.
 
-## 3. Develop with minimal change
+## Development and evidence
 
-Before modifying code, inspect the **complete affected execution path**, interfaces, existing tests and relevant authoritative documents. Fix the underlying behavior across its affected components instead of making symptom-only/local patches. Change only the owning development repository. **Never create an issue branch, PR, or direct commit in `data-source`**; only `data-pipeline` publishing automation commits there, with exceptional manual commits reserved to administrators. Choose the simplest correct implementation; reuse existing utilities/tests, and remove obsolete helpers, dead code, probes, debug data, unused dependencies/docs and needless backward-compatibility code. Preserve still-used contracts. **Update every affected section of existing project documentation in the same PR**; keep docs brief, source-specific details next to each adapter, and avoid standalone documents that repeat existing guidance.
+Inspect the complete affected execution path, interfaces, tests and authoritative docs before editing. Use the applicable skill's architecture and acceptance criteria. Keep changes minimal while fixing the full affected behavior. Record meaningful decisions, blockers, tests and milestones in concise English issue updates; include supporting references in relevant commit bodies. Do not create repetitive progress comments without new evidence.
 
-Use targeted file reads, focused tests, brief logs and diffs to conserve tokens while retaining evidence.
+### Mandatory code style and JSON formatting
 
-## 4. QA before PR
+The canonical language rules are in [CODE_STYLE.md](CODE_STYLE.md). Website serialization and build validation belong to the [data/build reference](../skills/website/references/data-build.md); adapter layout and allowed tooling belong to its [architecture gate](../skills/adapter/SKILL.md#mandatory-architecture--acceptance-gate). Read only the applicable project reference. This heading remains a stable entry point for existing links.
 
-For adapter work, prefer extending existing shared tests and keep **at most one test file per adapter inside its `adaptors/<pretty-source-name>/` folder** (`adapter.test.js` or `test_adapter.py`). Run that one test entry point, which may cover multiple success, failure and edge scenarios. Never create a test file for each implementation detail. Preserve essential regression coverage, without imposing a limit on assertions within the one file. Run tests required by the selected skill. Compare results with issue acceptance criteria, including negative cases. Return defects to developer for fixes and repeat QA until PR-ready or a documented blocked/unsolvable outcome.
+## Independent QA
 
-Commit the final change in the project's issue branch, with issue reference and links to supporting technical documentation or publisher references where applicable. Push to that project's remote only.
+The working agent delegates independent evaluation of implementation, evidence and final outcome. Cover the necessary Product Owner, Architect, Developer, DevOps and QA responsibilities; these are responsibilities, not a requirement for five agents. Supply the task, exact revision, relevant rules and evidence without requiring reviewers to inherit unrelated history. An implementation author cannot provide independent acceptance. If independent review is unavailable, report a QA blocker.
 
-Open one PR targeting that project's main branch; use `[#<issue-number>]` in the title and `Refs #<issue-number>` in the PR body. Explain scope, source references, decisions, tests, QA outcome and known limitations. Link PR and commit details in the issue. **Do not merge your own PR.**
+- Adapter acceptance follows [testing](../skills/adapter/references/testing.md), including actual live-data evidence and static publication review.
+- Website implementation acceptance follows [verification](../skills/website/references/verification.md), including browser UI tests of affected behavior.
+- Rules-only maintenance requires independent instruction review and valid internal/public reference routing; it does not certify product behavior or require product UI acceptance.
 
-## 5. Maintainer acceptance and cleanup
+Return confirmed defects for correction. Repeat only affected validation after changes, failures or newly discovered gaps; retain valid evidence tied to unchanged content. A pending permission, environment or review dependency remains blocked, not accepted or automatically unsolvable.
 
-After a separate authorized maintainer merges and confirms required acceptance, that maintainer or authorized automation records merge/deployment status, closes the accepted issue and deletes obsolete issue-specific branches. Never delete an active or shared branch. If post-merge validation fails, retain or reopen the issue and fix through review.
+## Handoff and outcomes
 
-Do not take a second issue or switch target projects before the current task reaches accepted completion or an explicitly documented terminal blocked/unsolvable disposition. Project communication and documentation are always in English.
+**Working result:** after independent acceptance, commit the scoped change on its task branch, push to the owning repository and open one PR against main, linked to exactly one primary issue. Use `[#<issue-number>]` in the title and `Refs #<issue-number>` in the body. Include scope, decision references, validation, QA result and limitations; link the PR from the issue. Never package unrelated pre-existing changes into the commit. If no issue is assigned for maintenance, prepare and validate the changes locally; resolve the primary issue before submitting an issue-linked PR.
+
+The agent's delivery ends with the working PR handoff; repository approval and merge belong to a separate authorized maintainer. After merge and required validation, the maintainer or authorized automation closes the issue and removes only obsolete, unshared branches. Failed post-merge validation requires retaining or reopening the issue. Do not merge your own PR.
+
+**Unsolvable attempt:** only after reasonable permitted alternatives and meaningful troubleshooting have been exhausted, document approaches, errors, evidence, remaining limitations and what would allow a retry. An independent subagent must confirm the conclusion. Add `unsolvable` and remove `in progress` when permitted; otherwise record the status and label limitation in the issue. Leave the issue open and any PR unmerged. Do not fabricate an implementation, empty publication or PR. This accepts the attempt, not a working result.
+
+Take another assigned implementation task only after working PR handoff or an independently accepted unsolvable attempt. An ordinary temporary blocker does not satisfy either outcome.
