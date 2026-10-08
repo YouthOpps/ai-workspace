@@ -33,7 +33,7 @@ This file **defines a reusable process only**. Editing skills in `ai-workspace` 
 
 ## Unsolvable integration (terminal outcome)
 If documented investigation finds **no legally permitted and technically workable route to retrieve real opportunity records** (official API/feed, approved public listing, alternate official endpoint or publisher permission), do not fabricate records, enable a dead integration, or keep retrying indefinitely.
-- Exhaust reasonable distinct options once, with evidence, bounded attempts and publisher-safe traffic. Do not interpret an inaccessible sandbox alone as proof of impossibility; follow the environment ladder in the QA skill.
+- Exhaust reasonable distinct options once, with evidence, bounded attempts and publisher-safe traffic. Do not interpret an inaccessible sandbox alone as proof of impossibility; follow the environment ladder in [Adapter Testing](testing.md).
 - Add a detailed comment to the assigned GitHub issue covering tested URLs/methods, permission/robots findings, responses/errors, environments, dates, relevant logs, attempted remedies and why each route failed, plus a clear prerequisite that would unblock the integration. Do not disclose secrets.
 - Mark the issue **unsolvable** using the repository's existing label/status convention (e.g. `unsolvable`; create a label only if separately authorized). Leave the issue open unless the project's explicit closure policy says otherwise. Stop work on it and report this outcome. Do not mark it successfully integrated or publish a placeholder.
 - An unsolvable/never-integrated source **must not have published files created** under `data-source/sources/<source-id>/`; it may remain in research/planning manifests.

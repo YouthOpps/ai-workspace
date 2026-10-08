@@ -5,7 +5,7 @@ This repository defines reusable, YouthOpps-specific agent skills and a shared w
 ## Repositories and work scope
 
 - `ai-workspace`: agent instructions, skills, documentation and submodule configuration.
-- `data-pipeline/`: integrations, adapters, tests and independent fetch Actions.
+- `data-pipeline/`: adapters, tests and independent fetch Actions.
 - `data-source/`: published opportunity data, per-connector metadata and catalog; no Actions.
 - `website/`: static site; its `data-source` submodule is pinned.
 
@@ -26,6 +26,6 @@ Initialize with `git submodule update --init --recursive`.
 7. **Issue-linked branches and PRs:** each PR references exactly one primary issue and stays unmerged for an authorized maintainer. After a confirmed merge and required acceptance, the maintainer or authorized automation documents the outcome, deletes obsolete issue branches and closes the issue. The developing agent never merges their own PR or closes an unaccepted issue.
 8. **Respect repository boundaries:** automated, post-merge collection from `data-pipeline` into `data-source` is permitted by the platform's runtime contract; it does not justify cross-repository development commits.
 
-For the full lifecycle see [docs/WORKFLOW.md](docs/WORKFLOW.md). For opportunity connectors see [Integration Development](skills/integration-development/SKILL.md) and [Integration Testing](skills/integration-testing/SKILL.md).
+For the full lifecycle see [docs/WORKFLOW.md](docs/WORKFLOW.md). For source adapters, including requests described as integrations or connectors, use the single [Adapter skill](skills/adapter/SKILL.md) with its [development](skills/adapter/references/development.md) and [testing](skills/adapter/references/testing.md) references.
 
 These rules are instructions for later authorized work; merely changing a skill does not authorize executing an issue.
