@@ -4,7 +4,7 @@ These are instructions for a separately authorized project task. Maintaining `ai
 
 ## 1. Scope one issue
 
-Select one assigned issue in one project, read its acceptance criteria and relevant skill, mark it `in progress`, and create a branch in that project's Git repository: `issue/<number>-<short-name>`. Do not work directly on `main` or change another submodule.
+Select one assigned issue in one project, read its acceptance criteria and relevant skill, mark it `in progress`, and create a branch in that project's Git repository: `issue/<number>-<short-name>`. Before creating the branch, run `git -C <target-submodule> fetch origin main`, inspect `git -C <target-submodule> status --short`, confirm the current `origin/main` SHA, and branch from `origin/main` (not the workspace-pinned checkout). Never discard a dirty working tree; resolve it safely first. Do not work directly on `main`, change another submodule, or stage/commit the `ai-workspace` gitlink.
 
 Record findings, decisions, changes in requirements, official documentation links, test results and blockers in concise **English** issue comments as the work progresses. Include the authoritative sources behind important decisions in the issue and appropriate commit bodies.
 
@@ -14,13 +14,13 @@ Use only roles needed for the task, from Product Owner (acceptance), Architect (
 
 ## 3. Develop with minimal change
 
-Change only the owning submodule repository. Choose the simplest correct implementation, remove obsolete helpers, dead code, temporary probes, debug data, unused dependencies, redundant docs and unnecessary compatibility code. Preserve still-used contracts.
+Before modifying code, inspect the **complete affected execution path**, interfaces, existing tests and relevant authoritative documents. Fix the underlying behavior across its affected components instead of making symptom-only/local patches. Change only the owning submodule repository. Choose the simplest correct implementation; reuse existing utilities/tests, and remove obsolete helpers, dead code, probes, debug data, unused dependencies/docs and needless backward-compatibility code. Preserve still-used contracts. **Update every affected section of existing project documentation in the same PR**; keep docs brief, source-specific details next to each connector, and avoid standalone documents that repeat existing guidance.
 
 Use targeted file reads, focused tests, brief logs and diffs to conserve tokens while retaining evidence.
 
 ## 4. QA before PR
 
-Run tests required by the selected skill. Compare results with issue acceptance criteria, including negative cases. Return defects to developer for fixes and repeat QA until PR-ready or a documented blocked/unsolvable outcome.
+Prefer enhancing existing shared or connector tests over creating a new test for each implementation detail. Aim for **one or two focused tests per connector** covering the most important success/failure behavior, plus the existing global regression tests; add more only to address a distinct uncovered risk. Test quality and critical coverage override an arbitrary count. Run tests required by the selected skill. Compare results with issue acceptance criteria, including negative cases. Return defects to developer for fixes and repeat QA until PR-ready or a documented blocked/unsolvable outcome.
 
 Commit the final change in the project's issue branch, with issue reference and links to supporting technical documentation or publisher references where applicable. Push to that project's remote only.
 
