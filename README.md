@@ -20,6 +20,12 @@ git submodule update --init --recursive
 
 Submodules are pinned for workspace configuration. During **skill authoring here**, they are read-only. A **separately authorized integration-development task** can work on an issue branch *inside* the `data-pipeline` submodule and open a PR there, without updating `ai-workspace`'s gitlink or changing `data-source`/`website`. Only a different maintainer merges that PR. Skills/workspace maintenance does not itself start any integration task.
 
+## Shared agent workflow
+
+This repository is the YouthOpps-specific AI workspace. Agents may use any relevant skills here. They work from this workspace but develop authorized issues inside one submodule project at a time, opening issue-linked PRs in that project's own repository. Product Owner, Architect, Developer, DevOps Engineer and QA review roles are separated when needed. PRs are merged by maintainers, who then verify acceptance, close the issue and remove obsolete branches.
+
+All communication, documentation and commits are **in English**. Favor clean minimal code, concise tool output and verifiable reference links recorded in issues and relevant commits. See [AGENTS.md](AGENTS.md) and [docs/WORKFLOW.md](docs/WORKFLOW.md).
+
 ## Skills
 
 - [Integration development](skills/integration-development/SKILL.md): choose Python/Node.js per source, deliver a clean data-pipeline-only commit, and open an issue-linked **unmerged** PR after QA.
