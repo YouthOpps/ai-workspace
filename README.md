@@ -25,4 +25,6 @@ Submodules are pinned as **read-only project references for workspace configurat
 - [Integration development](skills/integration-development/SKILL.md): one-source developer process with QA handoff.
 - [Integration testing](skills/integration-testing/SKILL.md): independent completeness and safety gate, sandbox-first; online environment second; GitHub Actions last resort.
 
+The skills also define an **unsolvable** outcome when no permitted data retrieval path exists, and a future root-level `data-source/sources.json` registry for only verified integrations; every source Action must update status and the last successful data retrieval timestamp correctly. These are *instructions*, not implemented application changes.
+
 Read [AGENTS.md](AGENTS.md) before working. Additional skills may be added later. No issue or source is automatically assigned by the workspace. Skills are reusable instructions for **future, separately authorized execution**; creating or editing a skill does not authorize running it.

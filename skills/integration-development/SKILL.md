@@ -22,6 +22,21 @@ This file **defines a reusable process only**. While maintaining `ai-workspace`,
 6. Emit schema-valid, 2-space-indented JSON with trailing newline via the existing publishing scripts. Preserve an existing valid snapshot if collection is empty, restricted or failed.
 7. No speculative completion: repeatedly improve implementation based on QA rejection until objective acceptance is met or report an unresolved, documented block.
 
+## Unsolvable integration (terminal outcome)
+If documented investigation finds **no legally permitted and technically workable route to retrieve real opportunity records** (official API/feed, approved public listing, alternate official endpoint or publisher permission), do not fabricate records, enable a dead integration, or keep retrying indefinitely.
+- Exhaust reasonable distinct options once, with evidence, bounded attempts and publisher-safe traffic. Do not interpret an inaccessible sandbox alone as proof of impossibility; follow the environment ladder in the QA skill.
+- Add a detailed comment to the assigned GitHub issue covering tested URLs/methods, permission/robots findings, responses/errors, environments, dates, relevant logs, attempted remedies and why each route failed, plus a clear prerequisite that would unblock the integration. Do not disclose secrets.
+- Mark the issue **unsolvable** using the repository's existing label/status convention (e.g. `unsolvable`; create a label only if separately authorized). Leave the issue open unless the project's explicit closure policy says otherwise. Stop work on it and report this outcome. Do not mark it successfully integrated or publish a placeholder.
+- An unsolvable/never-integrated source **must not be inserted into** `data-source/sources.json`; it may remain in research/planning manifests that are not the live registry.
+
+## Integrated-source registry contract
+On a separately authorized integration run, implement/verify `data-source/sources.json` **at the repository root** as the registry of successfully integrated sources only. This is distinct from `data-pipeline/data/sources/sources.json` (candidate/configuration manifests), `data-source/sources/<source-id>/metadata.json` (per-source metadata), and `data-source/catalog.json` (opportunity index).
+- Add a source entry only after QA has confirmed authorized live retrieval of genuine validated records and successful publication; no pending, blocked, unsolvable or never-integrated sources appear.
+- Use stable `source` IDs and preserve existing entries. Minimum fields per object: `source`, `status` and `last_data_received_at` (ISO-8601 UTC timestamp of the **last successful non-empty, validated real data retrieval**). Use an array of source objects; keep it sorted by `source` and pretty-printed with two-space indentation and a final newline. Optional diagnostic fields may be added with documented meanings.
+- **Every scheduled/manual `fetch-<source-id>` Action run** must update its existing registry entry's `status` to `ok` on verified success or `error` on a failed/empty/invalid collection, and commit that change safely in `data-source`. A failure must not advance `last_data_received_at`, delete or overwrite the last good records, or introduce a new unintegrated entry. If the workflow cannot write a failed status, record the failure in the Action/issue and do not falsely report `ok`; repair the workflow.
+- On success, set `last_data_received_at` using the actual successful retrieval time, even when returned records are unchanged. Make status/last-success updates and the existing source snapshot/catalog consistent; serialize concurrent publications and avoid races. Do not turn a failed fetch into a successful publication.
+- Add targeted tests for registry initialization, first successful entry, successful re-fetch, unchanged valid data, failed/empty collection, no synthetic entries, timestamp retention and atomic/concurrent updates.
+
 ## Required developer-to-QA handoff
 Provide exact changed paths, legal/technical access evidence, inventory of real source opportunities and coverage explanation, observed source-to-output mapping, run commands, tests/results, traffic counts and rate control strategy, dedup/freshness checks and remaining limitations. Never use record count alone to claim completeness.
 
