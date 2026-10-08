@@ -17,6 +17,12 @@ This file **defines a reusable QA process only**. While maintaining `ai-workspac
 - Validate every record against canonical schema; verify stable IDs, deduplication, category/country accuracy, timestamps and freshness behavior, JSON readability, deterministic output where appropriate, and safe failure handling.
 - An inaccessible or disallowed publisher means **BLOCKED**, not `PASS`. Do not bypass restrictions or relabel the issue as complete.
 
+## Holistic review, documentation and lean tests
+- Before evaluating the change, verify the issue branch was created from the latest fetched target repository `origin/main`, with the workspace's pinned submodule gitlink unchanged and no unrelated local changes lost.
+- Review the entire affected path (adapter, manifest, dispatcher, validator, publication, catalog, workflow and existing documentation). Reject isolated symptom patches, duplicated logic and undocumented contract changes.
+- Check that every impacted section of the existing authoritative project docs is updated, with **minimal connector-local documentation** and no unnecessary duplicate documents.
+- Prefer extending shared tests and aim for **one or two focused connector-specific tests** covering the critical success and failure behavior. Additional tests must be justified by distinct uncovered risks; never compromise required verification to meet a numeric target.
+
 ## Runtime and change-scope review
 - Verify the engineer evaluated Node.js versus Python and chose an appropriate primary runtime for the connector. Check its one-to-one Action setup (`setup-node` or `setup-python`), pinned dependencies, tests and explicit integration with the existing canonical schema/publishing interface.
 - Reject orphan files, temporary probes, debug output, dead branches, speculative backwards-compatibility code, unused dependencies, irrelevant documentation, duplicate adapters and unrelated changes; protect still-used shared code from accidental deletion.
@@ -35,8 +41,8 @@ This file **defines a reusable QA process only**. While maintaining `ai-workspac
 ## Per-connector publication and unresolved-source verification
 - Confirm that **each integrated adapter has one independent `fetch-<connector-id>` GitHub Action** and it executes only that source adapter.
 - For the tested connector verify `data-source/sources/<connector-id>/opportunities.json` contains validated real source records and `data-source/sources/<connector-id>/metadata.json` contains accurate publisher metadata, `status`, `last_attempt_at`, `last_success_at` and collection count/provenance.
-- Verify every Action invocation updates this connector's `metadata.json` status. Successful retrieval advances `last_success_at` even if contents are unchanged; a failed or empty fetch records `status: "error"` but preserves the last successful retrieval time and all valid prior opportunity records.
-- Check the unified `data-source/catalog.json` after successful publication and confirm no unrelated connector files change. Verify safe serialized commits under concurrent publishing.
+- Verify every Action invocation updates this connector's `metadata.json` status. Successful retrieval advances `last_success_at` even if contents are unchanged; a failed or empty fetch records `status: "error"`, sanitized actionable `error` detail and `last_attempt_at`, but preserves `last_success_at`, `last_checked_at`, prior record count and all valid opportunity records. A failed publication must never be recorded as a successful fetch/publication.
+- Check that `data-source/catalog.json` contains the same status, error and timestamps in its matching `sources[]` entry after **both successful and failed** runs, retaining last-good opportunity rows on failure. Validate single consistent/serialized commits and ensure other connectors remain untouched.
 - **There must be no requirement to write root-level `data-source/sources.json`**; status/freshness are stored per connector under its own source folder.
 - When no authorized acquisition route exists after reasonable attempts, require a detailed issue comment and an **unsolvable** outcome. Do not publish an empty folder or fabricated records.
 
