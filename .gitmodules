@@ -1,0 +1,12 @@
+[submodule "data-pipeline"]
+	path = data-pipeline
+	url = https://github.com/YouthOpps/data-pipeline.git
+	branch = main
+[submodule "data-source"]
+	path = data-source
+	url = https://github.com/YouthOpps/data-source.git
+	branch = main
+[submodule "website"]
+	path = website
+	url = https://github.com/YouthOpps/youthopps.github.io.git
+	branch = main
