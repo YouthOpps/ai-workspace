@@ -19,6 +19,7 @@ Read [Adapter Skill](../SKILL.md) and [workflow](../../../docs/WORKFLOW.md). Thi
 - Check generated test `data-source/datas/<pretty-source-name>/data.json` against the canonical opportunity schema and source inventory.
 - Check sibling `metadata.json` for source attribution, UTC timestamps, `status: "success"` or `status: "fail"`, clear `message`, and sanitized `error` for failures. A successful retrieval advances `last_success_at`; a failure advances `last_attempt_at` and preserves previous `last_success_at` and all last-good data.
 - Confirm **no `data-source/catalog.json` or root source index is created or updated**. The adapter's `metadata.json` alone reports run status, error detail and timestamps; failures preserve its previous `data.json`. No unrelated adapter's output is rewritten.
+- Never open PRs or perform direct commits in `data-source`; only the `data-pipeline` publisher writes there, except for exceptional manual administrator action.
 - These are temporary/test artifacts before merge. A passing PR test does **not** prove a production publication.
 
 ## Decision

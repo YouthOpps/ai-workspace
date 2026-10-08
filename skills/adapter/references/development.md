@@ -23,4 +23,5 @@ Read [Adapter Skill](../SKILL.md) and the workspace rules. Execute only for one 
 
 ## Issue result and handoff
 - If no permitted working route for real data exists after bounded documented efforts, leave a detailed issue comment with endpoints, permissions, observed failures, dates and unblock requirements. Mark it `unsolvable`, remove `in progress`, leave it open for reconsideration, and do not create a fake adapter/Action or published data.
+- `data-source` is not a development repository. Do not open PRs, create development branches, or directly commit/push there; only the publishing Action writes to it, aside from exceptional administrator intervention.
 - After QA approves, commit **only in data-pipeline** issue branch, push and open one issue-linked PR targeting data-pipeline main. Include documented evidence and chosen runtime, record the PR on the issue, and **do not merge**. Another maintainer owns merge, post-merge validation, issue closure and obsolete branch removal. Do not commit `data-source` or `website` changes.

@@ -6,7 +6,7 @@ This repository defines reusable, YouthOpps-specific agent skills and a shared w
 
 - `ai-workspace`: agent instructions, skills, documentation and submodule configuration.
 - `data-pipeline/`: each adapter lives in `adaptors/<pretty-source-name>/` (prefer a single `adapter.js` or `adapter.py` containing its source details and collection logic), with **at most one adapter-local test file** (`adapter.test.js` or `test_adapter.py`) and one dedicated GitHub Action per adapter.
-- `data-source/`: `datas/<pretty-source-name>/data.json` holds last-good validated opportunities; sibling `metadata.json` records every run's `success`/`fail`, explanation and UTC timestamps. **No `catalog.json`, aggregate source index, or Actions**; failures must preserve last-good data.
+- `data-source/`: published data repository, **not a development or PR target**. Only the authorized `data-pipeline` publication automation may commit output to `datas/<pretty-source-name>/{data,metadata}.json`; administrators may commit manually only in exceptional recovery cases. Agents must never open PRs, push branches, or directly commit to `data-source`. No `catalog.json`, aggregate index, or Actions; failures preserve last-good data.
 - `website/`: static site; its `data-source` submodule is pinned.
 
 Initialize with `git submodule update --init --recursive`.
@@ -24,7 +24,7 @@ Initialize with `git submodule update --init --recursive`.
 5. **Token efficiency:** read only relevant files and diffs, limit log output and avoid repetitive scans or verbose exchanges. Never omit essential evidence or tests to save tokens.
 6. **Evidence and documentation:** base choices on verifiable code, schemas and official documentation. Update **all affected sections of existing authoritative project documentation** as part of the same PR; do not leave the code and docs inconsistent. Keep docs concise and avoid repeating them across repositories. Keep source-specific details beside their adapter, using the smallest useful documentation surface. Record decision references and rationale on the issue **and in relevant commit messages/bodies**.
 7. **Issue-linked branches and PRs:** each PR references exactly one primary issue and stays unmerged for an authorized maintainer. After a confirmed merge and required acceptance, the maintainer or authorized automation documents the outcome, deletes obsolete issue branches and closes the issue. The developing agent never merges their own PR or closes an unaccepted issue.
-8. **Respect repository boundaries:** automated, post-merge collection from `data-pipeline` into `data-source` is permitted by the platform's runtime contract; it does not justify cross-repository development commits.
+8. **Respect repository boundaries:** `data-source` accepts commits **only from `data-pipeline` publication automation** or **exceptional manual administrator operations**. Agent-initiated PRs, direct pushes or development branches in `data-source` are forbidden. This restriction also applies during multi-project work. Automated publication is not a second development task.
 
 For the full lifecycle see [docs/WORKFLOW.md](docs/WORKFLOW.md). For source adapters, including requests described as integrations or connectors, use the single [Adapter skill](skills/adapter/SKILL.md) with its [development](skills/adapter/references/development.md) and [testing](skills/adapter/references/testing.md) references.
 

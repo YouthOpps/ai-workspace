@@ -15,10 +15,10 @@ git submodule update --init --recursive
 | Local directory | Repository | Purpose |
 |---|---|---|
 | `data-pipeline/` | [data-pipeline](https://github.com/YouthOpps/data-pipeline) | `adaptors/<pretty-source-name>/adapter.js` or `adapter.py`, plus one Action per adapter |
-| `data-source/` | [data-source](https://github.com/YouthOpps/data-source) | `datas/<pretty-source-name>/{data,metadata}.json` only; no `catalog.json` |
+| `data-source/` | [data-source](https://github.com/YouthOpps/data-source) | Published `datas/<pretty-source-name>/{data,metadata}.json` only; automation/admin writes, no PRs |
 | `website/` | [youthopps.github.io](https://github.com/YouthOpps/youthopps.github.io) | Website, consuming data-source |
 
-Submodules are pinned for workspace configuration. When executing a separately assigned project issue, fetch that project's latest `origin/main` and create the issue branch from it, without committing any changed workspace gitlink. During **skill authoring here**, they are read-only. A **separately authorized adapter-development task** can work on an issue branch *inside* the `data-pipeline` submodule and open a PR there, without updating `ai-workspace`'s gitlink or changing `data-source`/`website`. Only a different maintainer merges that PR. Skills/workspace maintenance does not itself start any integration task.
+Submodules are pinned for workspace configuration. When executing a separately assigned project issue, fetch that project's latest `origin/main` and create the issue branch from it, without committing any changed workspace gitlink. During **skill authoring here**, they are read-only. A **separately authorized adapter-development task** can work on an issue branch *inside* the `data-pipeline` submodule and open a PR there, without updating `ai-workspace`'s gitlink or directly changing `data-source`/`website`. `data-source` never receives agent development PRs or direct commits: only the `data-pipeline` publishing automation writes to it, except for exceptional manual administrator recovery. Only a different maintainer merges that PR. Skills/workspace maintenance does not itself start any integration task.
 
 ## Shared agent workflow
 
