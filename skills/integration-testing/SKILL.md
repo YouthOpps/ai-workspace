@@ -25,11 +25,13 @@ This file **defines a reusable QA process only**. While maintaining `ai-workspac
 3. **Only if no workable alternative remains, GitHub Actions may be used to test in the live runner**. This is expressly permitted by the project owner. Trigger only the one source's Action; avoid triggering unrelated jobs or production publication with unverified data. Respect the traffic cap in every environment and do not repeatedly trigger jobs to circumvent it.
 4. Confirm real results in both `data-source/sources/<source-id>/metadata.json`, `opportunities.json`, and unified `catalog.json` after controlled publication. Confirm pipeline status, run logs, data accuracy and no unrelated data loss.
 
-## Registry and unresolved-source verification
-- Confirm the new root-level `data-source/sources.json` contains **only sources with prior QA-verified successful real-data integrations**, not candidates, failed first attempts, blocked or unsolvable issues.
-- Check each integrated source has stable `source`, `status` (`ok` or `error`) and `last_data_received_at` (UTC ISO-8601 time of its most recent successful validated non-empty retrieval).
-- For each actual Action run verify its status was updated, `last_data_received_at` advanced only on verified success (including unchanged valid records), and failures retained the last good data and timestamp. Verify correct writes on failure, transactional consistency, source-scoped modifications and safe concurrency.
-- When all reasonable authorized retrieval routes have failed, require a detailed issue comment covering evidence, restrictions, attempts, environments, errors and concrete unblock conditions, plus the project's **unsolvable** marking. This is a terminal **UNSOLVABLE** outcome, not an accepted integration. The source must not appear in `data-source/sources.json`; do not keep attempting the same failed route.
+## Per-connector publication and unresolved-source verification
+- Confirm that **each integrated adapter has one independent `fetch-<connector-id>` GitHub Action** and it executes only that source adapter.
+- For the tested connector verify `data-source/sources/<connector-id>/opportunities.json` contains validated real source records and `data-source/sources/<connector-id>/metadata.json` contains accurate publisher metadata, `status`, `last_attempt_at`, `last_success_at` and collection count/provenance.
+- Verify every Action invocation updates this connector's `metadata.json` status. Successful retrieval advances `last_success_at` even if contents are unchanged; a failed or empty fetch records `status: "error"` but preserves the last successful retrieval time and all valid prior opportunity records.
+- Check the unified `data-source/catalog.json` after successful publication and confirm no unrelated connector files change. Verify safe serialized commits under concurrent publishing.
+- **There must be no requirement to write root-level `data-source/sources.json`**; status/freshness are stored per connector under its own source folder.
+- When no authorized acquisition route exists after reasonable attempts, require a detailed issue comment and an **unsolvable** outcome. Do not publish an empty folder or fabricated records.
 
 ## QA decision
 - **REJECT**: any reproducible extraction, schema, coverage, safety or quality defect; provide exact evidence and a developer correction request.
