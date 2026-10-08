@@ -1,0 +1,4 @@
+interface:
+  display_name: "YouthOpps Website"
+  short_description: "Develop and review the YouthOpps static website"
+  default_prompt: "Use $website to develop or review the assigned YouthOpps website task under its data, design and delivery rules."

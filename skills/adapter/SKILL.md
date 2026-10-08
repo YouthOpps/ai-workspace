@@ -1,46 +1,33 @@
 ---
 name: adapter
-description: Develop or test one YouthOpps source adapter. Understand user terms integration, connector, and integration testing, but always use adapter terminology.
+description: Develop, review or test YouthOpps source adapters under the required standalone two-file architecture. Use for source integration and connector tasks in data-pipeline.
 ---
 
 # YouthOpps Adapter
 
-**Terminology:** Say **adapter** in all authored code, documentation and discussion. Interpret "integration" or "connector" as an adapter request. The literal repository folder is `adaptors/` (project path convention). Use one stable, filesystem-safe, lower-kebab-case `<pretty-source-name>` consistently in paths, Action names and output.
+Provider-independent instructions: follow the shared [agent scope](../../AGENTS.md#provider-independent-scope), including equivalent tools and independent review.
 
-This is **one skill**, with phase-specific references:
-- [Development](references/development.md) — source research, implementation, runtime choice, publication, issue branch and unmerged PR.
-- [Testing](references/testing.md) — independent QA, live coverage and safe test-environment escalation.
+Use `adapter` in authored code and prose, interpreting source integration/connector requests accordingly. Use one stable, filesystem-safe lowercase kebab-case source slug in paths, workflows and output.
 
-## Activation
+## Task routing
 
-1. Read [AGENTS.md](../../AGENTS.md) and [docs/WORKFLOW.md](../../docs/WORKFLOW.md).
-2. Maintaining this workspace only changes skill/docs/setup; it never authorizes an adapter issue or production Action.
-3. For a separately assigned adapter issue, fetch and branch from the target `data-pipeline` repository's current `origin/main` **without committing the workspace gitlink**. Work on one issue/project only; keep `data-source` and `website` read-only. Never open a `data-source` PR or commit there directly.
-4. Use the development reference for code and the testing reference for independent QA. Leave the issue-linked `data-pipeline` PR open and **unmerged** for the maintainer.
+Read [workspace rules](../../AGENTS.md) once. For review, inspect the requested base/head without branch alignment; for implementation or maintenance, use the corresponding [workflow route](../../docs/WORKFLOW.md). Skill maintenance does not authorize collection or publication.
 
-## Adapter and output contract
+- **Develop/refactor:** read [contract](references/contract.md) and [development](references/development.md).
+- **Review/QA:** read the contract for runtime or data changes and [testing](references/testing.md) for acceptance evidence. Static review does not imply that a live test passed.
+- **Rules maintenance:** read the affected references and their consumers; preserve acceptance invariants and verify public reference links.
 
-```text
-data-pipeline/
-  adaptors/<pretty-source-name>/
-    adapter.js                 # or adapter.py; one implementation file preferred
-    adapter.test.js            # or test_adapter.py; optional, max one test file
-  .github/workflows/
-    fetch-<pretty-source-name>.yml
+## Mandatory architecture — acceptance gate
 
-data-source/
-  datas/<pretty-source-name>/
-    data.json                  # last successfully validated opportunity records
-    metadata.json              # latest run result, explanation, timestamps
-                             # no catalog.json or aggregate index
-```
+This architecture applies to development, fixes, refactoring, synchronization and reviews. Only an explicit user change to the architecture permits a deviation; generic cleanup, optimization or reuse requests do not.
 
-- One **independent GitHub Action per adapter**. It executes the script/class in its own folder using the chosen **Node.js or Python** runtime; no other adapter is fetched by that Action.
-- The adapter file contains its own publisher URLs, source details, extraction rules and collection code. Add extra files **only when necessary**, never merely to split simple logic. No separate per-adapter source-configuration JSON. Shared infrastructure may validate and publish results without taking ownership of adapter-specific configuration.
-- `data-source` is **publication-only**: its commits come exclusively from authorized `data-pipeline` Actions or exceptional manual administrator intervention. Adapter developers/QA must never push, commit directly, or open PRs there.
-- After maintainer merge, a successful Action writes validated actual source records to `data.json` and records `status: "success"` in `metadata.json`. A failed run records `status: "fail"`, a sanitized error/explanation and UTC date/time; it **does not replace or erase the last-good `data.json`** or previous success timestamp. The adapter's `metadata.json` is the authoritative run-status record; **never create or update `data-source/catalog.json`**.
-- Do not introduce a root-level `sources.json` or `catalog.json` in `data-source`. An adapter never successfully integrated is not published as an empty source folder. Consumer-side data discovery must be addressed by its own approved project design, not by recreating an aggregate catalog.
-- Keep source access permitted and non-aggressive: at most 10 requests per rolling minute per target (including retries/redirects), with at least 6 seconds between requests; honor stricter limits. No synthetic opportunities.
-- Each adapter may have **one test file in its own folder** (`adapter.test.js` or `test_adapter.py`), executed as one test entry point containing all necessary scenarios. Extend shared tests for shared behavior; never make separate per-implementation test files. Keep adapter-local documentation concise, code clean and compatibility layers only when truly required.
+- Each `adapters/<pretty-source-name>/` contains exactly `adapter.py` and `test_adapter.py`. The implementation contains source URLs, transport/pacing, parsing, normalization, validation, metadata and publication. Keep source notes in that file.
+- Each folder must run independently when copied outside the repository. Python standard library only; the test may additionally import its own adapter. No third-party, cross-folder, root, dynamically downloaded or generated shared code. Intentional duplication between adapters is allowed; no shared framework, dispatcher, registry or package.
+- The only application directories are `adapters/` and `.github/workflows/`. Root `AGENTS.md`, existing `README.md`, `.gitignore` and Git metadata are allowed. No extra source/config/schema/data/doc/fixture/test files, manifests, lockfiles, shared infrastructure, bytecode or temporary output in the delivered tree.
+- Each implemented adapter has exactly one `.github/workflows/fetch-<pretty-source-name>.yml`, the only executable exception outside adapter folders. It may check out code, select Python and obtain `DATA_SOURCE_TOKEN`; its application command is only `python -B adapters/<pretty-source-name>/adapter.py --publish`. No tests, formatter steps, dependency installation, shared publication logic, matrices or reusable dispatch pipelines.
+- `test_adapter.py` has exactly one live, non-publishing collection test. It retrieves real nonempty records, validates them and emits the actual complete result as one JSON document on stdout, with diagnostics on stderr. No publication token, output files or mocks/fixtures substituting for real retrieval.
+- Only implemented, explicitly authorized sources belong in the repository. Derive current inventory from the checkout; do not restore historical candidates or add placeholder folders/Actions. New sources require assigned development and a passing live test.
 
-Read only the reference needed for the task phase.
+Before editing, establish the complete file inventory and architecture compliance, including imports and workflows. Use tool-side checks with concise output; inspect suspected violations in detail. Before handoff, recheck changed paths and inventory differences against that baseline; rescan fully if no reliable baseline exists or structure, imports or workflow routing changed. Every structural violation blocks acceptance even if tests pass. Report violations outside the authorized repair scope. Do not add a shared validator or test suite to data-pipeline.
+
+Runtime/data behavior is defined once in [contract](references/contract.md). Apply [code style](../../docs/CODE_STYLE.md) without relaxing this architecture. Both data-source checkouts remain publication-only under workspace rules.
