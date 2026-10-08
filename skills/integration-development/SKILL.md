@@ -5,9 +5,11 @@ description: Implement exactly one YouthOpps opportunity-source integration thro
 
 # Opportunity Source Integration — Developer Agent
 
-## Mandatory task lock
-1. Work on **one** explicitly assigned GitHub issue; do not select or modify others. For the initial run, the designated task is **YouthOpps/data-pipeline#11 (be-ares)**.
-2. Confirm that the issue is open and labeled `in progress`. If not labeled, apply that label before starting; if another task is assigned, never switch silently.
+## Activation and task lock
+This file **defines a reusable process only**. While maintaining `ai-workspace`, do not execute it, modify submodule code, touch issues, trigger Actions or publish data. Activate this skill only during a **separate, explicitly authorized source-integration task** in an appropriate working environment.
+
+1. Work on **one** specifically assigned GitHub issue; do not choose or modify others.
+2. On activation, confirm that the assigned issue is open and labeled `in progress`. If needed, apply that label only as part of the separately authorized task. Do not silently switch tasks.
 3. Treat the issue's acceptance criteria as the contract. Record source ID, publisher, official listing location, expected record types, and approved access method.
 4. Make all collector code changes in `data-pipeline/`. Do not edit `website/` or handwrite the published `data-source/` JSON as a substitute for working collection.
 
@@ -28,5 +30,3 @@ Delegate/perform independent QA using `../integration-testing/SKILL.md`; the QA 
 
 Only after sandbox/local or authorized online collection actually produces valid source records **and QA accepts**: commit source-specific code to `data-pipeline`, trigger only the relevant `fetch-<source-id>` Action, inspect its conclusion/logs and the real output in `data-source/sources/<source-id>/` plus `catalog.json`. If production QA fails, fix, retest, recommit and rerun within safe traffic limits. Close/complete the issue only after verified publication. If upstream permission is unresolved, keep the task blocked and do not claim success.
 
-## Initial assignment: #11
-`be-ares` has a documented access limitation and is disabled in its manifest. Confirm official ARES opportunity listings and approved access before enabling or publishing it. A landing page, manually invented scholarship or unauthorized fetch does not satisfy #11.

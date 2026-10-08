@@ -6,7 +6,7 @@ description: Act as independent QA gatekeeper for one YouthOpps source integrati
 # Opportunity Integration QA — Independent Test Agent
 
 ## Scope and authority
-Review exactly the current `in progress` GitHub issue. **Initial issue: YouthOpps/data-pipeline#11 (be-ares)**. Never approve an integration simply because tests pass or one URL returns HTTP 200. Do not select another issue before this one is accepted or explicitly blocked. Return concrete, reproducible defects to the Integration Engineer and repeat until resolved.
+This file **defines a reusable QA process only**. While maintaining `ai-workspace`, do not execute QA against source issues, change submodules, trigger Actions or publish data. Activate only for an issue explicitly assigned in a **separate integration-development task**. Review exactly that one `in progress` issue. Never approve an integration simply because tests pass or one URL returns HTTP 200. Do not select another issue before this one is accepted or explicitly blocked. Return concrete, reproducible defects to the Integration Engineer and repeat until resolved.
 
 ## Gate 1 — Source authenticity and coverage
 - Check current official source, allowed collection method and observed inventory of all **relevant accessible published opportunities**, across pagination, categories and date windows. State coverage evidence and its limits; never guess total expected count.
