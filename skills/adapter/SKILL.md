@@ -1,32 +1,44 @@
 ---
 name: adapter
-description: Develop and independently verify one YouthOpps source adapter. Accept "integration", "integrate", and "connector" as requests for adapter work; use adapter terminology consistently.
+description: Develop or test one YouthOpps source adapter. Understand user terms integration, connector, and integration testing, but always use adapter terminology.
 ---
 
 # YouthOpps Adapter
 
-**Terminology:** Always call the unit of work an **adapter**. Treat user phrases such as "integration", "integrate a source", or "connector" as equivalent requests, without creating separate skills. Use `source-id` for the configured publisher/source identity and `adapter` for its collection implementation.
+**Terminology:** Say **adapter** in all authored code, documentation and discussion. Interpret "integration" or "connector" as an adapter request. The literal repository folder is `adaptors/` (project path convention). Use one stable, filesystem-safe, lower-kebab-case `<pretty-source-name>` consistently in paths, Action names and output.
 
-This is **one skill** with two task references:
-- [Adapter Development](references/development.md): source research, implementation, selected Python/Node.js runtime, publication contract, PR handoff, blocked/unsolvable outcomes.
-- [Adapter Testing](references/testing.md): independent QA, source coverage, safety, sandbox-first testing, acceptance and rejection.
+This is **one skill**, with phase-specific references:
+- [Development](references/development.md) — source research, implementation, runtime choice, publication, issue branch and unmerged PR.
+- [Testing](references/testing.md) — independent QA, live coverage and safe test-environment escalation.
 
-## Activation and scope
+## Activation
 
-1. Read [AGENTS.md](../../AGENTS.md) and [docs/WORKFLOW.md](../../docs/WORKFLOW.md) before execution.
-2. **Workspace maintenance:** edit skills and workspace documentation only; no project issue development or production Action runs.
-3. **Assigned adapter issue:** operate on a single explicitly assigned `data-pipeline` issue. Fetch current `origin/main` inside its submodule and branch from it; never commit the workspace gitlink. Keep `data-source` and `website` read-only during development.
-4. Use the development reference for implementation and the testing reference for an independent QA gate. A developer cannot self-approve QA; accurately report when separate agents are unavailable.
-5. Deliver only a clean, issue-linked **data-pipeline PR**, left **open and unmerged** for a maintainer. Never claim that passing tests proves production publication.
+1. Read [AGENTS.md](../../AGENTS.md) and [docs/WORKFLOW.md](../../docs/WORKFLOW.md).
+2. Maintaining this workspace only changes skill/docs/setup; it never authorizes an adapter issue or production Action.
+3. For a separately assigned adapter issue, fetch and branch from the target `data-pipeline` repository's current `origin/main` **without committing the workspace gitlink**. Work on one issue/project only; keep `data-source` and `website` read-only.
+4. Use the development reference for code and the testing reference for independent QA. Leave the issue-linked `data-pipeline` PR open and **unmerged** for the maintainer.
 
-## Non-negotiable controls
+## Adapter and output contract
 
-- One issue and one project at a time; all agent artifacts and project communication in **English**.
-- Review the full affected code, existing tests and authoritative docs; prefer minimal coherent changes, updates to existing documentation and one or two focused adapter tests when sufficient.
-- Retrieve only genuine publisher opportunities using permitted access; never invent records or bypass restrictions.
-- At most **10 requests per target in any rolling 60 seconds**, including redirects/retries, and at least six seconds apart; honor stricter publisher rules.
-- One source-specific `fetch-<source-id>` Action; a shared adapter implementation can serve several sources without duplicating code.
-- After maintainer merge, the Action is responsible for `data-source/sources/<source-id>/opportunities.json` and `metadata.json`, plus consistent `catalog.json` status. On failure preserve the last good opportunities and success timestamp, and publish sanitized error metadata where a previously integrated source exists.
-- If no lawful workable acquisition route exists, document the evidence on the issue and mark it `unsolvable`; do not publish an unintegrated source.
+```text
+data-pipeline/
+  adaptors/<pretty-source-name>/
+    adapter.js                 # or adapter.py; one file preferred
+  .github/workflows/
+    fetch-<pretty-source-name>.yml
 
-Select the reference relevant to the current phase; do not load both in full when only one is needed.
+data-source/
+  datas/<pretty-source-name>/
+    data.json                  # last successfully validated opportunity records
+    metadata.json              # latest run result, explanation, timestamps
+  catalog.json                 # existing unified catalog
+```
+
+- One **independent GitHub Action per adapter**. It executes the script/class in its own folder using the chosen **Node.js or Python** runtime; no other adapter is fetched by that Action.
+- The adapter file contains its own publisher URLs, source details, extraction rules and collection code. Add extra files **only when necessary**, never merely to split simple logic. No separate per-adapter source-configuration JSON. Shared infrastructure may validate and publish results without taking ownership of adapter-specific configuration.
+- After maintainer merge, a successful Action writes validated actual source records to `data.json` and records `status: "success"` in `metadata.json`. A failed run records `status: "fail"`, a sanitized error/explanation and UTC date/time; it **does not replace or erase the last-good `data.json`** or previous success timestamp. Keep the existing catalog's source status synchronized with the same outcome.
+- Do not introduce a root-level `sources.json` in `data-source`. An adapter never successfully integrated is not published as an empty source folder.
+- Keep source access permitted and non-aggressive: at most 10 requests per rolling minute per target (including retries/redirects), with at least 6 seconds between requests; honor stricter limits. No synthetic opportunities.
+- Prefer one or two meaningful adapter tests and relevant existing regression tests, concise adapter-local documentation, clean code and no unnecessary compatibility layers.
+
+Read only the reference needed for the task phase.

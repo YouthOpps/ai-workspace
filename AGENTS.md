@@ -5,8 +5,8 @@ This repository defines reusable, YouthOpps-specific agent skills and a shared w
 ## Repositories and work scope
 
 - `ai-workspace`: agent instructions, skills, documentation and submodule configuration.
-- `data-pipeline/`: adapters, tests and independent fetch Actions.
-- `data-source/`: published opportunity data, per-connector metadata and catalog; no Actions.
+- `data-pipeline/`: each adapter lives in `adaptors/<pretty-source-name>/` (prefer a single `adapter.js` or `adapter.py` containing its source configuration and collection logic), with one dedicated GitHub Action per adapter.
+- `data-source/`: after a successful adapter run, `datas/<pretty-source-name>/data.json` holds validated opportunities, while `datas/<pretty-source-name>/metadata.json` holds run outcome (`success` or `fail`), explanation and UTC timestamps. Last-good data survives failure; the shared catalog stays consistent. No Actions.
 - `website/`: static site; its `data-source` submodule is pinned.
 
 Initialize with `git submodule update --init --recursive`.
@@ -22,7 +22,7 @@ Initialize with `git submodule update --init --recursive`.
 3. **Role-based review:** use the necessary subset of Product Owner, Architect, Developer, DevOps Engineer and QA. When independent subagents are available, separate roles and require cross-review. A developer must not approve their own work as independent QA. If subagents are unavailable, use distinct review passes and disclose that limitation.
 4. **Holistic, minimal changes:** inspect the relevant existing code, tests, data contracts and authoritative docs together before designing a solution. Fix the complete affected flow, not just the visible symptom. Prefer simple, maintainable code and reuse shared facilities. Remove unused files, debug artifacts, dead code, unnecessary documents/dependencies and speculative backward-compatibility branches. Preserve supported behavior unless an explicit contract change is approved.
 5. **Token efficiency:** read only relevant files and diffs, limit log output and avoid repetitive scans or verbose exchanges. Never omit essential evidence or tests to save tokens.
-6. **Evidence and documentation:** base choices on verifiable code, schemas and official documentation. Update **all affected sections of existing authoritative project documentation** as part of the same PR; do not leave the code and docs inconsistent. Keep docs concise and avoid repeating them across repositories. Keep connector-specific details with that connector, using the smallest useful documentation surface. Record decision references and rationale on the issue **and in relevant commit messages/bodies**.
+6. **Evidence and documentation:** base choices on verifiable code, schemas and official documentation. Update **all affected sections of existing authoritative project documentation** as part of the same PR; do not leave the code and docs inconsistent. Keep docs concise and avoid repeating them across repositories. Keep source-specific details beside their adapter, using the smallest useful documentation surface. Record decision references and rationale on the issue **and in relevant commit messages/bodies**.
 7. **Issue-linked branches and PRs:** each PR references exactly one primary issue and stays unmerged for an authorized maintainer. After a confirmed merge and required acceptance, the maintainer or authorized automation documents the outcome, deletes obsolete issue branches and closes the issue. The developing agent never merges their own PR or closes an unaccepted issue.
 8. **Respect repository boundaries:** automated, post-merge collection from `data-pipeline` into `data-source` is permitted by the platform's runtime contract; it does not justify cross-repository development commits.
 
