@@ -1,6 +1,6 @@
 ---
 name: adapter
-description: Develop, review or test YouthOpps source adapters under the required standalone two-file architecture. Use for source integration and connector tasks in data-pipeline.
+description: Develop, review or test standalone YouthOpps source adapters with documentation in their own folders. Use for source integration and connector tasks in data-pipeline.
 ---
 
 # YouthOpps Adapter
@@ -21,10 +21,13 @@ Read [workspace rules](../../AGENTS.md) once. For review, inspect the requested 
 
 This architecture applies to development, fixes, refactoring, synchronization and reviews. Only an explicit user change to the architecture permits a deviation; generic cleanup, optimization or reuse requests do not.
 
-- Each `adapters/<pretty-source-name>/` contains exactly `adapter.py` and `test_adapter.py`. The implementation contains source URLs, transport/pacing, parsing, normalization, validation, metadata and publication. Keep source notes in that file.
+- Each `adapters/<pretty-source-name>/` contains `adapter.py` and `test_adapter.py`; `README.md` is the only permitted additional file. The implementation contains source URLs, transport/pacing, parsing, normalization, validation, metadata and publication.
+- For new or updated adapters, put source-specific explanations in `adapters/<pretty-source-name>/README.md`: official access and reuse evidence, inventory and exclusions, identifiers, supported dates and eligibility, run/test commands, and publication behavior. Keep functional code comments and docstrings in Python; do not use implementation headers as a substitute for the source README. Unchanged existing adapters without a README need no unrelated migration.
+- Do not edit the data-pipeline root `README.md` during adapter work, including inventory counts, source lists, schedules or source notes. Read it for existing guidance; document the assigned adapter only in its own folder's README.
 - Each folder must run independently when copied outside the repository. Python standard library only; the test may additionally import its own adapter. No third-party, cross-folder, root, dynamically downloaded or generated shared code. Intentional duplication between adapters is allowed; no shared framework, dispatcher, registry or package.
-- The only application directories are `adapters/` and `.github/workflows/`. Root `AGENTS.md`, existing `README.md`, `.gitignore` and Git metadata are allowed. No extra source/config/schema/data/doc/fixture/test files, manifests, lockfiles, shared infrastructure, bytecode or temporary output in the delivered tree.
+- The only application directories are `adapters/` and `.github/workflows/`. Root `AGENTS.md`, the unchanged existing `README.md`, `.gitignore` and Git metadata are allowed. Beyond the source README above, no extra source/config/schema/data/doc/fixture/test files, manifests, lockfiles, shared infrastructure, bytecode or temporary output belong in the delivered tree.
 - Each implemented adapter has exactly one `.github/workflows/fetch-<pretty-source-name>.yml`, the only executable exception outside adapter folders. It may check out code, select Python and obtain `DATA_SOURCE_TOKEN`; its application command is only `python -B adapters/<pretty-source-name>/adapter.py --publish`. No tests, formatter steps, dependency installation, shared publication logic, matrices or reusable dispatch pipelines.
+- New or updated matching workflows run automatically on pushes to `main`, filtered to their own adapter folder and workflow file, so maintainer merges start the relevant publication Action. Preserve manual dispatch, existing schedules, the repository/main guard, source-scoped credentials and serialized publication. Do not invoke production Actions to validate implementation.
 - `test_adapter.py` has exactly one live, non-publishing collection test. It retrieves real nonempty records, validates them and emits the actual complete result as one JSON document on stdout, with diagnostics on stderr. No publication token, output files or mocks/fixtures substituting for real retrieval.
 - Only implemented, explicitly authorized sources belong in the repository. Derive current inventory from the checkout; do not restore historical candidates or add placeholder folders/Actions. New sources require assigned development and a passing live test.
 

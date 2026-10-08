@@ -7,7 +7,7 @@ Read for adapter acceptance after the parent architecture gate and applicable [c
 - Establish the reviewed revision and affected paths. Verify the issue branch's upstream basis, unchanged workspace gitlink and repository scope from evidence; do not change the checkout to perform review.
 - Apply the parent architecture gate using a complete baseline plus scoped rechecks. Check independent folder operation, imports, the sole live test and each matching Action's routing. No publication credentials or local/remote data writes in tests.
 - Inspect the complete affected validation, metadata and publication path against the contract, including first-run failure, later failure preservation, atomic writes and pacing across overlapping runs. Read existing published data/metadata only when useful; do not invoke publication to test it.
-- Check authored code style and affected documentation. Formatting tools stay outside data-pipeline and cannot add repository files or Action steps.
+- Check authored code style and the assigned adapter's README. Verify that new or updated adapters have their source explanations there, that `README.md` is the only additional file beyond the adapter/test pair, and that the repository root README has no changes. Unchanged older adapters without a README are not a migration requirement. Formatting tools stay outside data-pipeline and cannot add repository files or Action steps.
 
 ## Live evidence
 
