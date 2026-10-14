@@ -7,10 +7,14 @@ Read for collection, validation, pacing, metadata, publication or corresponding 
 - Use permitted official publisher access and genuine opportunities; no synthetic records or unsupported eligibility inference. Honor terms, robots, approved access methods and stricter publisher limits.
 - Each adapter may start at most 10 upstream requests in any rolling 60 seconds, at least 6 seconds apart across endpoints, retries, redirects, pagination and concurrent paths. Coordinate or serialize overlapping test/production runs of that adapter under the same allowance. Distinct adapters need no shared allowance unless the publisher imposes one. Honor backoff.
 - Validate nonempty records, source identity, stable IDs, duplicate IDs, URLs, dates, attribution and classification inside the implementation. Preserve existing public field names and envelopes; do not introduce a separate/shared schema file.
+- Final record IDs must match the current [website consumer](https://github.com/YouthOpps/youthopps.github.io/blob/main/scripts/data.mjs) grammar `^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$`. Use stable globally unique identities, normally the source slug followed by a stable native identifier or deterministic digest. Reject duplicates case-insensitively; colons, underscores, whitespace and other separators are invalid.
+- Validate final IDs and all records after every native-ID assignment or override, before returning the complete collection and before publication. Earlier validation of an intermediate/generated ID does not validate the final native ID. Preserve identity across repeated collection; do not derive it from record order or mutable titles.
 
 ## Publication
 
 The production Action publishes only its source's `data-source/datas/<pretty-source-name>/{data,metadata}.json`. Use atomic, source-scoped, serialized or conflict-safe commits. Do not rewrite another source or create an aggregate `catalog.json`, `sources.json` or index.
+
+For an explicitly scoped ID migration, legacy-ID acceptance may be an opt-in only when reading that source's existing published snapshot. Keep fresh collection and publication validation strict. Map legacy and new IDs to the same stable native identity, reject mixed-format and case-insensitive duplicates, and preserve creation/first-seen timestamps. Migrate data and metadata together only after a complete successful refresh and validation, retaining the expiry rules below. On failure, preserve the unchanged last-good data and success timestamp; do not normalize or rewrite legacy records as a failure side effect. Document the mapping and limited legacy-read opt-in in the source's own README; this exception does not relax website validation or authorize a repository-wide migration.
 
 | Prior publication | Current outcome | Required effect |
 |---|---|---|
