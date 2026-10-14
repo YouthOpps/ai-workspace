@@ -33,4 +33,6 @@ This architecture applies to development, fixes, refactoring, synchronization an
 
 Before editing, establish the complete file inventory and architecture compliance, including imports and workflows. Use tool-side checks with concise output; inspect suspected violations in detail. Before handoff, recheck changed paths and inventory differences against that baseline; rescan fully if no reliable baseline exists or structure, imports or workflow routing changed. Every structural violation blocks acceptance even if tests pass. Report violations outside the authorized repair scope. Do not add a shared validator or test suite to data-pipeline.
 
+New or updated adapters must implement and pass the [expired-record cleanup delivery gate](references/contract.md#expired-record-cleanup--mandatory-development-and-delivery-gate): after successful retrieval and validation, remove expired old records from the source’s next atomic publication. Development and independent acceptance must verify this behavior.
+
 Runtime/data behavior is defined once in [contract](references/contract.md). Apply [code style](../../docs/CODE_STYLE.md) without relaxing this architecture. Both data-source checkouts remain publication-only under workspace rules.
