@@ -16,8 +16,16 @@ The production Action publishes only its source's `data-source/datas/<pretty-sou
 |---|---|---|
 | None | Valid nonempty collection successfully published | Atomically create data and metadata together; status `success` |
 | None | Any failure | Create no folder, data or metadata; report sanitized failure in Action logs and issue evidence |
-| Successful publication exists | New successful publication | Replace data with validated records and update success metadata together |
+| Successful publication exists | New successful publication | Replace data with the validated, expiry-filtered dataset and update success metadata together; the dataset may be empty when every record from a valid nonempty collection has expired |
 | Successful publication exists | Fetch/parse/validate/publish failure | Preserve last-good data and success timestamp; record failure metadata when possible |
+
+### Expired-record cleanup — mandatory development and delivery gate
+
+After successfully fetching and validating new records, every new or updated adapter must remove previously published records whose application deadline has passed from its own source's next published dataset. Publish the refreshed data and success metadata atomically; cleanup must not be a separate destructive write before successful publication. Filtering only the newly fetched records is insufficient if expired old records remain in the published dataset.
+
+Determine expiry from supported, validated deadline fields and the publisher's documented timezone/date semantics. A date-only deadline remains open through the end of that date in the applicable timezone. Do not infer expiry from record age, absence from the latest response, or missing/ambiguous deadlines. Preserve the last-good dataset on fetch, parse, validation or publication failure, and never delete another source's records. Cleanup does not relax the valid nonempty collection requirement above. Validate the complete nonempty raw collection before filtering. If all validated collected records have expired, atomically publish an empty dataset and success metadata so old expired records cannot persist indefinitely. Distinguish this valid filtered-empty result from empty retrieval or invalid/incomplete collection, which remains a failure preserving last-good data. Published-snapshot validation must accept this empty dataset on subsequent runs; raw collection validation must still require nonempty complete records.
+
+Delivery requires independent evidence that the successful refresh removes expired old records, retains eligible current records, and preserves last-good data on failure. Document source-specific expiry rules and cleanup behavior in the adapter's README. Static publication review verifies this behavior without production execution; the sole live collection test remains non-publishing.
 
 Metadata contains source identity/attribution, `status` (`success` or `fail`), concise `message`, UTC ISO-8601 `last_attempt_at` and `last_success_at`, and a sanitized actionable `error` plus failure stage when known. Advance `last_success_at` only when valid nonempty retrieval is successfully published. Failure reporting must not erase prior source information or claim durable status was saved if metadata publication failed.
 
