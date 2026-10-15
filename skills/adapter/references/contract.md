@@ -10,6 +10,18 @@ Read for collection, validation, pacing, metadata, publication or corresponding 
 - Final record IDs must match the current [website consumer](https://github.com/YouthOpps/youthopps.github.io/blob/main/scripts/data.mjs) grammar `^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$`. Use stable globally unique identities, normally the source slug followed by a stable native identifier or deterministic digest. Reject duplicates case-insensitively; colons, underscores, whitespace and other separators are invalid.
 - Validate final IDs and all records after every native-ID assignment or override, before returning the complete collection and before publication. Earlier validation of an intermediate/generated ID does not validate the final native ID. Preserve identity across repeated collection; do not derive it from record order or mutable titles.
 
+### Crawler identity
+
+Every adapter and every agent-authored HTTP request to a source publisher must send exactly this header, across all providers and execution environments:
+
+```http
+User-Agent: YouthOppsBot/1.0 (+https://youthopps.org/bot/)
+```
+
+This covers source research, access diagnostics, collection, pagination, retries, redirects and live tests. Set and verify the final outbound header on every physical request, including requests created by transport wrappers or redirect/retry handlers; a local constant alone does not prove propagation. Keep the value local to each standalone adapter; do not introduce shared code or a framework. The public [bot information page](https://youthopps.org/bot/) describes this identity. This contract does not claim to configure platform tools or override vendor-managed browser/SDK identities; use an agent-controlled HTTP path when the header cannot be set and verified, or report that limitation. Preserve required authentication and proxy headers.
+
+Evaluate robots rules for the `YouthOppsBot` product token and independently retain applicable legacy product-specific rules, persisted or documented protective refusals, and existing stricter fallback checks. A permission under the new or retained legacy product-specific rules must never override a refusal under the other; this does not require querying every historical identity's wildcard fallback when an explicit new product rule applies. Apply the most restrictive applicable crawl delay, request rate and other publisher limits together with the collection limits above. Preserve request history and backoff across retries, redirects and identity changes. Do not rotate identities, impersonate browsers, reset pacing state or otherwise use this identity change to evade robots restrictions, blocks or rate limits. Record source-specific access decisions in the adapter's own README.
+
 ## Publication
 
 The production Action publishes only its source's `data-source/datas/<pretty-source-name>/{data,metadata}.json`. Use atomic, source-scoped, serialized or conflict-safe commits. Do not rewrite another source or create an aggregate `catalog.json`, `sources.json` or index.
