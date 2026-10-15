@@ -19,6 +19,8 @@ Read [workspace rules](../../AGENTS.md) once. For review, inspect the requested 
 
 Every provider's agents and adapters must follow the [crawler identity contract](references/contract.md#crawler-identity) for source-publisher HTTP requests, including research and diagnostics.
 
+Evaluate [safe incremental refreshes](references/contract.md#incremental-refreshes) to reduce redundant requests. Use verified publisher change semantics and complete reconciliation; a known record alone is not a safe pagination stop. Document why complete collection remains necessary when incremental coverage cannot be proven. This instruction does not migrate existing adapters automatically.
+
 ## Mandatory architecture — acceptance gate
 
 This architecture applies to development, fixes, refactoring, synchronization and reviews. Only an explicit user change to the architecture permits a deviation; generic cleanup, optimization or reuse requests do not.
