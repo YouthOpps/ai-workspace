@@ -21,7 +21,7 @@ Every provider's agents and adapters must follow the [crawler identity contract]
 
 Evaluate [safe incremental refreshes](references/contract.md#incremental-refreshes) to reduce redundant requests. Use verified publisher change semantics and complete reconciliation; a known record alone is not a safe pagination stop. Document why complete collection remains necessary when incremental coverage cannot be proven. This instruction does not migrate existing adapters automatically.
 
-Apply the [daily schedule and pagination spacing contract](references/contract.md#daily-schedules-and-pagination-spacing): one staggered daily cron per source and a separate 12-second guard between inventory pages, without slowing every detail request through a persistent budget change.
+Apply the [daily schedule and pagination spacing contract](references/contract.md#daily-schedules-and-pagination-spacing): one staggered daily cron per source and a separate 30-second guard between inventory pages, without slowing every detail request through a persistent budget change.
 
 ## Mandatory architecture — acceptance gate
 
