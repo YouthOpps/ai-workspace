@@ -17,6 +17,8 @@ Read [workspace rules](../../AGENTS.md) once. For review, inspect the requested 
 - **Review/QA:** read the contract for runtime or data changes and [testing](references/testing.md) for acceptance evidence. Static review does not imply that a live test passed.
 - **Rules maintenance:** read the affected references and their consumers; preserve acceptance invariants and verify public reference links.
 
+Every provider's agents and adapters must follow the [crawler identity contract](references/contract.md#crawler-identity) for source-publisher HTTP requests, including research and diagnostics.
+
 ## Mandatory architecture — acceptance gate
 
 This architecture applies to development, fixes, refactoring, synchronization and reviews. Only an explicit user change to the architecture permits a deviation; generic cleanup, optimization or reuse requests do not.
