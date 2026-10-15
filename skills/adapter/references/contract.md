@@ -25,13 +25,80 @@ A legacy durable hold may be reclassified only through an explicitly scoped, ind
 
 On HTTP 429, persist the increased physical/page spacing, strike count and embargo before reading a bounded response body, so a body-read failure cannot lose the cooldown. Stop the current collection without another publisher request. An ordinary rate-limit response remains a timed restriction; a genuine visible human-verification challenge also retains a durable access hold. Invalid, negative, nonfinite or stale `Retry-After` values alone never create an access hold; use the existing 429 fallback and preserve stronger known constraints.
 
-A failure to persist a physical-request reservation, completion or restrictive response state must latch publisher access closed for the rest of that process, including re-entry into collection or initialization. Do not report healthy completion or emit a valid owned pacing artifact from stale pre-request state. Preserve known stronger constraints in memory; a later run must restore trustworthy owned state or fail closed.
+Persist a source-bound pending transaction before every physical publisher
+request. Keep it pending through all response-header, body and applicable REP
+assessment, including cached target-policy decisions and numeric/backoff
+calculations. Settle only after every resulting restriction and completion is
+durable, with evidence matching that actual transaction. Neither an older
+settled snapshot nor a healthy finalizer may clear an unresolved request; do not
+confuse transient pending snapshots of a proven completed transaction with a
+newer unresolved attempt.
+
+Any persistence failure in a reservation, restrictive response state or
+completion, or an unassessed policy-calculation error, must latch publisher
+access closed for the rest of that process, including collection/initialization
+reentry. Unsupported counters, numeric overflow or unsupported clock values
+after a 429 are unassessed failures, not
+successful completion with older limits. Preserve known stronger constraints in
+memory and the durable pending barrier. Even if invalidation and failure-marker
+writes both fail, a fresh process must reject unresolved local/owned state;
+restoring an older healthy ZIP must not clear it. Do not export valid stale state
+or claim that best-effort cleanup established successful persistence.
 
 Before error signalling or cleanup that can itself fail, invalidate stale exportable pacing state only through an already validated, identity-checked owned file descriptor, truncating and syncing it before signalling failure or attempting unlink. Do not follow, modify or remove unsafe paths, symlinks, multiply linked files, unexpected owners or files with unsafe permissions. Signal-write or unlink failures, individually or together, must not leave valid stale JSON eligible for export; cleanup success does not establish successful state persistence.
+
+Bind journal I/O and invalidation to the originally verified parent directory
+identity and use descriptor-relative operations with no symlink following.
+Recheck parent/file ownership, permissions, link count and identity before
+acknowledging persistence. Preserve replacement directories and unrelated or
+unsafe files. After an atomic journal rename, invalidate the verified CURRENT
+journal inode under that same parent; a retained descriptor to the unlinked old
+inode does not invalidate the new file. In-place and dual journals must retain
+their validated file identities, and partial dual commits must fail closed.
+
+Preserve permitted bounded retries for an ordinary connection failure inside an
+actual opener invocation before any response is received, while retaining one
+pending owner and every physical reservation/completion gap. `HTTPError` counts
+as a received response. Do not relabel a partial body read, TLS, namespace,
+storage or unassessed policy failure as a new ordinary connection retry. Keep
+existing retry/redirect bounds and document deliberately tightened error cases;
+a policy-only transaction is not an extra physical request.
 
 Inspect challenge bodies before following any content redirect, including 3xx responses. Determine refusal from primary visible content; hidden attributes, `aria-hidden="true"`, inline display/visibility suppression, script/template content and unrelated footer/navigation/aside text must not alone trigger a hold. Preserve genuine visible refusals within an otherwise normal publisher DOM. Robots-only status handling requires the literal `/robots.txt` path on each physical request: reject a robots redirect to another path before following it, and reject a robots-purpose flag on a content path before transport. Retain all other access and pacing protections above.
 
 When hosted pacing restoration uses run history and owned artifacts, require the current run to be present and validate its workflow, source, head and attempt. Require explicit job identity fields to match the exact run/attempt/head, and order completed attempts by exact-attempt job completion times rather than mutable run `updated_at`. Restore the newest applicable attempt's exact owned state before publisher access; missing, expired, mismatched or incomplete state must fail closed without falling back to an older artifact or resetting restrictions. Any exceptional legacy migration still requires its separately scoped provenance and review.
+
+Missing, empty, corrupt or unknown-schema state for an established source is
+not a fresh allowance. Any exceptional first-state or legacy handoff for that
+established source needs a scoped, independently reviewed
+transition with exact provenance, preserving all known MAX restrictions and
+explicit unknown history. Do not synthesize zero history, settled `False` or an
+empty bootstrap merely because local state or the
+newest owned artifact is absent.
+
+When local collection relies on a production pause, verify the exact workflow
+ID/path and disabled state before history/state initialization, then verify it
+again after startup quiet immediately before the first real publisher request.
+Keep the required serialization/pause for the complete run. A stubbed metadata
+callback is not evidence of this actual local coordination check.
+
+Bind scoped REP decisions to their actual targets and physical policy-body
+provenance through permitted origin aliases. An unavailable policy must not reuse
+a previous response's digest or fabricate a global content refusal.
+
+Scale policy-observation storage without introducing a new source-frontier,
+page or target cap. Any compaction must preserve actual denials, holds, pacing,
+embargo MAX values, pending state and unknown history with independently checked
+coverage. A bounded prototype is not permission to discard restrictions or
+truncate collection to fit its state limit; require a separate source-specific
+compatibility and capacity assessment before rollout.
+
+Maintenance evidence: [OeAD's reviewed conditional 429 guard](https://github.com/YouthOpps/data-pipeline/pull/276#pullrequestreview-5540049593),
+[three protocol prototypes](https://github.com/YouthOpps/data-pipeline/issues/273)
+and the [NASA pacing investigation](https://github.com/YouthOpps/data-pipeline/issues/269).
+These references distinguish private fault controls and preaccess review from
+actual legacy compatibility, complete native collection and production proof;
+they do not certify future source execution or authorize a broad migration.
 
 ### Incremental refreshes
 
