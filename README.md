@@ -27,3 +27,7 @@ Development must occur in the owning workspace submodule, not a standalone clone
 - **[PR Review](skills/pr-review/SKILL.md):** portable PR review criteria and authorized English review publication; combine with the affected project's skill. This repository copy is authoritative; personal installations are convenience copies.
 
 Read only applicable references. Common code style lives in [CODE_STYLE.md](docs/CODE_STYLE.md). The website's AI rules page links to authoritative files in this repository; keep those links valid without copying the rules into the website. Project prose is English. Skills are instructions for authorized work, not authorization to start product development or production execution.
+
+## License
+
+Original agent skills, workflow instructions, scripts and documentation are licensed under Apache-2.0. Third-party materials and linked submodules retain their own licenses. See [LICENSE](LICENSE) and [NOTICE](NOTICE). Apache-2.0 does not grant rights to publisher data or other third-party materials.
