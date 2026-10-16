@@ -5,8 +5,27 @@ Read for collection, validation, pacing, metadata, publication or corresponding 
 ## Collection
 
 - Use permitted official publisher access and genuine opportunities; no synthetic records or unsupported eligibility inference. Honor terms, robots, approved access methods and stricter publisher limits.
-- Each publisher's adapters and agent-authored research/diagnostic requests share at most 5 upstream requests in any rolling 60 seconds, at least 12 seconds apart across endpoints, retries, redirects, pagination and concurrent paths. These limits govern actual physical outbound request starts, not reservation timestamps or intended delays. Coordinate or serialize overlapping test/production runs for that publisher under the same allowance. Preserve native request history, backoff and stronger publisher limits; conservative completion guards or serialization may enforce the allowance without prescribing one timing architecture. Different publishers need no shared allowance. Honor backoff.
-- After HTTP 429, increase the affected publisher's physical request spacing and any inventory page gap before another attempt; never retry immediately with unchanged pacing. Without a valid `Retry-After`, pause for at least 30 minutes and increase that cooldown exponentially on repeated 429 responses. Honor any longer `Retry-After`, publisher restriction or retained embargo. Persist restrictive pacing, request history, repeated-429 state and backoff across process/hosted-run restarts; restore them before publisher access and preserve them after failures. Coordinate or serialize local tests and production for a shared publisher; a fresh runner or another adapter must not create a fresh allowance.
+- Each publisher's adapters and agent-authored research/diagnostic requests
+  share at most five physical starts in any rolling 60 seconds. Wait at least
+  12.2 seconds after the preceding physical publisher attempt completes,
+  including response closure or error, before the next physical start across
+  endpoints, retries, redirects, pagination and concurrent paths. Measure actual
+  outbound starts and completions, not reservations or intended delays.
+  Coordinate or serialize overlapping test/production runs under that same
+  publisher allowance. Preserve native request history, backoff and stronger
+  publisher limits. Different publishers need no shared allowance.
+- After a received HTTP 429, double BOTH CURRENT retained physical-request
+  spacing and inventory-page gap, retaining at least the 12.2-second physical
+  and 30-second inventory floors and all stronger known constraints. Persist
+  those gaps, the strike count and embargo before reading the bounded response
+  body, then stop that collection without another publisher request. The next
+  deadline is the maximum of the retained embargo, a valid `Retry-After` and
+  at least 1,800 seconds from the response, increased exponentially for repeated
+  observed 429s. A shorter valid `Retry-After` never reduces that fallback.
+  Preserve restrictive pacing, request history, repeated-429 state, unknown
+  historical provenance and backoff across process/hosted-run restarts; restore
+  them before publisher access and after failures. A fresh runner or another
+  adapter must not create a fresh allowance.
 - Validate nonempty records, source identity, stable IDs, duplicate IDs, URLs, dates, attribution and classification inside the implementation. Preserve existing public field names and envelopes; do not introduce a separate/shared schema file.
 - Final record IDs must match the current [website consumer](https://github.com/YouthOpps/youthopps.github.io/blob/main/scripts/data.mjs) grammar `^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$`. Use stable globally unique identities, normally the source slug followed by a stable native identifier or deterministic digest. Reject duplicates case-insensitively; colons, underscores, whitespace and other separators are invalid.
 - Validate final IDs and all records after every native-ID assignment or override, before returning the complete collection and before publication. Earlier validation of an intermediate/generated ID does not validate the final native ID. Preserve identity across repeated collection; do not derive it from record order or mutable titles.
@@ -23,7 +42,15 @@ A legacy durable hold may be reclassified only through an explicitly scoped, ind
 
 ### Transport and durable access state
 
-On HTTP 429, persist the increased physical/page spacing, strike count and embargo before reading a bounded response body, so a body-read failure cannot lose the cooldown. Stop the current collection without another publisher request. An ordinary rate-limit response remains a timed restriction; a genuine visible human-verification challenge also retains a durable access hold. Invalid, negative, nonfinite or stale `Retry-After` values alone never create an access hold; use the existing 429 fallback and preserve stronger known constraints.
+On HTTP 429, persist the doubled CURRENT physical/page gaps, strike count and
+MAX embargo under the collection rule above before reading a bounded response
+body, so a body-read failure cannot lose the cooldown. Stop the collection
+without another publisher request. An ordinary rate-limit response remains a
+timed restriction; a genuine visible human-verification challenge also retains
+a durable access hold. Invalid, negative, nonfinite or stale `Retry-After`
+values alone never create an access hold. The at-least-1,800-second exponential
+fallback also applies when a valid header is shorter; preserve longer headers
+and all stronger known constraints.
 
 Persist a source-bound pending transaction before every physical publisher
 request. Keep it pending through all response-header, body and applicable REP
@@ -116,7 +143,17 @@ Keep the sole native live test as a complete actual nonempty full-scan collectio
 
 Each source workflow has one daily cron at a distinct fixed UTC time, selected randomly within a staggered timetable. Inspect the source, website-data-sync and workspace-sync workflow schedules before choosing a free slot; preserve existing assignments unless the task changes them. Do not randomize the cron on every run or add long random sleeps. Retain merge/manual triggers, repository/main guards and publication serialization; one daily scheduled event is not a one-run-per-day cap. Do not reactivate disabled access holds. GitHub may delay schedules, so distinct cron times alone do not guarantee non-overlap; retain the existing source publication queue.
 
-Within a serialized collection, successive inventory pagination requests (including taxonomy pages, AJAX continuations and sitemap partitions) wait at least 30 seconds after the preceding page finishes before starting the next page fetch. Keep this page-transition guard separate from the native physical-request budget so it does not promote every detail request to a permanent longer interval. Sources without pagination need no artificial page delay. Preserve native physical request spacing, rolling limits, retries, redirects, stronger publisher limits, retained refusals and backoff. Coordinate overlapping tests/production under the existing allowance; a process-local page guard does not establish a shared 30-second page budget across machines.
+Within a serialized collection, inventory pagination attempts wait at least
+30 seconds after the preceding inventory page/physical attempt finishes before
+the next inventory start. Cover the first-page entry, preloaded first pages,
+taxonomy pages, AJAX continuations, sitemap partitions, retries and redirected
+inventory hops. Keep this guard separate from the physical-request budget:
+robots and detail requests do not inherit an inventory-only longer interval.
+Sources without inventory pagination need no artificial page delay. Preserve
+physical completion spacing, rolling limits, retry/redirect bounds, stronger
+publisher limits, retained refusals and backoff. Coordinate overlapping tests
+and production under the existing allowance; a process-local page guard alone
+does not establish a shared page budget across machines.
 
 Document the exact daily time and page-guard scope in each source README. Assess phase/collection/job limits and publication-token lifetime using complete relevant evidence before accepting slower paging; do not increase caps, clear backoff or weaken completeness to make validation pass. Native full-collection and consumer evidence requirements remain in force. Local timing probes prove only their observed request timing, not successful publisher collection or publication.
 
