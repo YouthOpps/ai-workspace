@@ -41,4 +41,6 @@ Before editing, establish the complete file inventory and architecture complianc
 
 New or updated adapters must implement and pass the [expired-record cleanup delivery gate](references/contract.md#expired-record-cleanup--mandatory-development-and-delivery-gate): after successful retrieval and validation, remove expired old records from the source’s next atomic publication. Development and independent acceptance must verify this behavior.
 
+Before an authorized native run, apply the [native observer readiness gate](references/testing.md#native-observer-readiness): privately exercise the actual target consumer wrapper and source-specific expiry/metadata call contracts before publisher access. These observer checks neither substitute for the sole genuine live test nor authorize new requests.
+
 Runtime/data behavior is defined once in [contract](references/contract.md). Apply [code style](../../docs/CODE_STYLE.md) without relaxing this architecture. Both data-source checkouts remain publication-only under workspace rules.

@@ -45,6 +45,47 @@ Read for adapter acceptance after the parent architecture gate and applicable [c
 - Reject delivery if the [mandatory expired-record cleanup](contract.md#expired-record-cleanup--mandatory-development-and-delivery-gate) is absent or unverified. Inspect the successful refresh path and evidence showing removal of expired previously published records, retention of eligible current records, correct date/timezone boundaries, no inferred expiry for ambiguous deadlines, source isolation, successful atomic empty publication when all validated raw records have expired, subsequent reads of that empty snapshot, and last-good preservation on failure. Review publication statically; do not add publishing tests or invoke production Actions.
 - Check authored code style and the assigned adapter's README. Verify that new or updated adapters have their source explanations there, that `README.md` is the only additional file beyond the adapter/test pair, and that the repository root README has no changes. Unchanged older adapters without a README are not a migration requirement. Formatting tools stay outside data-pipeline and cannot add repository files or Action steps.
 
+## Native observer readiness
+
+Before publisher access for an authorized native run, check any external
+observer/controller privately, outside the delivered adapter tree:
+
+- Bind the original test and imported adapter to the exact target folder,
+  source identity and revisions. Run the actual consumer wrapper on a
+  normalized positive with the expected source/folder/IDs, and a wrong-source
+  negative that must fail. Compare complete input/output IDs; copying a wrapper
+  or validator alone is not readiness.
+
+- Read and call the original normalizer, expiry and metadata helpers using
+  their actual call contracts and supported reference clock. An ISO string and
+  a timezone-aware `datetime` are not interchangeable; use the source-specific
+  arguments rather than a common signature.
+
+- Compute readiness raw, current/expiry-filtered and valid-empty cases through
+  those helpers with corresponding metadata; label fixtures synthetic. After
+  genuine collection, check complete actual raw and filtered records and derive
+  any expired-subset case only from actual records the original rule classifies
+  as expired. Report when none exist. A derived empty envelope does not prove
+  empty successful retrieval.
+
+- Trace original assignments and prior-snapshot merge rules for `created_at`,
+  `first_seen_at`, `updated_at`, `last_seen_at` and `last_checked_at`. Verify
+  their actual roles; do not assume seen and checked timestamps are equal or
+  advance together.
+
+- Retain separate immutable outcomes, errors and revisions for the original
+  test, observer process and external fixture/consumer checks. Never relabel a
+  failed original test as passed. An external helper failure after
+  original-test success is distinct. Correct pure offline harness defects
+  against qualifying retained complete input without another publisher run,
+  preserving the failure evidence and live-evidence rules below. Incomplete
+  capture or changed source behavior is an evidence gap, not permission for an
+  automatic retake.
+
+These ordinary checks make no publisher requests, publish no data and add no
+fixtures to the standalone adapter. They do not replace complete genuine native
+evidence or require a new advanced fault campaign.
+
 ## Live evidence
 
 Live evidence is required for acceptance of implementation changes affecting collection, runtime, validation, publication or data behavior. Documentation-only and static reviews assess relevant claims and existing evidence without starting collection or requiring unrelated live checks; they do not certify runtime behavior. Reuse valid evidence for unchanged behavior under the workspace workflow.
