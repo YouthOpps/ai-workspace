@@ -33,6 +33,7 @@ Choose the task mode before acting:
 ## Universal agent rules
 
 - Use English for project communication, issue/PR updates, documentation, code comments, commits and reviews. Keep wording concise and factual.
+- Execute live publisher research, diagnostics, collection tests and production refreshes on GitHub Actions. Follow the [adapter contract](skills/adapter/references/contract.md#factual-indexing-and-publisher-access) and [hosted QA rules](skills/adapter/references/testing.md#github-actions-execution). Static review and inspection of already-retained evidence do not contact a publisher.
 - Preserve existing user work and supported contracts. Inspect the complete affected flow, fix the underlying problem, and remove obsolete code or artifacts only within the assigned scope.
 - Apply [code style](docs/CODE_STYLE.md) to authored code and code reviews. Project architecture and public contracts take precedence over generic style advice.
 - Update every affected section of authoritative documentation with the change. Put source-specific adapter explanations in its folder's `README.md`; adapter work must leave the data-pipeline root `README.md` unchanged. Record decision evidence and references in the issue and relevant commit bodies.

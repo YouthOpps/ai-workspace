@@ -51,10 +51,10 @@ Read for adapter acceptance after the parent architecture gate and applicable [c
   first ordinary no-response connection error then healthy 200, exhausted
   attempts, `HTTPError`, partial body reads, TLS and policy/storage failures.
   Inspect every actual inert physical start and completion gap, preserving
-  ordinary retry bounds and refusing unsafe retries. Verify actual local pause
-  checks before initialization and again after quiet before first publisher
-  access when that coordination is required; fixtures supplement rather than
-  establish the real workflow state. Check policy-state capacity against the
+  ordinary retry bounds and refusing unsafe retries. When the hosted job
+  relies on a production pause, verify the actual workflow before restoring
+  state and again after startup quiet before first publisher access. Fixtures
+  do not establish the real workflow state. Check policy-state capacity against the
   full source frontier without discarding actual denials or adding a page cap.
 - Verify the [crawler identity contract](contract.md#crawler-identity) across agent-authored source research/diagnostics and adapter requests, including final outbound headers in retries, redirects and live tests, product-token robots matching, legacy protective restrictions and the strictest applicable pacing. Check source-local constants and README access evidence; reject identity rotation, browser impersonation or state resets used to evade restrictions. Scope execution evidence to changed behavior and reuse qualifying unchanged evidence under the live-evidence rules below; a rules-only change requires no publisher requests or collection run.
 - Trace every native-ID assignment and override through final validation, including `dict.update(id=...)`, mapping updates and post-normalizer mutations. For external production proofs, derive final IDs from the actual source contract and complete accepted native IDs; exercise an inert regression that rejects a wrong generic-ID assumption before a one-shot owned-artifact proof. Verify the [ID contract](contract.md#collection), stable global identity and case-insensitive duplicate rejection on the final records. For an assigned migration, inspect the source-scoped legacy-read opt-in, native-identity mapping, mixed-format duplicate rejection, preserved creation/first-seen timestamps, successful atomic migration and unchanged last-good data on failure. Legacy acceptance must not reach fresh collection or publication validation.
@@ -107,7 +107,13 @@ evidence or require a new advanced fault campaign.
 
 Live evidence is required for acceptance of implementation changes affecting collection, runtime, validation, publication or data behavior. Documentation-only and static reviews assess relevant claims and existing evidence without starting collection or requiring unrelated live checks; they do not certify runtime behavior. Reuse valid evidence for unchanged behavior under the workspace workflow.
 
-When live execution is required, run `python -B adapters/<pretty-source-name>/test_adapter.py` in the sandbox. If connectivity alone blocks it, retry only in an authorized networked environment. A blocked endpoint is not a passing test. Verify actual physical outbound starts against the contract's minimum gap and rolling-window allowance across endpoints, retries, redirects, pagination, concurrent paths and overlapping production runs; reservations alone are not actual-start evidence. Report evidence coverage and gaps; a partial ledger cannot establish full-run compliance. Reuse qualifying unchanged-behavior evidence without requiring a redundant live run or new ledger solely for this check. Never invoke Actions or expose publication credentials.
+### GitHub Actions execution
+
+Run live publisher research, access diagnostics and the original nonpublishing collection test in GitHub Actions. The collection command is `python -B adapters/<pretty-source-name>/test_adapter.py`. Use a reviewed temporary workflow on an isolated branch or dedicated QA repository. A branch-only workflow can start from an exact scoped push. Use manual dispatch only when GitHub recognizes that workflow on the repository default branch. Bind the actual repository, ref, workflow, revision, run and attempt to the scope and record the exact adapter and test revisions. Use source-scoped concurrency and the reviewed request targets. Preserve existing publisher constraints and enforce exclusive ownership across research, QA and production, including legacy or pending state. A new hosted runner is not a new allowance.
+
+Keep publisher QA separate from production. A QA job has no publication credential, uses only the permissions it needs, and cannot make a production commit or dispatch a production workflow. Keep its definition outside the delivered production changes. Use the normal source workflow for an authorized production refresh after acceptance. An automatic post-merge run verifies publication rather than replacing the original nonpublishing test.
+
+Verify actual outbound starts and response completions against the contract across all endpoints and overlapping paths. Reservations alone do not prove compliance. Retain the source-owned timing state and attempt result even when QA fails so a later job cannot silently restart from an older allowance. Record incomplete evidence as incomplete. Reuse qualifying existing evidence for unchanged behavior. A blocked endpoint is not a passing test.
 
 For an incremental implementation, the sole native live test must still perform a complete actual nonempty full-scan collection without publication. Report incremental fetched records and the complete merged dataset separately; cached records, a partial delta or a no-change result cannot replace this complete live evidence. Review the changed incremental path and its scenario evidence in addition to the full-scan result.
 
@@ -117,7 +123,7 @@ For an authorized native run, retain its complete actual input privately in
 RAM: all physical request starts/completions, response headers and returned body
 segments (including available partial bytes on read failure), original stdout,
 and every persistence attempt with resulting journal/RAM state snapshots. Record
-capture availability/lifetime. Bind capture/controller and source revisions and
+capture availability and lifetime. Complete consumption and validation in memory during the hosted job. Retain reviewable outcome, timing, state and provenance artifacts without plaintext publisher bodies or full stdout in public logs or artifacts. When a reviewer needs complete raw input after an ephemeral runner exits, encrypt the evidence in memory to an authorized reviewer before upload, use short retention and keep the decryption key outside GitHub. Missing full input or insufficient reviewer access is an evidence gap. Bind capture/controller and source revisions and
 distinguish
 physical attempts from policy-only transactions. Offline controller fixtures may
 check instrumentation and fault paths, but must not replace genuine responses,
