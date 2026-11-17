@@ -32,11 +32,11 @@ Read for collection, validation, pacing, metadata, publication or corresponding 
 
 ### Factual indexing and publisher access
 
-The authorized product is a minimal public factual opportunity index: titles, basic factual fields, original source URLs and independently written brief summaries. Do not copy full publisher descriptions or images. Public visibility or Google indexing is not a blanket licence or legal waiver; this operational policy does not decide copyright, database rights, contractual enforceability or other legal questions.
+YouthOpps operates a noncommercial public factual catalogue. Index titles, basic opportunity facts and brief original summaries, and direct visitors to the official publisher for details and applications. Do not reproduce complete descriptions, images, private records or applicant data. Apply restrictions to the actual publisher, route and activity. A clause limited to commercial use does not by itself bar this noncommercial scope. Preserve any other clearly applicable access, automation or extraction restriction. These operational rules do not determine legal rights outside the approved catalogue scope.
 
 Assess restrictions against the actual publisher, host/route, activity and intended output. Before blocking factual indexing on publisher terms, quote the exact clearly applicable automation or reuse clause and document its scope in the source README and issue evidence. Absence of an explicit licence, generic copyright/all-rights-reserved notices, or terms for a different service alone do not require permission or establish a prohibition. Preserve genuinely applicable express restrictions, including automated-collection bans and applicable database-extraction limits; unresolved applicability must be described accurately, without inventing a blanket legal conclusion or permission prerequisite.
 
-For verified robots.txt retrieval only, treat HTTP 4xx responses other than 429, including 403/404/410, as unavailable REP rules under the selected [RFC 9309 policy](https://www.rfc-editor.org/rfc/rfc9309.html#section-2.3.1.3), consistent with [Google's documented 4xx handling](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec#http-status-codes). Do not invent `Disallow` from these statuses or treat them as proof that content access or factual reuse is prohibited. Retain valid applicable explicit robots rules and other documented restrictions. Robots 429, `Retry-After` and existing embargoes retain rate-limit/backoff handling. Robots 5xx, TLS, DNS, timeout and other network failures are unreachable, not absent: stop or use valid cached constraints under [RFC 9309](https://www.rfc-editor.org/rfc/rfc9309.html#section-2.3.1.4), without converting an initial failure into unrestricted access. Actual content 401/403, 429 or challenge/refusal bodies remain access or rate-limit failures even when robots is unavailable; stop rather than bypass authentication or protections.
+For verified robots.txt retrieval only, treat HTTP 4xx responses other than 429, including 403/404/410, as unavailable REP rules under the selected [RFC 9309 policy](https://www.rfc-editor.org/rfc/rfc9309.html#section-2.3.1.3), consistent with [Google's documented 4xx handling](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec#http-status-codes). A missing or unavailable robots file alone does not block ordinary requests to otherwise permitted public content for this catalogue. Preserve any already-known applicable restriction and assess the actual content response. Retain valid applicable explicit robots rules and other documented restrictions. Robots 429, `Retry-After` and existing embargoes retain rate-limit/backoff handling. Robots 5xx, TLS, DNS, timeout and other network failures are unreachable, not absent: stop or use valid cached constraints under [RFC 9309](https://www.rfc-editor.org/rfc/rfc9309.html#section-2.3.1.4), without converting an initial failure into unrestricted access. Actual content 401/403, 429 or challenge/refusal bodies remain access or rate-limit failures even when robots is unavailable; stop rather than bypass authentication or protections.
 
 Under the robots-only exception, a legacy durable hold may be reclassified only through an explicitly scoped, independently reviewed migration with exact-run provenance proving it arose solely from a robots-only 403 and contains no other content refusal or applicable restriction supporting that hold. Preserve physical request history, pacing, `Retry-After`, backoff and stronger embargoes; unknown or mixed provenance must not be blindly cleared. Apply robots-purpose classification through transport, retries and redirects before writing durable refusal state. Any subsequent real content block stops retrieval and remains retained. This narrow recovery exception qualifies the retained-refusal and disabled-hold rules below; it does not itself authorize production execution or certify complete collection.
 
@@ -115,11 +115,12 @@ explicit unknown history. Do not synthesize zero history, settled `False` or an
 empty bootstrap merely because local state or the
 newest owned artifact is absent.
 
-When local collection relies on a production pause, verify the exact workflow
-ID/path and disabled state before history/state initialization, then verify it
-again after startup quiet immediately before the first real publisher request.
-Keep the required serialization/pause for the complete run. A stubbed metadata
-callback is not evidence of this actual local coordination check.
+When hosted research or QA relies on a production pause, verify the exact
+workflow ID, path and disabled state before history restoration or state
+initialization. Verify them again after startup quiet and immediately before
+the first publisher request. Keep the required pause or exclusive ownership
+throughout the run. A stubbed metadata callback does not verify real workflow
+coordination.
 
 Bind scoped REP decisions to their actual targets and physical policy-body
 provenance through permitted origin aliases. An unavailable policy must not reuse
