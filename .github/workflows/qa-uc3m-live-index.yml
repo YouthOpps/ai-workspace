@@ -1,0 +1,47 @@
+name: Verify UC3M live index
+
+on:
+  push:
+    branches: [qa/421-live-index-cache-44183101805]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: 2a21a11e9958b8563e5da9ad385c3409c7894ef7
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: 388c286dc385fbf09c724fcd411ae5d47a03bc78
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compare published site to the exact data revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-uc3m-live-index.py
+          388c286dc385fbf09c724fcd411ae5d47a03bc78 es-uc3m-admissions
+          --website-revision 2a21a11e9958b8563e5da9ad385c3409c7894ef7
+          --output ${{ runner.temp }}/uc3m-live-index.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uc3m-live-index
+          path: ${{ runner.temp }}/uc3m-live-index.json
+          if-no-files-found: error
+          retention-days: 7
