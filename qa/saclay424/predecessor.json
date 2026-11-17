@@ -1,0 +1,119 @@
+{
+  "actual_original_physical_count": 2,
+  "kind": "settled-original-eidos-transfer",
+  "new_publisher_requests": 0,
+  "original_eidos_state_unchanged": true,
+  "original_observed_local_state_sha256": "383d848e6ef03c8297a58b1591d1d8bc8a60994f57dae338f62d4a8c4fdd0c2a",
+  "original_policy_scope": "https://eidos.universite-paris-saclay.fr/robots.txt",
+  "original_source_sha256": "10aec7b2d930bff49f4624ef2bb99f4c1def1f1851f16e2e5dde77f81a918226",
+  "original_state": {
+    "blocked": false,
+    "completed": 1794949400.1380234,
+    "completed_logical_id": "5fda848154fb4767a44010751fcc3e4e",
+    "completed_physical_id": "f681b955fba24128b1035ceda5b35f44",
+    "family": "youthopps-saclay-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1794949400.1380234,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "5fda848154fb4767a44010751fcc3e4e",
+    "not_before": 1794949412.3380234,
+    "observed_at": 1794949400.1380234,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "f681b955fba24128b1035ceda5b35f44",
+    "physical_pending": false,
+    "physical_started": 1794949398.5969036,
+    "policy": {
+      "body_sha256": "cfeed488bc3adaf5891974eb0667fcf96a4e4cd9849ebcaad39787c2e3c65be5",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://eidos.universite-paris-saclay.fr/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1794949384.3112829,
+      1794949398.5969036
+    ],
+    "target": "https://eidos.universite-paris-saclay.fr/master/"
+  },
+  "prior_acknowledgements": 6,
+  "root_proof_sha256": "fcb60f18e49bbb206377f61217d2319d0e95cfa656a2cb33389f177714c4e014",
+  "source": "saclay424",
+  "timing_pairs": [
+    {
+      "completion_wall": 1794949386.3949046,
+      "http_status": 200,
+      "prior_observed_pre_opener": 1794949384.3135965,
+      "request_id": "8eda1cac027c4af5ab14a0f28754f3ba",
+      "reservation_wall": 1794949384.3112829,
+      "response_bytes": 86,
+      "scope": "https://eidos.universite-paris-saclay.fr/robots.txt",
+      "sha256": "cfeed488bc3adaf5891974eb0667fcf96a4e4cd9849ebcaad39787c2e3c65be5"
+    },
+    {
+      "completion_wall": 1794949400.1375473,
+      "http_status": 200,
+      "prior_observed_pre_opener": 1794949398.6021018,
+      "request_id": "f681b955fba24128b1035ceda5b35f44",
+      "reservation_wall": 1794949398.5969036,
+      "response_bytes": 61993,
+      "scope": "https://eidos.universite-paris-saclay.fr/master/",
+      "sha256": "2fc8259f27cb14b359f5f06a5d0a0a93fd6d1e9e0767e0e34ab273733b35bb0a"
+    }
+  ],
+  "transfer_state": {
+    "blocked": false,
+    "completed": 1794949400.1380234,
+    "completed_logical_id": "5fda848154fb4767a44010751fcc3e4e",
+    "completed_physical_id": "f681b955fba24128b1035ceda5b35f44",
+    "family": "youthopps-saclay-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1794949400.1380234,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "5fda848154fb4767a44010751fcc3e4e",
+    "not_before": 1794949412.3380234,
+    "observed_at": 1794949400.1380234,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "f681b955fba24128b1035ceda5b35f44",
+    "physical_pending": false,
+    "physical_started": 1794949398.5969036,
+    "policy": {
+      "body_sha256": "cfeed488bc3adaf5891974eb0667fcf96a4e4cd9849ebcaad39787c2e3c65be5",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://eidos.universite-paris-saclay.fr/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "retained_eidos_rep": {
+      "body_sha256": "cfeed488bc3adaf5891974eb0667fcf96a4e4cd9849ebcaad39787c2e3c65be5",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://eidos.universite-paris-saclay.fr/robots.txt"
+    },
+    "schema": 1,
+    "starts": [
+      1794949384.3112829,
+      1794949384.3135965,
+      1794949398.5969036,
+      1794949398.6021018
+    ],
+    "target": "https://eidos.universite-paris-saclay.fr/master/"
+  },
+  "transfer_state_sha256": "7d35ac47a1409b95b05fc82b5802afc67b78f6296bf1ac334531f1bd2e998779"
+}

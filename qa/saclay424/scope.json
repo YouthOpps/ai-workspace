@@ -1,0 +1,20 @@
+{
+  "decision": "https://github.com/YouthOpps/data-pipeline/issues/424#issuecomment-6962321756",
+  "enabled": true,
+  "old_decision": "https://github.com/YouthOpps/data-pipeline/issues/424#issuecomment-6960887934",
+  "original_state_sha256": "383d848e6ef03c8297a58b1591d1d8bc8a60994f57dae338f62d4a8c4fdd0c2a",
+  "pins": {
+    ".github/workflows/qa-saclay424-phd-track.yml": "9385752f93e1d628e868193bddb0f0bb433dc3e49420bb3a9412932b29fb1132",
+    "qa/saclay424/continuation.py": "9c9292a03cd7f7fec48cf6e57be3565d584a1925edd469f44c5099b18b5a6273",
+    "qa/saclay424/hosted_identity.py": "e4ccc9ed8b93f7e5b4cb7fba8faeef205357ef6906df506c5de130feb8123a76",
+    "qa/saclay424/predecessor.json": "6aa7f8206016ab352f348f504a7239070491b2338f1f1eb1590af748dd0bd10a",
+    "qa/saclay424/reviewer.pem": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+    "qa/saclay424/run.py": "06b52845b639abe70a8028b61a85d32ae76bbf9f95e6a054622d5761567b80bb"
+  },
+  "predecessor_proof_sha256": "fcb60f18e49bbb206377f61217d2319d0e95cfa656a2cb33389f177714c4e014",
+  "seed_sha256": "7d35ac47a1409b95b05fc82b5802afc67b78f6296bf1ac334531f1bd2e998779",
+  "urls": [
+    "https://www.universite-paris-saclay.fr/robots.txt",
+    "https://www.universite-paris-saclay.fr/phd-track-programme-daccompagnement-vers-le-doctorat"
+  ]
+}

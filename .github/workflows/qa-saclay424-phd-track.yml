@@ -1,0 +1,37 @@
+name: Saclay PhD Track research
+
+on:
+  push:
+    branches:
+      - qa/saclay424-phd-track-hosted
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  capture:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.run_attempt == 1
+    name: Capture Saclay PhD Track
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: saclay424-publisher-research
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Continue the owned journal and capture the two bounded responses
+        env:
+          SOURCE: saclay424-phd-track
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/saclay424/run.py
+      - name: Retain the outcome and encrypted complete research evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: saclay424-phd-track-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/saclay424-phd-track/
+          if-no-files-found: error
+          retention-days: 3
