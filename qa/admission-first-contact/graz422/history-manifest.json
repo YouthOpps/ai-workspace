@@ -1,0 +1,10 @@
+{
+  "issue": 422,
+  "publisher_host": "www.tugraz.at",
+  "candidate_urls": [
+    "https://www.tugraz.at/robots.txt",
+    "https://www.tugraz.at/en/studying-and-teaching/studying-at-tu-graz/prospective-students/admission/masters-programme-with-admission-procedure"
+  ],
+  "unknown_history_preserved": true,
+  "publisher_requests": 0
+}
