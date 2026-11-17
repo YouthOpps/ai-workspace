@@ -1,0 +1,47 @@
+name: Verify ANU, Coimbra and Nestle live index
+
+on:
+  push:
+    branches: [qa/live-anu-coimbra-44188131821]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: 7da2b3eb81853707def0ff67de64f8d43773fe87
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: 16fd8f18e8a77c0ea30b911d199f858c4dacffc9
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compare published site to the exact data revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-anu-coimbra-live-index.py
+          16fd8f18e8a77c0ea30b911d199f858c4dacffc9 au-anu-international-admissions pt-coimbra-brazil-admissions nestle
+          --website-revision 7da2b3eb81853707def0ff67de64f8d43773fe87
+          --output ${{ runner.temp }}/anu-coimbra-live-index.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: anu-coimbra-live-index
+          path: ${{ runner.temp }}/anu-coimbra-live-index.json
+          if-no-files-found: error
+          retention-days: 7
