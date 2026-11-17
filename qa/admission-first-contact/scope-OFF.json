@@ -1,0 +1,40 @@
+{
+  "enabled": true,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "graz422": {
+      "issue": 422,
+      "env_prefix": "GRAZ422",
+      "decision": "https://github.com/YouthOpps/data-pipeline/issues/422#issuecomment-6961673205",
+      "foundation_sha256": "78c3ffc328d843d80ebc5cb32e09427d4eccabea7d97df511eb05a1f8fe145dc",
+      "history_sha256": "982d2001141530aba1c5193d1d6883230e76844bb5b3ef661863dc38886875d0",
+      "urls": [
+        "https://www.tugraz.at/robots.txt",
+        "https://www.tugraz.at/en/studying-and-teaching/studying-at-tu-graz/prospective-students/admission/masters-programme-with-admission-procedure"
+      ]
+    },
+    "anu423": {
+      "issue": 423,
+      "env_prefix": "ANU423",
+      "decision": "https://github.com/YouthOpps/data-pipeline/issues/423#issuecomment-6961673135",
+      "foundation_sha256": "7f2a1a3e014a52690312c8f8fb6a0e7437db57abb86bc7afe0a4fa0976337bee",
+      "history_sha256": "cd0300ae013b0047a139ac5f96ec2b39ce28ce7a495ea69bebc864becc9c2c8f",
+      "urls": [
+        "https://study.anu.edu.au/robots.txt",
+        "https://study.anu.edu.au/apply/international-applications"
+      ]
+    },
+    "coimbra425": {
+      "issue": 425,
+      "env_prefix": "COIMBRA425",
+      "decision": "https://github.com/YouthOpps/data-pipeline/issues/425#issuecomment-6961673256",
+      "foundation_sha256": "7991dea95a5b7e47745876ada40377758cff1eb9d700bbed25ef0033612700fc",
+      "history_sha256": "d3ed43f06f2dff9de0aefaf9d1587405213692fcfd3d90a84f15b0eba9cdd579",
+      "urls": [
+        "https://brasil.uc.pt/robots.txt",
+        "https://brasil.uc.pt/"
+      ]
+    }
+  },
+  "predecessor_proof_sha256": "e497b12a6ded9603bb8295b14493d9a4af0b5cb7469852c8e6bf1fa64cbf6cde"
+}

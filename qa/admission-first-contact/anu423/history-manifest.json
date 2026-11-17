@@ -1,0 +1,10 @@
+{
+  "issue": 423,
+  "publisher_host": "study.anu.edu.au",
+  "candidate_urls": [
+    "https://study.anu.edu.au/robots.txt",
+    "https://study.anu.edu.au/apply/international-applications"
+  ],
+  "unknown_history_preserved": true,
+  "publisher_requests": 0
+}

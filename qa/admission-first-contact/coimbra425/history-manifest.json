@@ -1,0 +1,10 @@
+{
+  "issue": 425,
+  "publisher_host": "brasil.uc.pt",
+  "candidate_urls": [
+    "https://brasil.uc.pt/robots.txt",
+    "https://brasil.uc.pt/"
+  ],
+  "unknown_history_preserved": true,
+  "publisher_requests": 0
+}

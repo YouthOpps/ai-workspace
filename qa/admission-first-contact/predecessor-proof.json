@@ -1,0 +1,96 @@
+{
+  "predecessor": {
+    "conclusion": "failure",
+    "event": "push",
+    "head_branch": "qa/admission-first-contacts-422-423-425",
+    "head_sha": "605d9e309a31946e7fb3dcfc26231e8af09481bb",
+    "id": 44180326464,
+    "path": ".github/workflows/qa-admissions-first-contacts.yml",
+    "run_attempt": 1,
+    "status": "completed",
+    "workflow_id": 421894642,
+    "head_repository.full_name": "YouthOpps/ai-workspace",
+    "repository.full_name": "YouthOpps/ai-workspace"
+  },
+  "jobs": [
+    {
+      "completed_at": "2026-11-17T21:29:31Z",
+      "conclusion": "failure",
+      "id": 134382628869,
+      "name": "First contact graz422",
+      "started_at": "2026-11-17T21:29:26Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-17T21:29:35Z",
+      "conclusion": "failure",
+      "id": 134382629405,
+      "name": "First contact coimbra425",
+      "started_at": "2026-11-17T21:29:26Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-17T21:29:32Z",
+      "conclusion": "failure",
+      "id": 134382629498,
+      "name": "First contact anu423",
+      "started_at": "2026-11-17T21:29:26Z",
+      "status": "completed"
+    }
+  ],
+  "artifact_total_count": 0,
+  "old_decisions": {
+    "graz422": "https://github.com/YouthOpps/data-pipeline/issues/422#issuecomment-6961523343",
+    "anu423": "https://github.com/YouthOpps/data-pipeline/issues/423#issuecomment-6961523236",
+    "coimbra425": "https://github.com/YouthOpps/data-pipeline/issues/425#issuecomment-6961523313"
+  },
+  "diagnosis": {
+    "observed": "All three exact hosted jobs exited in the immutable/status Run API aggregate require at initial verify_run. No output directory yet, initializer child or publisher calls in that path.",
+    "observed_field": "unknown, original compound check did not record the response",
+    "later_metadata": "All old immutable fields match exact source once completed; old job IDs and artifact count verified.",
+    "hypothesis": "Startup status propagation can explain this symptom, not proved from original logs.",
+    "old_source_guard": "run.py line 138 invokes verify_run before manifest read, output creation, prepare, original initializer and capture; hosted_identity.py line 69 raises.",
+    "successor": "Distinct branch, no workflow rerun, selected old proof with fresh exact historical metadata. Only known startup statuses can poll after immutable identity checks."
+  },
+  "actual_decoded_log_evidence": [
+    {
+      "id": 134382628869,
+      "decoded_log_sha256": "55df9e09eef9c4447c55df7df3a60d4d081bd3fc4e89bbf9320cc383f4d69b83",
+      "decoded_bytes": 14749,
+      "frames": [
+        "2026-11-17T21:29:29.2288080Z   File \"/home/runner/work/ai-workspace/ai-workspace/qa/admission-first-contact/run.py\", line 242, in <module>",
+        "2026-11-17T21:29:29.2289880Z   File \"/home/runner/work/ai-workspace/ai-workspace/qa/admission-first-contact/run.py\", line 138, in run",
+        "2026-11-17T21:29:29.2291474Z   File \"/home/runner/work/ai-workspace/ai-workspace/qa/admission-first-contact/hosted_identity.py\", line 69, in verify_run",
+        "2026-11-17T21:29:29.2319596Z   File \"/home/runner/work/ai-workspace/ai-workspace/qa/admission-first-contact/hosted_identity.py\", line 20, in require",
+        "2026-11-17T21:29:29.2322028Z RuntimeError: Run API identity mismatch",
+        "2026-11-17T21:29:29.4950485Z ##[error]No files were found with the provided path: /home/runner/work/_temp/admissions-first-contact/graz422/. No artifacts will be uploaded."
+      ]
+    },
+    {
+      "id": 134382629405,
+      "decoded_log_sha256": "d6403699cd2053582a74bfdfe00d49206b92bfa5a1c6ec4d9e7238e194876723",
+      "decoded_bytes": 14761,
+      "frames": [
+        "2026-11-17T21:29:33.7310667Z   File \"/home/runner/work/ai-workspace/ai-workspace/qa/admission-first-contact/run.py\", line 242, in <module>",
+        "2026-11-17T21:29:33.7313155Z   File \"/home/runner/work/ai-workspace/ai-workspace/qa/admission-first-contact/run.py\", line 138, in run",
+        "2026-11-17T21:29:33.7315629Z   File \"/home/runner/work/ai-workspace/ai-workspace/qa/admission-first-contact/hosted_identity.py\", line 69, in verify_run",
+        "2026-11-17T21:29:33.7325406Z   File \"/home/runner/work/ai-workspace/ai-workspace/qa/admission-first-contact/hosted_identity.py\", line 20, in require",
+        "2026-11-17T21:29:33.7326256Z RuntimeError: Run API identity mismatch",
+        "2026-11-17T21:29:33.9074068Z ##[error]No files were found with the provided path: /home/runner/work/_temp/admissions-first-contact/coimbra425/. No artifacts will be uploaded."
+      ]
+    },
+    {
+      "id": 134382629498,
+      "decoded_log_sha256": "0a9e61f8d89a4ab07d8a978ea610e261ddf32ba6d98bbac1b75bbabf45e51745",
+      "decoded_bytes": 14751,
+      "frames": [
+        "2026-11-17T21:29:29.4222949Z   File \"/home/runner/work/ai-workspace/ai-workspace/qa/admission-first-contact/run.py\", line 242, in <module>",
+        "2026-11-17T21:29:29.4249533Z   File \"/home/runner/work/ai-workspace/ai-workspace/qa/admission-first-contact/run.py\", line 138, in run",
+        "2026-11-17T21:29:29.4253162Z   File \"/home/runner/work/ai-workspace/ai-workspace/qa/admission-first-contact/hosted_identity.py\", line 69, in verify_run",
+        "2026-11-17T21:29:29.4271066Z   File \"/home/runner/work/ai-workspace/ai-workspace/qa/admission-first-contact/hosted_identity.py\", line 20, in require",
+        "2026-11-17T21:29:29.4274240Z RuntimeError: Run API identity mismatch",
+        "2026-11-17T21:29:29.6928241Z ##[error]No files were found with the provided path: /home/runner/work/_temp/admissions-first-contact/anu423/. No artifacts will be uploaded."
+      ]
+    }
+  ]
+}
