@@ -2,7 +2,7 @@ name: Verify UC3M live index
 
 on:
   push:
-    branches: [qa/421-live-index-cache-44183101805]
+    branches: [qa/421-live-cloudflare-44183101805]
 
 permissions:
   contents: read
