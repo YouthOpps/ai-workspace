@@ -148,7 +148,14 @@ flanders_meta = json.loads(subprocess.check_output([
     'git', '-C', repository, 'show', args.pin + ':datas/be-study-in-flanders/metadata.json']))
 assert flanders_meta['status'] == 'success'
 last_collection = flanders_meta['last_success_at']
-assert last_collection in html.unescape(fetch('/sources/').decode()), last_collection
+for attempt in range(6):
+    source_body = html.unescape(fetch('/sources/publisher/be-study-in-flanders/').decode())
+    if last_collection in source_body:
+        break
+    if attempt < 5:
+        time.sleep(10)
+else:
+    raise RuntimeError('Flanders source page has not reached the exact collection timestamp')
 result = {'data_pin': args.pin, 'all_corpus_ids_equal': True,
           'website_revision': args.website_revision,
           'actual_build_slug_helper_blob': local_blob,

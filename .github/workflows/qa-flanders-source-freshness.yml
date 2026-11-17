@@ -2,7 +2,7 @@ name: Verify Flanders and Yildiz/pladis live index
 
 on:
   push:
-    branches: [qa/live-flanders-44194360772]
+    branches: [qa/live-flanders-source-freshness-44194360772]
 
 permissions:
   contents: read
