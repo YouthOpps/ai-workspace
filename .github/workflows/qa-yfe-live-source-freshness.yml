@@ -1,0 +1,47 @@
+name: Verify Youth for Europe and the five new admissions sources live index
+
+on:
+  push:
+    branches: [qa/live-yfe-44202109809]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: 4987b37f306cee6f9ba76acd26be7ffb61f0a1f7
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: db1e20ed8df80954cb045fbca893b4b5f18f075b
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compare published site to the exact data revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-yfe-live-index.py
+          db1e20ed8df80954cb045fbca893b4b5f18f075b youth-for-europe es-uc3m-admissions pl-warsaw-tech-msc-admissions gr-auth-msen-admissions au-anu-international-admissions pt-coimbra-brazil-admissions
+          --website-revision 4987b37f306cee6f9ba76acd26be7ffb61f0a1f7
+          --output ${{ runner.temp }}/yfe-live-index.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yfe-live-index
+          path: ${{ runner.temp }}/yfe-live-index.json
+          if-no-files-found: error
+          retention-days: 7
