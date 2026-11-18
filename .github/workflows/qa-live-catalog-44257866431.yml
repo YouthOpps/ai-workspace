@@ -1,0 +1,47 @@
+name: Verify YouthOpps live catalogue release 44257866431
+
+on:
+  push:
+    branches: [qa/live-catalog-44257866431]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: 96a62f2dc3ca8874a73e9e96d0e6efff177d9cd6
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: f272543be77af24398fe8bdbe26a3fdebd05a1d8
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compare published site to the exact data revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-live-catalog-44257866431.py
+          f272543be77af24398fe8bdbe26a3fdebd05a1d8 at-klagenfurt-msc-international-management fr-universite-de-strasbourg-m1-admissions ibm hr-study-in-croatia it-unina-apple-academy-foundation cz-charles-university volkswagen-group
+          --website-revision 96a62f2dc3ca8874a73e9e96d0e6efff177d9cd6
+          --output ${{ runner.temp }}/live-catalog-44257866431.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-catalog-44257866431
+          path: ${{ runner.temp }}/live-catalog-44257866431.json
+          if-no-files-found: error
+          retention-days: 7
