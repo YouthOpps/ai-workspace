@@ -1,0 +1,43 @@
+name: Klagenfurt admissions first contact
+
+on:
+  push:
+    branches:
+      - qa/klagenfurt-admissions-first-contact
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  contact:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.event.deleted == false && github.run_attempt == 1
+    name: First contact klagenfurt
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: youthopps-klagenfurt-publisher-v1
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-pipeline
+          ref: main
+          path: .klagenfurt-pipeline
+          persist-credentials: false
+      - name: Capture exact Klagenfurt public responses
+        env:
+          SOURCE: klagenfurt
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/klagenfurt-first-contact/run.py
+      - name: Retain outcome, state and encrypted evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: klagenfurt-first-contact-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/admissions-first-contact/klagenfurt/
+          if-no-files-found: error
+          retention-days: 7

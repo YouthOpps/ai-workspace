@@ -1,0 +1,20 @@
+{
+  "authority": "Independent Austrian university alternate for the coverage backlog associated with #422",
+  "publisher": "University of Klagenfurt",
+  "publisher_host": "www.aau.at",
+  "candidate_urls": [
+    "https://www.aau.at/robots.txt",
+    "https://www.aau.at/en/studien/master-international-management/"
+  ],
+  "preparation_pipeline_main": "14d919910e81aa3e9ad06fcd69051e8d9fbf8c9c",
+  "preparation_workspace_main": "eaa1f8152655fd6afba93ede88995e91bbf1d1a3",
+  "known_klagenfurt_source_or_research": [],
+  "unknown_history_preserved": true,
+  "publisher_requests": 0,
+  "separate_pending_source": {
+    "publisher": "TU Graz",
+    "run": 44188894402,
+    "artifact": 14374749578,
+    "owned_state_sha256": "12dbe402c9ba30a519e21c06f0764ecc443fc08de8b63c991f53487df0102de4"
+  }
+}
