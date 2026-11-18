@@ -1,0 +1,47 @@
+name: Verify YouthOpps live Klagenfurt and Strasbourg admissions
+
+on:
+  push:
+    branches: [qa/live-admissions-44247812475]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: 3d70f4a4b83092735f9676cf5aa2c380e8de5aa0
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: 0d4c99b6a3b6e6ef857f02afdc145ce7bc700a17
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compare published site to the exact data revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-live-november-admissions.py
+          0d4c99b6a3b6e6ef857f02afdc145ce7bc700a17 at-klagenfurt-msc-international-management fr-universite-de-strasbourg-m1-admissions
+          --website-revision 3d70f4a4b83092735f9676cf5aa2c380e8de5aa0
+          --output ${{ runner.temp }}/live-november-admissions-index.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-november-admissions-index
+          path: ${{ runner.temp }}/live-november-admissions-index.json
+          if-no-files-found: error
+          retention-days: 7
