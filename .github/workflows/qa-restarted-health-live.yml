@@ -1,0 +1,47 @@
+name: Verify refreshed YouthOpps live catalog
+
+on:
+  push:
+    branches: [qa/live-health-44243494616]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: b8228fdd28e18a5e0cccec007ccfe04052cdfe0a
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: 4a8e64c7ac83377e367aa7c9ddb80c44b3ef8035
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compare published site to the exact data revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-restarted-health-live-index.py
+          4a8e64c7ac83377e367aa7c9ddb80c44b3ef8035 youth-for-europe de-bmw-group ee-taltech es-uc3m-admissions pl-warsaw-tech-msc-admissions gr-auth-msen-admissions au-anu-international-admissions pt-coimbra-brazil-admissions
+          --website-revision b8228fdd28e18a5e0cccec007ccfe04052cdfe0a
+          --output ${{ runner.temp }}/restart-health-live-index.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: restart-health-live-index
+          path: ${{ runner.temp }}/restart-health-live-index.json
+          if-no-files-found: error
+          retention-days: 7
