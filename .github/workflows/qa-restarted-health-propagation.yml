@@ -2,7 +2,7 @@ name: Verify refreshed YouthOpps live catalog
 
 on:
   push:
-    branches: [qa/live-health-44243494616]
+    branches: [qa/live-health-propagation-44243494616]
 
 permissions:
   contents: read

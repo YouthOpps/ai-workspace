@@ -85,7 +85,7 @@ def collection(path):
     return json.loads(fetch(indexes[0]))
 
 
-for attempt in range(6):
+for attempt in range(15):
     report = json.loads(fetch('/build-report.json'))
     deployed_ids = {row['id'] for row in report['records']}
     if deployed_ids == expected:
@@ -93,8 +93,8 @@ for attempt in range(6):
     print(json.dumps({'published_count': len(deployed_ids), 'expected_count': len(expected),
                       'unpublished': sorted(expected - deployed_ids)[:8],
                       'unexpected': sorted(deployed_ids - expected)[:8]}), flush=True)
-    if attempt < 5:
-        time.sleep(10)
+    if attempt < 14:
+        time.sleep(12)
 else:
     raise RuntimeError('Published build report did not reach the immutable data pin')
 global_index = collection('/opportunities/')
@@ -148,12 +148,12 @@ bmw_meta = json.loads(subprocess.check_output([
     'git', '-C', repository, 'show', args.pin + ':datas/de-bmw-group/metadata.json']))
 assert bmw_meta['status'] == 'success'
 last_collection = bmw_meta['last_success_at']
-for attempt in range(6):
+for attempt in range(15):
     source_body = html.unescape(fetch('/sources/publisher/de-bmw-group/').decode())
     if last_collection in source_body:
         break
-    if attempt < 5:
-        time.sleep(10)
+    if attempt < 14:
+        time.sleep(12)
 else:
     raise RuntimeError('BMW source page has not reached the exact collection timestamp')
 result = {'data_pin': args.pin, 'all_corpus_ids_equal': True,
