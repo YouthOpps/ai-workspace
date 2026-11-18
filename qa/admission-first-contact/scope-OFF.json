@@ -1,9 +1,9 @@
 {
-  "enabled": false,
+  "enabled": true,
   "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
   "sources": {
     "unina418privacy": {
-      "decision": null,
+      "decision": "https://github.com/YouthOpps/data-pipeline/issues/418#issuecomment-6971053589",
       "env_prefix": "UNINA418PRIVACY",
       "foundation_sha256": "27dd60d89d484ad31911acd4eff90f0ed5948f6a74a53b050f4d53a6b1b760ce",
       "history_sha256": "438f65ff540ff3d08043b0def292f92a478e09a1834142389520d09074d05ac3",
