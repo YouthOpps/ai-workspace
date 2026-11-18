@@ -1,0 +1,58 @@
+{
+  "carry": {
+    "blocked": false,
+    "completed": 1794979505.0277514,
+    "completed_logical_id": "bee252211a88430bb2ca74d93a048a32",
+    "completed_physical_id": "6818681a84934f4ea9345cc915893f8b",
+    "family": "youthopps-universite-de-strasbourg-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1794979505.0277514,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "bee252211a88430bb2ca74d93a048a32",
+    "not_before": 1794979517.2277515,
+    "observed_at": 1794979505.0277514,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "6818681a84934f4ea9345cc915893f8b",
+    "physical_pending": false,
+    "physical_started": 1794979503.4353256,
+    "policy": {
+      "body_sha256": "3f6c3820e376d3a919c8d702497503f8256867808d27af3c8c731778810650dc",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://mathinfo.unistra.fr/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1794979488.0919547,
+      1794979488.9222023,
+      1794979503.4353256,
+      1794979504.334586
+    ],
+    "target": "https://mathinfo.unistra.fr/en/admissions/admissions/"
+  },
+  "carry_sha256": "9baa357a49793a1e77c92001edcb02dda5d0c6c66577d341905d56c2be439f95",
+  "decision_scope": "Retired first-contact owner transfers to a single official legal-notice check",
+  "independent_of_held_paris_saclay": true,
+  "known_producer_absence_reviewed_at": "14d919910e81aa3e9ad06fcd69051e8d9fbf8c9c",
+  "original_research_archive_sha256": "a98eea210b0f49138be042d733da7ab4e8684ebe081f0235d409143b071f2fd1",
+  "original_research_artifact_id": 14401170733,
+  "original_research_job_id": 134598212592,
+  "original_research_request_wall_starts": [
+    1794979488.9222023,
+    1794979504.334586
+  ],
+  "original_research_run_id": 44243944283,
+  "original_research_state_sha256": "b56e35b669c0dd27593ab686616935f7123ddfd45dc57554ba4e128a3e751132",
+  "request_urls": [
+    "https://mathinfo.unistra.fr/robots.txt",
+    "https://mathinfo.unistra.fr/en/legal-notice/"
+  ]
+}
