@@ -1,0 +1,18 @@
+{
+  "enabled": false,
+  "predecessor_proof_sha256": "c4034a13a9caaee755ba2474929987acb9fa7cd94fe9e3a51cd0751ab82a81fa",
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "ethz456": {
+      "decision": null,
+      "env_prefix": "ETHZ456",
+      "foundation_sha256": "04df1a290dea0ab1212e36e6dae52abe0c1baba6f84dd40baaf38466b17c2dd9",
+      "history_sha256": "7fd79aa205615dc9c7c446cdc2e6b35033d9fb7596cc8a2c7ff21a6338ad1290",
+      "issue": 456,
+      "urls": [
+        "https://inf.ethz.ch/robots.txt",
+        "https://inf.ethz.ch/studies/summer-research-fellowship/how-to-apply.html"
+      ]
+    }
+  }
+}

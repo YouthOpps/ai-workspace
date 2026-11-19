@@ -1,0 +1,90 @@
+{
+  "artifact": {
+    "digest": "sha256:9bd5eff4613c006ee8e534e33e7c309f50291f25ef823394fc72184a1b549062",
+    "expired": false,
+    "expires_at": "2026-11-22T08:47:22Z",
+    "id": 14512755970,
+    "name": "first-contact-ethz456-44490577755-1",
+    "size_in_bytes": 557,
+    "workflow_run.head_branch": "qa/eth-zurich-fellowship-first-contact",
+    "workflow_run.head_repository_id": 1410255493,
+    "workflow_run.head_sha": "50ee5674be76074ae0f9e7a47253b1bb5572556d",
+    "workflow_run.id": 44490577755,
+    "workflow_run.repository_id": 1410255493
+  },
+  "artifact_zip_base64": "UEsDBBQACAAIAOtFc10AAAAAAAAAAAAAAAAWAAAAcHJlZmxpZ2h0LWZhaWx1cmUuanNvbhXIMQ6DMAwF0Lv8mbFlYO8FuIAVUkd8KY2R4wxQ9e4Vb3xf5Jp6Z2FOQWtYUBKrvmXTYq7CxmCqvNTFXI6xVfZdHRPU3VziPBQL1tGCH33dhwndhuf7Nfbr8Zzx+wNQSwcIMoJV7l4AAABqAAAAUEsDBBQACAAIAOpFc10AAAAAAAAAAAAAAAAOAAAAcHJlZmxpZ2h0Lmpzb24VjMFuwyAQBf/lnW3ZSVij8DMI46UgUXBhSdVU/ffKlznNzC+cCH+eAoMbJvjsek8heSepFhiM8uKWQuLDno1DTh9RbKnW15zZX5J1Q2JtSX4wgV9crtc5esSEyO6wPToY0MpMm1Y7623VyvEanqyd0nd67Ld9J9J3ou3AhMYB5mJfrkFfvtzCEuf3aMnHOXDO9bvHdM4htS6zr0Wcl6scxaYDBkqp50paayJM6HU0zzBgiW9FG/7+AVBLBwiEoYuXuQAAAPgAAABQSwECLQMUAAgACADrRXNdMoJV7l4AAABqAAAAFgAAAAAAAAAAACAApIEAAAAAcHJlZmxpZ2h0LWZhaWx1cmUuanNvblBLAQItAxQACAAIAOpFc12EoYuXuQAAAPgAAAAOAAAAAAAAAAAAIACkgaIAAABwcmVmbGlnaHQuanNvblBLBQYAAAAAAgACAIAAAACXAQAAAAA=",
+  "basis": "At the predecessor head, run.py writes failed_before_initializer_or_publisher and exits before prepare, initialization or publisher capture.",
+  "initializer_started": false,
+  "job": {
+    "completed_at": "2026-11-19T08:47:25Z",
+    "conclusion": "failure",
+    "head_branch": "qa/eth-zurich-fellowship-first-contact",
+    "head_sha": "50ee5674be76074ae0f9e7a47253b1bb5572556d",
+    "id": 135444850993,
+    "name": "First contact ethz456",
+    "run_attempt": 1,
+    "run_id": 44490577755,
+    "started_at": "2026-11-19T08:47:18Z",
+    "status": "completed"
+  },
+  "prior_grant": "https://github.com/YouthOpps/data-pipeline/issues/456#issuecomment-7004251631",
+  "publisher_requests": 0,
+  "reason": "The predecessor grant omitted the required literal first-contact in both lines.",
+  "run": {
+    "actor.id": 12278069,
+    "actor.type": "User",
+    "conclusion": "failure",
+    "created_at": "2026-11-19T08:47:16Z",
+    "event": "push",
+    "head_branch": "qa/eth-zurich-fellowship-first-contact",
+    "head_repository.full_name": "YouthOpps/ai-workspace",
+    "head_sha": "50ee5674be76074ae0f9e7a47253b1bb5572556d",
+    "id": 44490577755,
+    "path": ".github/workflows/qa-eth-zurich-fellowship-first-contact.yml",
+    "repository.full_name": "YouthOpps/ai-workspace",
+    "run_attempt": 1,
+    "status": "completed",
+    "triggering_actor.id": 12278069,
+    "triggering_actor.type": "User",
+    "updated_at": "2026-11-19T08:47:25Z",
+    "workflow_id": 423598397
+  },
+  "steps": [
+    {
+      "conclusion": "success",
+      "name": "Set up job",
+      "number": 1,
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "Run actions/checkout@v4",
+      "number": 2,
+      "status": "completed"
+    },
+    {
+      "conclusion": "failure",
+      "name": "Capture the bounded publisher responses",
+      "number": 3,
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "Retain outcome, source state and encrypted complete evidence",
+      "number": 4,
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "Post Run actions/checkout@v4",
+      "number": 8,
+      "status": "completed"
+    },
+    {
+      "conclusion": "success",
+      "name": "Complete job",
+      "number": 9,
+      "status": "completed"
+    }
+  ]
+}

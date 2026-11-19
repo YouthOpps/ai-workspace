@@ -1,0 +1,316 @@
+"""Identity checks for this temporary, nonpublishing GitHub Actions workflow."""
+
+import base64
+import hashlib
+import io
+import json
+import os
+import re
+import subprocess
+import time
+import urllib.parse
+import urllib.request
+import zipfile
+from datetime import datetime
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent
+REPOSITORY = "YouthOpps/ai-workspace"
+WORKFLOW = ".github/workflows/qa-eth-zurich-fellowship-first-contact-r3.yml"
+BRANCH = "qa/eth-zurich-fellowship-first-contact-r3"
+REF = "refs/heads/" + BRANCH
+SOURCES = frozenset(("ethz456",))
+PIPELINE_SHA = "1dcca6beb3023cf918f50cb87f68f3522b9978b2"
+MAINTAINER_ID = 12278069
+PIPELINE = "YouthOpps/data-pipeline"
+ISSUE = 456
+SUBTREE = "qa/admission-first-contact"
+STARTUP_STATES = frozenset(("queued", "requested", "pending", "waiting"))
+STATE_POLLS = 5
+POLL_GAP_SECONDS = 2
+
+
+class IdentityFailure(RuntimeError):
+    """Carry only explicit, sanitized GitHub identity mismatches."""
+
+    def __init__(self, reason, fields):
+        self.reason = reason
+        self.fields = fields
+        super().__init__(f"{reason}: {json.dumps(fields, sort_keys=True)}")
+
+
+def require(condition, message):
+    if not condition:
+        raise RuntimeError(message)
+
+
+class RejectRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+def github_json(path):
+    request = urllib.request.Request(
+        "https://api.github.com/repos/" + REPOSITORY + path,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": "Bearer " + os.environ["GITHUB_TOKEN"],
+            "X-GitHub-Api-Version": "2022-11-28",
+        },
+    )
+    with urllib.request.build_opener(RejectRedirect()).open(request, timeout=15) as response:
+        require(response.status == 200, "Unexpected GitHub identity response")
+        payload = response.read(2_000_001)
+    require(len(payload) <= 2_000_000, "GitHub identity response too large")
+    return json.loads(payload)
+
+
+def nested(row, field):
+    for key in field.split("."):
+        if type(row) is not dict:
+            return None
+        row = row.get(key)
+    return row
+
+
+def display(value):
+    if type(value) in (bool, int) or value is None:
+        return value
+    if type(value) is str and re.fullmatch(r"[a-zA-Z0-9_. /@-]{1,165}", value):
+        return value
+    return f"invalid {type(value).__name__}"
+
+
+def check_fields(row, expected, reason):
+    fields = {}
+    for field, wanted in expected.items():
+        observed = nested(row, field)
+        if type(observed) is not type(wanted) or observed != wanted:
+            fields[field] = {"expected": display(wanted), "observed": display(observed)}
+    if fields:
+        raise IdentityFailure(reason, fields)
+
+
+def poll_active(path, immutable, kind, select=lambda rows: rows):
+    for poll in range(STATE_POLLS):
+        row = select(github_json(path))
+        check_fields(row, immutable, f"{kind} immutable identity mismatch")
+        state = nested(row, "status")
+        if state == "in_progress":
+            return row
+        # Poll only an exact immutable match with a recognized startup status.
+        # Terminal states, missing fields or unrelated jobs are not eventuality.
+        if type(state) is not str or state not in STARTUP_STATES or poll == STATE_POLLS - 1:
+            raise IdentityFailure(
+                f"{kind} not active",
+                {"status": {"expected": "in_progress", "observed": display(state)},
+                 "checks": poll + 1},
+            )
+        time.sleep(POLL_GAP_SECONDS)
+
+
+def github_time(value):
+    require(type(value) is str and re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z", value),
+            "Invalid GitHub timestamp")
+    return datetime.fromisoformat(value)
+
+
+def exact_checkout(scope, raw):
+    workspace = Path(os.environ["GITHUB_WORKSPACE"])
+    require(workspace / SUBTREE == ROOT, "Unexpected checked-out transport path")
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=workspace, timeout=10)
+    require(head.decode("ascii").strip() == scope["head_sha"], "Checked-out head differs from active run")
+    required = (
+        f"{SUBTREE}/scope-OFF.json", f"{SUBTREE}/hosted_identity.py",
+        f"{SUBTREE}/run.py", f"{SUBTREE}/{scope['source']}/foundation.py",
+        f"{SUBTREE}/{scope['source']}/history-manifest.json", f"{SUBTREE}/reviewer.pem",
+        f"{SUBTREE}/predecessor-proof.json", WORKFLOW,
+    )
+    for relative in required:
+        committed = subprocess.check_output(
+            ["git", "show", f"{scope['head_sha']}:{relative}"], cwd=workspace, timeout=10,
+        )
+        local = workspace / relative
+        data = raw if relative == required[0] else local.read_bytes()
+        require(local.resolve() == local and data == committed,
+                "Immutable checked-out input differs: " + relative)
+
+
+def verify_predecessor(proof, source):
+    old = proof["run"]
+    run_id = old["id"]
+    check_fields(github_json(f"/actions/runs/{run_id}"), old, "Predecessor run changed")
+    branch = urllib.parse.quote(old["head_branch"], safe="")
+    history = github_json(f"/actions/runs?branch={branch}&event=push&per_page=2")
+    require(history["total_count"] == 1 and [item["id"] for item in history["workflow_runs"]] == [run_id],
+            "Predecessor no longer has exactly one old push")
+
+    jobs = github_json(f"/actions/runs/{run_id}/attempts/1/jobs?per_page=10")
+    require(jobs["total_count"] == len(jobs["jobs"]) == 1, "Predecessor job inventory changed")
+    job = jobs["jobs"][0]
+    check_fields(job, proof["job"], "Predecessor job changed")
+    require(len(job["steps"]) == len(proof["steps"]), "Predecessor step inventory changed")
+    for step, expected in zip(job["steps"], proof["steps"], strict=True):
+        check_fields(step, expected, "Predecessor job step changed")
+
+    artifacts = github_json(f"/actions/runs/{run_id}/artifacts?per_page=10")
+    require(artifacts["total_count"] == len(artifacts["artifacts"]) == 1,
+            "Predecessor artifact inventory changed")
+    artifact = artifacts["artifacts"][0]
+    check_fields(artifact, proof["artifact"], "Predecessor artifact changed")
+
+    raw = base64.b64decode(proof["artifact_zip_base64"], validate=True)
+    require(len(raw) == artifact["size_in_bytes"]
+            and "sha256:" + hashlib.sha256(raw).hexdigest() == artifact["digest"],
+            "Retained predecessor ZIP differs from GitHub's artifact digest")
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        expected = {"preflight-failure.json", "preflight.json"}
+        entries = archive.infolist()
+        require(len(entries) == len(expected) and {entry.filename for entry in entries} == expected
+                and all(entry.file_size <= 1024 for entry in entries),
+                "Predecessor archive contains unreviewed evidence")
+        preflight = json.loads(archive.read("preflight.json"))
+        failure = json.loads(archive.read("preflight-failure.json"))
+    require(preflight == {
+        "attempt": "1", "classification": "unverified_preflight_no_collection_authority",
+        "event": "push", "head_sha": old["head_sha"], "ref": "refs/heads/" + old["head_branch"],
+        "run_id": str(run_id), "source": source,
+    } and failure == {
+        "classification": "failed_before_initializer_or_publisher", "error_type": "RuntimeError",
+        "source": source,
+    } and proof["publisher_requests"] == 0 and proof["initializer_started"] is False,
+        "The predecessor archive does not prove absence of initialization and publisher contact")
+    return {"run_id": run_id, "job_id": job["id"], "artifact_id": artifact["id"],
+            "artifact_sha256": artifact["digest"], "publisher_requests": 0}
+
+
+def grant_lines(head, scope_digest):
+    return (f"Approved ETH Zürich fellowship first-contact head {head}",
+            f"ETH Zürich fellowship first-contact scope {scope_digest}")
+
+
+def verify_grant(scope, scope_digest):
+    """Find one unedited maintainer comment naming the actual head and scope bytes."""
+    head_line, scope_line = grant_lines(scope["head_sha"], scope_digest)
+    run_start = github_time(scope["created_at"])
+    matches = []
+    for page in range(1, 6):
+        rows = public_pipeline_json(f"/issues/{ISSUE}/comments?per_page=100&page={page}")
+        require(type(rows) is list and len(rows) <= 100, "Invalid approval comment inventory")
+        for comment in rows:
+            body = comment.get("body")
+            lines = body.splitlines() if type(body) is str else ()
+            if head_line not in lines or scope_line not in lines:
+                continue
+            actor_id = nested(comment, "user.id")
+            if type(actor_id) is not int or actor_id != MAINTAINER_ID or nested(comment, "user.type") != "User":
+                continue
+            comment_id = comment.get("id")
+            created = comment.get("created_at")
+            url = f"https://github.com/{PIPELINE}/issues/{ISSUE}#issuecomment-{comment_id}"
+            require(type(comment_id) is int and comment_id > 0
+                    and comment.get("html_url") == url
+                    and comment.get("issue_url") == f"https://api.github.com/repos/{PIPELINE}/issues/{ISSUE}"
+                    and comment.get("updated_at") == created and github_time(created) < run_start
+                    and lines.count(head_line) == lines.count(scope_line) == 1,
+                    "Exact maintainer grant metadata is invalid or changed")
+            matches.append(url)
+        if len(rows) < 100:
+            break
+    else:
+        raise RuntimeError("Incomplete approval comment pagination")
+    if len(matches) != 1:
+        raise IdentityFailure("Expected exactly one unedited maintainer grant before the run", {
+            "issue": ISSUE, "head_sha": scope["head_sha"], "scope_sha256": scope_digest,
+            "valid_unedited_matches": len(matches),
+        })
+    return matches[0]
+
+
+def public_pipeline_json(path):
+    """Read the public control plane without sending the job's repository token."""
+    request = urllib.request.Request(
+        "https://api.github.com/repos/" + PIPELINE + path,
+        headers={"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
+    )
+    with urllib.request.build_opener(RejectRedirect()).open(request, timeout=15) as response:
+        require(response.status == 200, "Unexpected public GitHub response")
+        payload = response.read(2_000_001)
+    require(len(payload) <= 2_000_000, "Public control response too large")
+    return json.loads(payload)
+
+
+def verify_run(source):
+    """Accept only the sole, actual first-creation run and its active named job."""
+    env = os.environ
+    require(source in SOURCES and env.get("SOURCE") == source, "Source identity mismatch")
+    required = {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": REPOSITORY,
+        "GITHUB_REF": REF,
+        "GITHUB_EVENT_NAME": "push",
+        "GITHUB_RUN_ATTEMPT": "1",
+        "GITHUB_WORKFLOW_REF": f"{REPOSITORY}/{WORKFLOW}@{REF}",
+        "GITHUB_JOB": "contact",
+        "GITHUB_ACTOR_ID": str(MAINTAINER_ID),
+    }
+    check_fields(dict(env), required, "Wrong hosted scope")
+    require("DATA_SOURCE_TOKEN" not in env and "GITHUB_TOKEN" in env, "Wrong credential scope")
+    event = json.loads(Path(env["GITHUB_EVENT_PATH"]).read_bytes())
+    sha, run_text = env["GITHUB_SHA"], env["GITHUB_RUN_ID"]
+    require(re.fullmatch(r"[0-9a-f]{40}", sha) and re.fullmatch(r"[1-9][0-9]*", run_text),
+            "Invalid hosted identity")
+    check_fields(event, {
+        "created": True, "deleted": False, "ref": REF, "before": "0" * 40,
+        "after": sha, "repository.full_name": REPOSITORY, "sender.id": MAINTAINER_ID,
+        "sender.type": "User",
+    }, "Not an exact first branch creation")
+    run_id = int(run_text)
+    run = poll_active(f"/actions/runs/{run_id}", {
+        "id": run_id, "event": "push", "run_attempt": 1, "head_branch": BRANCH,
+        "head_sha": sha, "path": WORKFLOW, "head_repository.full_name": REPOSITORY,
+        "repository.full_name": REPOSITORY, "actor.id": MAINTAINER_ID,
+        "triggering_actor.id": MAINTAINER_ID, "triggering_actor.type": "User", "actor.type": "User",
+    }, "Run API")
+    branch = urllib.parse.quote(BRANCH, safe="")
+    history = github_json(f"/actions/runs?branch={branch}&event=push&per_page=2")
+    require(history["total_count"] == 1 and [x["id"] for x in history["workflow_runs"]] == [run_id],
+            "Branch already has a run or history is ambiguous")
+
+    def select_job(jobs):
+        selected = [job for job in jobs["jobs"] if job["name"] == f"First contact {source}"]
+        if len(selected) != 1:
+            raise IdentityFailure("Active job inventory mismatch", {"exact_matches": len(selected)})
+        return selected[0]
+
+    job = poll_active(f"/actions/runs/{run_id}/attempts/1/jobs?per_page=10", {
+        "run_id": run_id, "head_sha": sha,
+    }, "Job API", select_job)
+    require(type(run.get("workflow_id")) is int and type(job.get("id")) is int,
+            "Unexpected current workflow or job identifier")
+    return {
+        "repository": REPOSITORY, "ref": REF, "workflow": WORKFLOW, "head_sha": sha,
+        "run_id": run_id, "run_attempt": 1, "workflow_id": run["workflow_id"],
+        "job_id": job["id"], "source": source, "created_at": run["created_at"],
+    }
+
+
+def verify_authority(source):
+    raw = (ROOT / "scope-OFF.json").read_bytes()
+    manifest = json.loads(raw)
+    require(manifest.get("enabled") is True and set(manifest["sources"]) == SOURCES,
+            "First contact is OFF")
+    row = dict(manifest["sources"][source])
+    require(row["decision"] is None and row["issue"] == ISSUE,
+            "Scope must leave the decision unbound until GitHub verification")
+    scope = verify_run(source)
+    exact_checkout(scope, raw)
+    require(public_pipeline_json("/branches/main")["commit"]["sha"] == PIPELINE_SHA,
+            "Published producer inventory changed since scope review")
+    scope["scope_sha256"] = hashlib.sha256(raw).hexdigest()
+    row["decision"] = verify_grant(scope, scope["scope_sha256"])
+    proof_raw = (ROOT / "predecessor-proof.json").read_bytes()
+    require(hashlib.sha256(proof_raw).hexdigest() == manifest["predecessor_proof_sha256"],
+            "Predecessor proof differs from the authorized scope")
+    scope["predecessor"] = verify_predecessor(json.loads(proof_raw), source)
+    return scope, manifest, row
