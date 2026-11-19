@@ -1,8 +1,8 @@
-name: Verify YouthOpps live catalogue release 44508453675 R2
+name: Verify YouthOpps live catalogue release 44508453675 R3
 
 on:
   push:
-    branches: [qa/live-catalog-44508453675-r2]
+    branches: [qa/live-catalog-44508453675-r3]
 
 permissions:
   contents: read
@@ -46,7 +46,7 @@ jobs:
           --output ${{ runner.temp }}/live-catalog-44508453675.json
       - uses: actions/upload-artifact@v4
         with:
-          name: live-catalog-44508453675-r2
+          name: live-catalog-44508453675-r3
           path: ${{ runner.temp }}/live-catalog-44508453675.json
           if-no-files-found: error
           retention-days: 7

@@ -5,6 +5,7 @@ import hashlib
 import html
 import html.parser
 import json
+from pathlib import Path
 import os
 import pathlib
 import subprocess
