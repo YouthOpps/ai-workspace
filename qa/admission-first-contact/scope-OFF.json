@@ -4,7 +4,7 @@
   "sources": {
     "loreal468": {
       "env_prefix": "LOREAL468",
-      "foundation_sha256": "6486b311b6d4bc4bf928c8d43f1d1c2cac19f7b9df46b5289bdf204f8398dce3",
+      "foundation_sha256": "db8782656d1b9f767d343d38242470cd8806abb7cfff10d42b007dcf51597a11",
       "history_sha256": "7db0e41ae56d694c2572a73e288a791e13826cd5d72c12fbfb766be38ae4ce29",
       "issue": 468,
       "urls": [
