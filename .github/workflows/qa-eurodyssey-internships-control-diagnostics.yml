@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   diagnostics:
-    if: false && github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.event.deleted == false && github.run_attempt == 1
+    if: true && github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.event.deleted == false && github.run_attempt == 1
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
