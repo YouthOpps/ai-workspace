@@ -45,6 +45,8 @@
     "head_sha": "1c54008fe396532a5126ae526892b2a45444358a",
     "public_issue_468_comments": "200",
     "public_pipeline_main": "200",
+    "public_pipeline_main_endpoint": "/git/ref/heads/main",
+    "public_pipeline_main_ref": "refs/heads/main",
     "rate_limit": 5000,
     "run_id": 44597505528
   },

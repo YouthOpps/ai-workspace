@@ -5,7 +5,7 @@
     "loreal468samplesauth": {
       "env_prefix": "LOREAL468SAMPLESAUTH",
       "foundation_sha256": "13eeb19bc574580ffab8e60b103b6fca7e873f46279235b286e47223dbad73ed",
-      "history_sha256": "29624b7964594bc6094a1e5f281a2acc2174e6d3cb21e21061d14453412b42c0",
+      "history_sha256": "4e8d328fc41067722837b1a595572bae4ae29f6329dcf7626ddfb80f06319de2",
       "issue": 468,
       "urls": [
         "https://careers.loreal.com/robots.txt",

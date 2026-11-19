@@ -55,7 +55,7 @@ def control_json(repository, path):
     allowed = (
         repository == REPOSITORY and re.fullmatch(r"/actions/[a-zA-Z0-9/?=_&%-]+", path)
         or repository == PIPELINE and (
-            path == "/branches/main"
+            path == "/git/ref/heads/main"
             or re.fullmatch(rf"/issues/{ISSUE}/comments\?per_page=100&page=[1-5]", path)))
     require(allowed, "Unreviewed GitHub control endpoint")
     request = urllib.request.Request(
@@ -254,8 +254,9 @@ def verify_run(source):
     }, "Job API", select_job)
     require(type(run.get("workflow_id")) is int and type(job.get("id")) is int,
             "Unexpected current workflow or job identifier")
-    require(public_pipeline_json("/branches/main")["commit"]["sha"] == PIPELINE_SHA,
-            "Published producer inventory changed since scope review")
+    check_fields(public_pipeline_json("/git/ref/heads/main"), {
+        "ref": "refs/heads/main", "object.sha": PIPELINE_SHA,
+    }, "Published producer inventory changed since scope review")
     created = run.get("created_at")
     require(type(created) is str and UTC_SECOND.fullmatch(created), "Invalid run creation time")
     return {
