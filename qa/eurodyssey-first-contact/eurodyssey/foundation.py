@@ -881,33 +881,33 @@ def robot_policy(journal, body, status):
     if status != 200:
         raise Stop('REP unreachable or redirected; no follow')
     text = body.decode('utf-8-sig', 'strict')
-    if text.lstrip().startswith('<'):
+    significant = [line.split('#', 1)[0].strip() for line in text.splitlines()]
+    if any(re.search(r'<(?:/?[a-zA-Z][\w:-]*(?=[\s/>])|[!?])', line)
+           for line in significant):
         raise Stop('Unrecognized robots HTML/XML response; no content follow')
-    lines = [line.split('#', 1)[0].strip() for line in text.splitlines()]
-    if any(lines) and not any(re.fullmatch(
+    if any(significant) and not any(re.fullmatch(
             r'(?i)(?:user-agent|allow|disallow|sitemap|crawl-delay|request-rate)\s*:.*',
-            line) for line in lines):
+            line) for line in significant):
         raise Stop('Unrecognized robots representation; no content follow')
     groups, agents, rules, directives = [], [], [], []
     saw_rule = False
-    for line in lines:
+    for line in significant:
         if not line or ':' not in line:
             continue
         name, value = (p.strip() for p in line.split(':', 1))
         name = name.casefold()
         if name == 'user-agent':
-            if not value:
-                raise Stop('Unassessed empty REP product token')
+            if not re.fullmatch(r'[a-zA-Z_-]+|\*', value):
+                raise Stop('Unassessed invalid REP product token')
             if saw_rule:
                 groups.append((agents, rules, directives))
                 agents, rules, directives, saw_rule = [], [], [], False
             agents.append(value.casefold())
-        elif agents:
+        elif agents and name in ('allow', 'disallow'):
             saw_rule = True
-            if name in ('allow', 'disallow'):
-                rules.append((name, value))
-            elif name in ('crawl-delay', 'request-rate'):
-                directives.append((name, value))
+            rules.append((name, value))
+        elif agents and name in ('crawl-delay', 'request-rate'):
+            directives.append((name, value))
     if agents:
         groups.append((agents, rules, directives))
     state = journal.read()
@@ -1098,6 +1098,7 @@ def _request(journal, url):
                 or len(AUDIT['requests']) != 1):
             raise Stop('Exact current policy is required for the entry')
     wait_for_request(journal, not robots)
+    gate('capture')
     state = journal.read()
     state.update(logical_id=uuid.uuid4().hex,
                  physical_id=uuid.uuid4().hex, physical_started=now(),

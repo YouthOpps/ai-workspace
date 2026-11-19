@@ -19,6 +19,7 @@ SOURCES = frozenset(("eurodyssey",))
 STARTUP_STATES = frozenset(("queued", "requested", "pending", "waiting"))
 STATE_POLLS = 5
 POLL_GAP_SECONDS = 2
+UTC_SECOND = re.compile(r"[0-9]{4}(?:-[0-9]{2}){2}T[0-9]{2}(?::[0-9]{2}){2}Z")
 
 
 class IdentityFailure(RuntimeError):
@@ -121,6 +122,7 @@ def verify_run(source):
     sha, run_text = env["GITHUB_SHA"], env["GITHUB_RUN_ID"]
     require(re.fullmatch(r"[0-9a-f]{40}", sha) and re.fullmatch(r"[1-9][0-9]*", run_text),
             "Invalid hosted identity")
+    require(env.get("GITHUB_WORKFLOW_SHA") == sha, "Workflow revision differs from job head")
     check_fields(event, {
         "created": True, "deleted": False, "ref": REF, "before": "0" * 40,
         "after": sha, "repository.full_name": REPOSITORY,
@@ -150,11 +152,13 @@ def verify_run(source):
     }, "Job API", select_job)
     require(type(run.get("workflow_id")) is int and type(job.get("id")) is int,
             "Unexpected current workflow or job identifier")
+    created = run.get("created_at")
+    require(type(created) is str and UTC_SECOND.fullmatch(created), "Invalid run creation time")
     return {
         "repository": REPOSITORY, "ref": REF, "workflow": WORKFLOW, "head_sha": sha,
         "run_id": run_id, "run_attempt": 1, "workflow_id": run["workflow_id"],
         "job_id": job["id"], "source": source,
-        "created_at": run["created_at"],
+        "created_at": created,
     }
 
 
@@ -170,7 +174,7 @@ def sha(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
-def exact_checkout(scope):
+def exact_checkout(scope, scope_bytes):
     workspace = Path(os.environ["GITHUB_WORKSPACE"])
     head = scope["head_sha"]
     required = (
@@ -179,6 +183,10 @@ def exact_checkout(scope):
         f"{BRANCH_SUBTREE}/eurodyssey/history-manifest.json", f"{BRANCH_SUBTREE}/reviewer.pem",
         WORKFLOW,
     )
+    actual_head = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=workspace, timeout=10, text=True,
+    ).strip()
+    require(actual_head == head, "Checkout head differs from the authorized Actions run")
     for relative in required:
         committed = subprocess.check_output(
             ["git", "show", f"{head}:{relative}"], cwd=workspace, timeout=10,
@@ -186,6 +194,8 @@ def exact_checkout(scope):
         local = workspace / relative
         require(local.resolve() == local and local.read_bytes() == committed,
                 "Immutable checked-out input differs: " + relative)
+        if relative == f"{BRANCH_SUBTREE}/scope-OFF.json":
+            require(scope_bytes == committed, "Scope bytes used to authorize differ from the commit")
 
 
 def verify_pipeline_inventory(scope):
@@ -229,26 +239,30 @@ def verify_approval(scope, scope_sha256):
         rows = github_json(f"/issues/{ISSUE}/comments?per_page=100&page={page}", PIPELINE)
         require(type(rows) is list, "Invalid approval comment inventory")
         for comment in rows:
+            user = comment.get("user") or {}
+            if user.get("id") != ACTOR_ID or user.get("type") != "User":
+                continue
             lines = (comment.get("body") or "").splitlines()
             if head_line not in lines or scope_line not in lines:
                 continue
             comment_id = comment.get("id")
-            created = comment.get("created_at")
             url = f"https://github.com/{PIPELINE}/issues/{ISSUE}#issuecomment-{comment_id}"
-            if (type(comment_id) is int and comment_id > 0
-                    and comment.get("user", {}).get("id") == ACTOR_ID
-                    and comment.get("user", {}).get("type") == "User"
-                    and comment.get("html_url") == url
-                    and comment.get("issue_url") == f"https://api.github.com/repos/{PIPELINE}/issues/{ISSUE}"
-                    and type(created) is str and comment.get("updated_at") == created
-                    and created <= scope["created_at"]
-                    and lines.count(head_line) == lines.count(scope_line) == 1):
-                matches.append(url)
+            created = comment.get("created_at")
+            require(
+                type(comment_id) is int and comment_id > 0
+                and comment.get("html_url") == url
+                and comment.get("issue_url") == f"https://api.github.com/repos/{PIPELINE}/issues/{ISSUE}"
+                and type(created) is str and UTC_SECOND.fullmatch(created)
+                and created < scope["created_at"] and comment.get("updated_at") == created
+                and lines.count(head_line) == lines.count(scope_line) == 1,
+                "Exact maintainer grant is late, altered or malformed",
+            )
+            matches.append(url)
         if len(rows) < 100:
             break
     else:
         raise RuntimeError("Incomplete approval comment pagination")
-    require(len(matches) == 1, "Expected exactly one fresh unedited maintainer grant")
+    require(len(matches) == 1, "Expected exactly one pre-run unedited maintainer grant")
     return matches[0]
 
 
@@ -258,8 +272,10 @@ def verify_authority(source):
     require(__debug__ and manifest.get("enabled") is True and set(manifest["sources"]) == SOURCES,
             "Eurodyssey bounded research is OFF")
     scope = verify_run(source)
-    exact_checkout(scope)
+    exact_checkout(scope, raw)
     row = dict(manifest["sources"][source])
-    row["decision"] = verify_approval(scope, sha(raw))
+    require(row.get("issue") == ISSUE and "decision" not in row, "Invalid committed maintainer gate")
+    scope["scope_sha256"] = sha(raw)
+    row["decision"] = verify_approval(scope, scope["scope_sha256"])
     scope["pipeline_inventory_head"] = verify_pipeline_inventory(scope)
     return scope, manifest, row
