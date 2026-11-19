@@ -1,0 +1,12 @@
+{
+  "candidate_urls": [
+    "https://inf.ethz.ch/robots.txt",
+    "https://inf.ethz.ch/studies/summer-research-fellowship/how-to-apply.html"
+  ],
+  "issue": 456,
+  "known_producer_absence_reviewed_at": "1dcca6beb3023cf918f50cb87f68f3522b9978b2",
+  "publisher": "ETH Zürich",
+  "publisher_host": "inf.ethz.ch",
+  "publisher_requests": 0,
+  "unknown_history_preserved": true
+}
