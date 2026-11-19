@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "sources": {
     "ethz456notice": {
       "env_prefix": "ETHZ456NOTICE",
