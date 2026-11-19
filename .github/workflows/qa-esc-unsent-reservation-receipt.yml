@@ -1,0 +1,26 @@
+name: Record ESC unsent reservation receipt
+on:
+  push:
+    branches: [qa/455-esc-unsent-reservation-receipt]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  receipt:
+    if: false && github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Record the independently reviewed administrative receipt
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/esc455-unsent/record.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: esc455-unsent-reservation-receipt
+          path: ${{ runner.temp }}/esc455-unsent-reservation-receipt
+          if-no-files-found: error
+          retention-days: 30

@@ -1,0 +1,118 @@
+{
+  "authorized_publisher_requests": 0,
+  "enabled": false,
+  "hosted_foundation_sha256": "3017cf640760bd5f8b89f12da4e6f19386531bea8c352a1731689fd886e7a23c",
+  "independent_review_required": true,
+  "original_journal": {
+    "blocked": false,
+    "completed": 1795084599.1927931,
+    "completed_logical_id": "34d68a86450e4bc986fdd3eaaa09ea20",
+    "completed_physical_id": "83fb028f14d34a64ac71d04e235c9c15",
+    "family": "youthopps-esc-publisher-v1",
+    "in_flight": true,
+    "interval": 12.2,
+    "inventory_completed": 1795077590.5128772,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "32220b123057486dbbbeb5d5fba0d939",
+    "not_before": 1795084611.3927932,
+    "observed_at": 1795084621.674231,
+    "outcome": "reserved",
+    "page_interval": 30,
+    "physical_id": "7cd0e87d8e9c4837bcd86be6752da631",
+    "physical_pending": true,
+    "physical_started": 1795084621.674231,
+    "policy": {
+      "body_sha256": "e9c4846eb5fb506421ef4cd431163389ccef09f9a6703c5964b94312904bcc5a",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://youth.europa.eu/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795077574.5539193,
+      1795077576.547332,
+      1795077588.963567,
+      1795077590.364058,
+      1795084564.9331431,
+      1795084570.568087,
+      1795084593.2137074,
+      1795084597.8392708,
+      1795084621.674231
+    ],
+    "target": "https://youth.europa.eu/solidarity/opportunity/55122_en"
+  },
+  "original_journal_preserved": true,
+  "original_journal_sha256": "8cf48a4bb7e499fafea19817212aa0172b2dd3fedd278aebffa276937b7af13e",
+  "pre_opener_order": {
+    "github_recheck_line": 1136,
+    "publisher_opener_line": 1158,
+    "request_receipt_line": 1150,
+    "reservation_durable_line": 1132
+  },
+  "proposed_administrative_receipt": {
+    "additional_quiet_seconds": 300,
+    "classification": "abandoned_unsent_registration",
+    "original_cooldown": 0,
+    "proposed_not_before": 1795084921.674231,
+    "proposed_not_before_utc": "2026-11-19T10:42:01.674231+00:00",
+    "publisher_completion_recorded": false,
+    "publisher_response_last_completed_physical_id": "83fb028f14d34a64ac71d04e235c9c15",
+    "publisher_response_last_completed_wall_time": 1795084599.1927931,
+    "publisher_response_received": false,
+    "reserved_logical_id": "32220b123057486dbbbeb5d5fba0d939",
+    "reserved_physical_id": "7cd0e87d8e9c4837bcd86be6752da631",
+    "reserved_target": "https://youth.europa.eu/solidarity/opportunity/55122_en",
+    "reserved_wall_time": 1795084621.674231
+  },
+  "schema": 1,
+  "scope": "separate receipt adjudication only",
+  "source_lineage": {
+    "acknowledged_state_sha256": "8cf48a4bb7e499fafea19817212aa0172b2dd3fedd278aebffa276937b7af13e",
+    "allowed_to_start": false,
+    "archive_sha256": "60c31ed094ea247df7eec6fb55d4a12cd76c13c9f53005cf8b9df078e2645b27",
+    "artifact_id": 14519513187,
+    "blocking_condition": "Latest acknowledged physical reservation is unresolved",
+    "candidate_next_scope_after_separate_review": [
+      "https://youth.europa.eu/robots.txt",
+      "https://youth.europa.eu/libraries/react/c9680faa1dcb3c300b93.5897.js",
+      "https://youth.europa.eu/solidarity/opportunity/55122_en"
+    ],
+    "carried_lineage_runs": [
+      44489312404,
+      44493281462,
+      44494524200,
+      44506936284
+    ],
+    "enabled": false,
+    "failure_stage": "GitHub authority API after reservation and before receipt or publisher opener",
+    "generic_search_get_candidate": "https://youth.europa.eu/api/rest/eyp/v1/search_en",
+    "head": "27f55109841b977400b1b32b1d048cf30e9418d3",
+    "job_id": 135500878841,
+    "observed_failure": {
+      "message": "HTTP Error 403: rate limit exceeded",
+      "type": "HTTPError"
+    },
+    "observed_workflow_state": "active",
+    "opportunity_endpoint_parameters_verified": false,
+    "publisher_terms": "https://youth.europa.eu/terms-conditions_en",
+    "request_ids": [
+      "0a464d07313b4e3889df86773d0844d3",
+      "83fb028f14d34a64ac71d04e235c9c15"
+    ],
+    "retained_pending_target": "https://youth.europa.eu/solidarity/opportunity/55122_en",
+    "run_id": 44506936284,
+    "scope": "OFF evidence only",
+    "source_http_statuses": [
+      200,
+      200
+    ],
+    "workflow_id": 423697576
+  },
+  "successor_executable_authorized": false
+}
