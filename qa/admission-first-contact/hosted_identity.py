@@ -4,9 +4,11 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import time
 import urllib.parse
 import urllib.request
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -17,6 +19,9 @@ REF = "refs/heads/" + BRANCH
 SOURCES = frozenset(("ethz456",))
 PIPELINE_SHA = "1dcca6beb3023cf918f50cb87f68f3522b9978b2"
 MAINTAINER_ID = 12278069
+PIPELINE = "YouthOpps/data-pipeline"
+ISSUE = 456
+SUBTREE = "qa/admission-first-contact"
 STARTUP_STATES = frozenset(("queued", "requested", "pending", "waiting"))
 STATE_POLLS = 5
 POLL_GAP_SECONDS = 2
@@ -101,37 +106,72 @@ def poll_active(path, immutable, kind, select=lambda rows: rows):
         time.sleep(POLL_GAP_SECONDS)
 
 
-def verify_grant(manifest, source):
-    """Bind the explicit source decision to the frozen OFF scope."""
-    row = manifest["sources"][source]
-    decision = row["decision"]
-    match = re.fullmatch(
-        r"https://github\.com/YouthOpps/data-pipeline/issues/456#issuecomment-([1-9][0-9]*)",
-        decision or "",
+def github_time(value):
+    require(type(value) is str and re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z", value),
+            "Invalid GitHub timestamp")
+    return datetime.fromisoformat(value)
+
+
+def exact_checkout(scope, raw):
+    workspace = Path(os.environ["GITHUB_WORKSPACE"])
+    require(workspace / SUBTREE == ROOT, "Unexpected checked-out transport path")
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=workspace, timeout=10)
+    require(head.decode("ascii").strip() == scope["head_sha"], "Checked-out head differs from active run")
+    required = (
+        f"{SUBTREE}/scope-OFF.json", f"{SUBTREE}/hosted_identity.py",
+        f"{SUBTREE}/run.py", f"{SUBTREE}/{scope['source']}/foundation.py",
+        f"{SUBTREE}/{scope['source']}/history-manifest.json", f"{SUBTREE}/reviewer.pem",
+        WORKFLOW,
     )
-    require(manifest["enabled"] is True and set(manifest["sources"]) == SOURCES
-            and match is not None, "First contact is OFF or unreviewed")
-    off = json.loads(json.dumps(manifest))
-    off["enabled"] = False
-    off["sources"][source]["decision"] = None
-    canonical = json.dumps(off, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
-    digest = hashlib.sha256(canonical).hexdigest()
-    result = public_pipeline_json(f"/issues/comments/{match[1]}")
-    require(
-        result.get("html_url") == decision
-        and result.get("issue_url") == "https://api.github.com/repos/YouthOpps/data-pipeline/issues/456"
-        and result.get("user", {}).get("id") == MAINTAINER_ID
-        and result.get("created_at") == result.get("updated_at")
-        and type(result.get("created_at")) is str
-        and f"Approved ETH Zürich fellowship first-contact scope {digest}" in result.get("body", "").splitlines(),
-        "Exact maintainer decision is absent or changed",
-    )
+    for relative in required:
+        committed = subprocess.check_output(
+            ["git", "show", f"{scope['head_sha']}:{relative}"], cwd=workspace, timeout=10,
+        )
+        local = workspace / relative
+        data = raw if relative == required[0] else local.read_bytes()
+        require(local.resolve() == local and data == committed,
+                "Immutable checked-out input differs: " + relative)
+
+
+def verify_grant(scope, scope_digest):
+    """Find one unedited maintainer comment naming the actual head and scope bytes."""
+    head_line = f"Approved ETH Zürich fellowship first-contact head {scope['head_sha']}"
+    scope_line = f"ETH Zürich fellowship first-contact scope {scope_digest}"
+    run_start = github_time(scope["created_at"])
+    matches = []
+    for page in range(1, 6):
+        rows = public_pipeline_json(f"/issues/{ISSUE}/comments?per_page=100&page={page}")
+        require(type(rows) is list and len(rows) <= 100, "Invalid approval comment inventory")
+        for comment in rows:
+            body = comment.get("body")
+            lines = body.splitlines() if type(body) is str else ()
+            if head_line not in lines or scope_line not in lines:
+                continue
+            actor_id = nested(comment, "user.id")
+            if type(actor_id) is not int or actor_id != MAINTAINER_ID or nested(comment, "user.type") != "User":
+                continue
+            comment_id = comment.get("id")
+            created = comment.get("created_at")
+            url = f"https://github.com/{PIPELINE}/issues/{ISSUE}#issuecomment-{comment_id}"
+            require(type(comment_id) is int and comment_id > 0
+                    and comment.get("html_url") == url
+                    and comment.get("issue_url") == f"https://api.github.com/repos/{PIPELINE}/issues/{ISSUE}"
+                    and comment.get("updated_at") == created and github_time(created) < run_start
+                    and lines.count(head_line) == lines.count(scope_line) == 1,
+                    "Exact maintainer grant metadata is invalid or changed")
+            matches.append(url)
+        if len(rows) < 100:
+            break
+    else:
+        raise RuntimeError("Incomplete approval comment pagination")
+    require(len(matches) == 1, "Expected exactly one unedited maintainer grant before the run")
+    return matches[0]
 
 
 def public_pipeline_json(path):
     """Read the public control plane without sending the job's repository token."""
     request = urllib.request.Request(
-        "https://api.github.com/repos/YouthOpps/data-pipeline" + path,
+        "https://api.github.com/repos/" + PIPELINE + path,
         headers={"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
     )
     with urllib.request.build_opener(RejectRedirect()).open(request, timeout=15) as response:
@@ -164,13 +204,14 @@ def verify_run(source):
     check_fields(event, {
         "created": True, "deleted": False, "ref": REF, "before": "0" * 40,
         "after": sha, "repository.full_name": REPOSITORY, "sender.id": MAINTAINER_ID,
+        "sender.type": "User",
     }, "Not an exact first branch creation")
     run_id = int(run_text)
     run = poll_active(f"/actions/runs/{run_id}", {
         "id": run_id, "event": "push", "run_attempt": 1, "head_branch": BRANCH,
         "head_sha": sha, "path": WORKFLOW, "head_repository.full_name": REPOSITORY,
         "repository.full_name": REPOSITORY, "actor.id": MAINTAINER_ID,
-        "triggering_actor.id": MAINTAINER_ID,
+        "triggering_actor.id": MAINTAINER_ID, "triggering_actor.type": "User", "actor.type": "User",
     }, "Run API")
     branch = urllib.parse.quote(BRANCH, safe="")
     history = github_json(f"/actions/runs?branch={branch}&event=push&per_page=2")
@@ -188,11 +229,25 @@ def verify_run(source):
     }, "Job API", select_job)
     require(type(run.get("workflow_id")) is int and type(job.get("id")) is int,
             "Unexpected current workflow or job identifier")
-    require(public_pipeline_json("/branches/main")["commit"]["sha"] == PIPELINE_SHA,
-            "Published producer inventory changed since scope review")
-    verify_grant(json.loads((ROOT / "scope-OFF.json").read_bytes()), source)
     return {
         "repository": REPOSITORY, "ref": REF, "workflow": WORKFLOW, "head_sha": sha,
         "run_id": run_id, "run_attempt": 1, "workflow_id": run["workflow_id"],
-        "job_id": job["id"], "source": source,
+        "job_id": job["id"], "source": source, "created_at": run["created_at"],
     }
+
+
+def verify_authority(source):
+    raw = (ROOT / "scope-OFF.json").read_bytes()
+    manifest = json.loads(raw)
+    require(manifest.get("enabled") is True and set(manifest["sources"]) == SOURCES,
+            "First contact is OFF")
+    row = dict(manifest["sources"][source])
+    require(row["decision"] is None and row["issue"] == ISSUE,
+            "Scope must leave the decision unbound until GitHub verification")
+    scope = verify_run(source)
+    exact_checkout(scope, raw)
+    require(public_pipeline_json("/branches/main")["commit"]["sha"] == PIPELINE_SHA,
+            "Published producer inventory changed since scope review")
+    scope["scope_sha256"] = hashlib.sha256(raw).hexdigest()
+    row["decision"] = verify_grant(scope, scope["scope_sha256"])
+    return scope, manifest, row
