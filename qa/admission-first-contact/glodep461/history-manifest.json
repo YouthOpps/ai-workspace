@@ -1,0 +1,30 @@
+{
+  "aggregate_data_reviewed_at": "cb9d4d89379f21308c9ae789a4c51aaa21c34d1c",
+  "candidate_funded_dates_index_evidence": {
+    "deadline": "2027-01-31",
+    "opens": "2026-11-05"
+  },
+  "candidate_intake_identity": "glodep-2027-2029",
+  "candidate_programme_identity": "glodep",
+  "candidate_self_paid_dates_index_evidence": {
+    "deadline": "2027-03-15",
+    "opens": "2027-02-01"
+  },
+  "candidate_urls": [
+    "https://glodep.eu/robots.txt",
+    "https://glodep.eu/admission/criteria-and-requirements/"
+  ],
+  "eacea_discovery_only": {
+    "archive_id": 14514167065,
+    "archive_sha256": "d7e19a018b01e40ef833e156b31c57eb78e0e85ee99931de5aca8e3ae307d2d9",
+    "host": "www.eacea.ec.europa.eu",
+    "run": 44493812671,
+    "state_reused": false
+  },
+  "issue": 461,
+  "known_producer_absence_reviewed_at": "483b219c403414050f4c5868e8a93e990f9376d5",
+  "publisher": "GLODEP consortium",
+  "publisher_host": "glodep.eu",
+  "publisher_requests": 0,
+  "unknown_history_preserved": true
+}

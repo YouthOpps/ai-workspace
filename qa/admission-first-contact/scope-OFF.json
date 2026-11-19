@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "glodep461": {
+      "env_prefix": "GLODEP461",
+      "foundation_sha256": "992c6eeb12b6d32d5e7a29cb58940e34b58c25d19602dd72abdc1e719c256574",
+      "history_sha256": "26d8fe50f1585028c5782cfdc459cdc320699410ede5ce7c84d4b9a40653d8bd",
+      "issue": 461,
+      "urls": [
+        "https://glodep.eu/robots.txt",
+        "https://glodep.eu/admission/criteria-and-requirements/"
+      ]
+    }
+  }
+}
