@@ -1,0 +1,25 @@
+{
+  "authority": "European Solidarity Corps individual volunteering integration, issue #455",
+  "publisher": "European Commission, European Youth Portal",
+  "publisher_host": "youth.europa.eu",
+  "candidate_urls": [
+    "https://youth.europa.eu/robots.txt",
+    "https://youth.europa.eu/go-abroad/volunteering/opportunities_en"
+  ],
+  "preparation_pipeline_main": "1dcca6beb3023cf918f50cb87f68f3522b9978b2",
+  "preparation_workspace_main": "3e67051114f1b25e1aa06e7d0ba7f8dc54ea2d45",
+  "known_portal_source_or_research": [],
+  "known_separate_sources": {
+    "cz-dzs": "National Czech publisher and separate origin",
+    "pl-frse": "National Polish publisher and separate origin",
+    "de-rausvonzuhaus": "German mobility publisher and separate origin"
+  },
+  "indexed_origin_evidence": {
+    "inventory_reference": "https://youth.europa.eu/node/34921_en",
+    "sample_detail": "https://youth.europa.eu/solidarity/opportunity/31559_en",
+    "residence_countries": "https://youth.europa.eu/solidarity/countries-covered_en",
+    "portal_terms": "https://youth.europa.eu/terms-conditions_en"
+  },
+  "unknown_history_preserved": true,
+  "publisher_requests": 0
+}

@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "esc": {
+      "issue": 455,
+      "env_prefix": "ESC",
+      "foundation_sha256": "f287cc3f96d724697d309f84076ca7765e221ce1c8db76af8ed8d5f82c22dbf7",
+      "history_sha256": "46edfe2442036ea8f13d5e307e25c23e2ecbe577ec60b2317e5ca769e6635512",
+      "urls": [
+        "https://youth.europa.eu/robots.txt",
+        "https://youth.europa.eu/go-abroad/volunteering/opportunities_en"
+      ]
+    }
+  }
+}

@@ -1,0 +1,43 @@
+name: ESC volunteering first contact
+
+on:
+  push:
+    branches:
+      - qa/esc-volunteering-first-contact
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  contact:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.event.deleted == false && github.run_attempt == 1
+    name: First contact esc
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: youthopps-esc-publisher-v1
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-pipeline
+          ref: main
+          path: .esc-pipeline
+          persist-credentials: false
+      - name: Capture exact ESC public responses
+        env:
+          SOURCE: esc
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/esc-first-contact/run.py
+      - name: Retain outcome, state and encrypted evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: esc-first-contact-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/volunteering-first-contact/esc/
+          if-no-files-found: error
+          retention-days: 7
