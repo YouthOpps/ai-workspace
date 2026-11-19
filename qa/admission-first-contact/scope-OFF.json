@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "minedu465notice": {
+      "env_prefix": "MINEDU465NOTICE",
+      "foundation_sha256": "174ad66af3602b92bacfb98c4dab79e86fd781b2a25f495b634c6e51fc763788",
+      "history_sha256": "b37301dfbe93d9fa67461c1a7fa7c91b19fd6b3237506af747c033a6502b6f2b",
+      "issue": 465,
+      "urls": [
+        "https://www.minedu.gov.gr/robots.txt",
+        "https://www.minedu.gov.gr/site/70243-01-07-26-ypobole-elektronikes-aiteses-mechanographikou-deltiou-gia-ten-eisagoge-allodapon-allogenon-sten-tritobathmia-ekpaideuse-gia-to-akademaiko-etos-2026-2027"
+      ]
+    }
+  }
+}
