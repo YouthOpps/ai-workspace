@@ -1,0 +1,108 @@
+{
+  "carry": {
+    "blocked": false,
+    "completed": 1795079564.6847496,
+    "completed_logical_id": "5a379dd005454d598ccf4f6790b083d6",
+    "completed_physical_id": "d7b0bbf17962447fb868f7b78a7e62a2",
+    "family": "youthopps-ens-paris-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795079564.6847496,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "5a379dd005454d598ccf4f6790b083d6",
+    "not_before": 1795079576.8847497,
+    "observed_at": 1795079564.6847496,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "d7b0bbf17962447fb868f7b78a7e62a2",
+    "physical_pending": false,
+    "physical_started": 1795079560.6148424,
+    "policy": {
+      "body_sha256": "8e8cb58d810473a52cce903be5ffb73d948eef981bbd101cffbf8dc2c02fcf4e",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://www.ens.psl.eu/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795079541.430582,
+      1795079544.693271,
+      1795079560.6148424,
+      1795079563.377169
+    ],
+    "target": "https://www.ens.psl.eu/mentions-legales"
+  },
+  "carry_sha256": "c054052c776122ed39af204d50778b991a76b766a4342a09295ae8713cc3d67f",
+  "decision_scope": "Assess both 2027 application windows from the official ENS French summary and tables",
+  "original_state": {
+    "blocked": false,
+    "completed": 1795079564.6847496,
+    "completed_logical_id": "5a379dd005454d598ccf4f6790b083d6",
+    "completed_physical_id": "d7b0bbf17962447fb868f7b78a7e62a2",
+    "family": "youthopps-ens-paris-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795079564.6847496,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "5a379dd005454d598ccf4f6790b083d6",
+    "not_before": 1795079576.8847497,
+    "observed_at": 1795079564.6847496,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "d7b0bbf17962447fb868f7b78a7e62a2",
+    "physical_pending": false,
+    "physical_started": 1795079560.6148424,
+    "policy": {
+      "body_sha256": "8e8cb58d810473a52cce903be5ffb73d948eef981bbd101cffbf8dc2c02fcf4e",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://www.ens.psl.eu/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795079541.430582,
+      1795079560.6148424
+    ],
+    "target": "https://www.ens.psl.eu/mentions-legales"
+  },
+  "predecessor": {
+    "archive_sha256": "9d1607453ee827170f2d36a595f7d82edf952aded43e375931348280ad40b11a",
+    "requests": [
+      {
+        "completion": 789.455388523,
+        "request_id": "4c7c3cbd57aa40bf933715d4851d10c7",
+        "start": 788.388199174,
+        "status": 200,
+        "url": "https://www.ens.psl.eu/robots.txt",
+        "wall_completion": 1795079545.7604604,
+        "wall_start": 1795079544.693271
+      },
+      {
+        "completion": 808.379252345,
+        "request_id": "d7b0bbf17962447fb868f7b78a7e62a2",
+        "start": 807.07209695,
+        "status": 200,
+        "url": "https://www.ens.psl.eu/mentions-legales",
+        "wall_completion": 1795079564.6843245,
+        "wall_start": 1795079563.377169
+      }
+    ],
+    "state_sha256": "fdeff5bca2aea685bd183d7c71c9fdd66b94ba8a6492e24b0149498d6e2286cc"
+  },
+  "request_urls": [
+    "https://www.ens.psl.eu/robots.txt",
+    "https://www.ens.psl.eu/une-formation-d-exception/admission-concours/international/concours-selection-internationale"
+  ]
+}

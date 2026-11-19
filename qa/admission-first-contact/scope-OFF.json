@@ -1,0 +1,15 @@
+{
+  "enabled": false,
+  "sources": {
+    "ensparis458selection": {
+      "env_prefix": "ENSPARIS458SELECTION",
+      "foundation_sha256": "427fe31238e76ee58099183be96df6ef56cc1d590e86be826e5d0c37bd3511fe",
+      "history_sha256": "acef12ca20e107d589561fa7d635dd7f09d36199bf1310369f4f411048658bf1",
+      "issue": 458,
+      "urls": [
+        "https://www.ens.psl.eu/robots.txt",
+        "https://www.ens.psl.eu/une-formation-d-exception/admission-concours/international/concours-selection-internationale"
+      ]
+    }
+  }
+}

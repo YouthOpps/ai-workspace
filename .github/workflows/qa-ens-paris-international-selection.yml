@@ -1,0 +1,37 @@
+name: ENS Paris French application calendar assessment
+
+on:
+  push:
+    branches:
+      - qa/ens-paris-international-selection
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  contact:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.run_attempt == 1
+    name: First contact ensparis458selection
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: ens-paris-publisher
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Capture the bounded publisher responses
+        env:
+          SOURCE: ensparis458selection
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/admission-first-contact/run.py
+      - name: Retain derived factual evidence and source state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: selection-research-ensparis458selection-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/admissions-first-contact/ensparis458selection/
+          if-no-files-found: error
+          retention-days: 3
