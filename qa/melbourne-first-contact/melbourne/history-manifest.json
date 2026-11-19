@@ -1,0 +1,15 @@
+{
+  "authority": "University of Melbourne official award scope in YouthOpps/data-pipeline#457",
+  "publisher": "University of Melbourne",
+  "publisher_host": "scholarships.unimelb.edu.au",
+  "candidate_urls": [
+    "https://scholarships.unimelb.edu.au/robots.txt",
+    "https://scholarships.unimelb.edu.au/awards/graduate-research-scholarships"
+  ],
+  "preparation_pipeline_main": "1dcca6beb3023cf918f50cb87f68f3522b9978b2",
+  "preparation_workspace_main": "3e67051114f1b25e1aa06e7d0ba7f8dc54ea2d45",
+  "known_dedicated_source_or_research": [],
+  "known_aggregator": "opportunities-for-youth (discovery signal only)",
+  "unknown_history_preserved": true,
+  "publisher_requests": 0
+}
