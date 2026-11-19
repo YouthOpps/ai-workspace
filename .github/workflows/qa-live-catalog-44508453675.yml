@@ -1,0 +1,47 @@
+name: Verify YouthOpps live catalogue release 44508453675
+
+on:
+  push:
+    branches: [qa/live-catalog-44508453675]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: ac3f09990b7a489b0f26bfcfbd02bcb724ce8507
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: 933266701579b566f73c953940515a8297bcca14
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compare published site to the exact data revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-live-catalog-44508453675.py
+          933266701579b566f73c953940515a8297bcca14 cern-summer-studentships
+          --website-revision ac3f09990b7a489b0f26bfcfbd02bcb724ce8507
+          --output ${{ runner.temp }}/live-catalog-44508453675.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-catalog-44508453675
+          path: ${{ runner.temp }}/live-catalog-44508453675.json
+          if-no-files-found: error
+          retention-days: 7
