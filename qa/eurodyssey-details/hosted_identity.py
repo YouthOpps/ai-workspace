@@ -1,19 +1,23 @@
 """Identity checks for this temporary, nonpublishing GitHub Actions workflow."""
 
+import base64
 import hashlib
+from io import BytesIO
 import json
 import os
 import re
 import subprocess
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
+from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = "YouthOpps/ai-workspace"
-WORKFLOW = ".github/workflows/qa-eurodyssey-internships-details.yml"
-BRANCH = "qa/eurodyssey-internships-details"
+WORKFLOW = ".github/workflows/qa-eurodyssey-internships-details-recovery.yml"
+BRANCH = "qa/eurodyssey-internships-details-recovery"
 REF = "refs/heads/" + BRANCH
 SOURCES = frozenset(("eurodyssey",))
 STARTUP_STATES = frozenset(("queued", "requested", "pending", "waiting"))
@@ -29,6 +33,47 @@ class IdentityFailure(RuntimeError):
         self.reason = reason
         self.fields = fields
         super().__init__(f"{reason}: {json.dumps(fields, sort_keys=True)}")
+
+
+class ControlPlaneHTTPFailure(RuntimeError):
+    """Sanitized GitHub authority lookup failure without response content."""
+
+    def __init__(self, repository, path, status, headers):
+        if path.startswith('/issues/'):
+            route = 'approval-comments'
+        elif path == '/branches/main':
+            route = 'pipeline-main'
+        elif path.startswith('/actions/workflows?'):
+            route = 'workflow-inventory'
+        elif path.startswith('/actions/workflows/'):
+            route = 'workflow-run-inventory' if '/runs?' in path else 'workflow'
+        elif '/artifacts?' in path:
+            route = 'run-artifacts'
+        elif '/jobs?' in path:
+            route = 'run-jobs'
+        elif path.startswith('/actions/runs?'):
+            route = 'branch-run-inventory'
+        else:
+            route = 'run'
+        self.fields = {
+            'repository': repository,
+            'route': route,
+            'http_status': int(status),
+        }
+        for header, field in (
+            ('X-RateLimit-Remaining', 'rate_remaining'),
+            ('X-RateLimit-Reset', 'rate_reset'),
+            ('Retry-After', 'retry_after_seconds'),
+        ):
+            value = (headers or {}).get(header, '')
+            if re.fullmatch(r'[0-9]{1,12}', value):
+                self.fields[field] = int(value)
+        self.fields['quota_or_throttle_reported'] = (
+            status == 429 or status == 403 and (
+                self.fields.get('rate_remaining') == 0 or 'retry_after_seconds' in self.fields
+            )
+        )
+        super().__init__(f"GitHub control plane stopped at {route} with HTTP {status}")
 
 
 def require(condition, message):
@@ -51,9 +96,15 @@ def github_json(path, repository=REPOSITORY):
             "X-GitHub-Api-Version": "2022-11-28",
         },
     )
-    with urllib.request.build_opener(RejectRedirect()).open(request, timeout=15) as response:
-        require(response.status == 200, "Unexpected GitHub identity response")
-        payload = response.read(2_000_001)
+    try:
+        with urllib.request.build_opener(RejectRedirect()).open(request, timeout=15) as response:
+            require(response.status == 200, "Unexpected GitHub identity response")
+            payload = response.read(2_000_001)
+    except urllib.error.HTTPError as failure:
+        try:
+            raise ControlPlaneHTTPFailure(repository, path, failure.code, failure.headers) from None
+        finally:
+            failure.close()
     require(len(payload) <= 2_000_000, "GitHub identity response too large")
     return json.loads(payload)
 
@@ -221,7 +272,10 @@ def verify_pipeline_inventory(scope):
             for workflow in workflows:
                 known = (workflow.get("id"), workflow.get("path"))
                 if (repository == REPOSITORY and known in (
-                        (scope["workflow_id"], WORKFLOW), (423622763, '.github/workflows/qa-eurodyssey-internships-first-contact.yml'))):
+                        (scope["workflow_id"], WORKFLOW),
+                        (423622763, '.github/workflows/qa-eurodyssey-internships-first-contact.yml'),
+                        (423700844, '.github/workflows/qa-eurodyssey-internships-details.yml'),
+                        (423706336, '.github/workflows/qa-eurodyssey-internships-control-diagnostics.yml'))):
                     continue
                 require(not WORKFLOW_COLLISION.search(workflow["name"] + " " + workflow["path"]),
                         "Possible Eurodyssey workflow history")
@@ -233,8 +287,8 @@ def verify_pipeline_inventory(scope):
 
 
 def verify_approval(scope, scope_sha256):
-    head_line = f"Approved Eurodyssey detail research head {scope['head_sha']}"
-    scope_line = f"Eurodyssey detail research scope {scope_sha256}"
+    head_line = f"Approved Eurodyssey detail recovery research head {scope['head_sha']}"
+    scope_line = f"Eurodyssey detail recovery research scope {scope_sha256}"
     matches = []
     for page in range(1, 6):
         rows = github_json(f"/issues/{ISSUE}/comments?per_page=100&page={page}", PIPELINE)
@@ -306,6 +360,93 @@ def verify_predecessor():
     }, "Exact Eurodyssey predecessor artifact differs")
 
 
+def verify_failed_attempt(history):
+    """Bind the failed predecessor's exact zero-contact ZIP to the retired GitHub owner."""
+    failed_workflow = 423700844
+    failed_run = 44507457363
+    failed_head = 'f8399214e5cbb50131783dab8cc5aeaafb4d9ade'
+    failed_branch = 'qa/eurodyssey-internships-details'
+    failed_path = '.github/workflows/qa-eurodyssey-internships-details.yml'
+    archive_sha = 'fe78e5fc2d2efa58784d36d5e4164a105e5ba06ba87591b5c821a0c76c7ab574'
+    archive = base64.b64decode(history['failed_preflight_archive_base64'], validate=True)
+    require(len(archive) == 551 and sha(archive) == archive_sha, 'Bound failed archive differs')
+    with ZipFile(BytesIO(archive)) as zipped:
+        require(sorted(zipped.namelist()) == ['preflight-failure.json', 'preflight.json'],
+                'Failed owner archive is not zero-contact')
+        proof = json.loads(zipped.read('preflight.json'))
+        outcome = json.loads(zipped.read('preflight-failure.json'))
+    require(proof == {
+        'attempt': '1', 'classification': 'unverified_preflight_no_collection_authority',
+        'event': 'push', 'head_sha': failed_head, 'ref': 'refs/heads/' + failed_branch,
+        'run_id': str(failed_run), 'source': 'eurodyssey',
+    } and outcome == {
+        'classification': 'failed_before_initializer_or_publisher',
+        'error_type': 'HTTPError', 'source': 'eurodyssey',
+    }, 'Prior attempt crossed preflight or no longer matches its exact receipt')
+    expected = {
+        'id': failed_run, 'workflow_id': failed_workflow, 'run_attempt': 1, 'event': 'push',
+        'head_sha': failed_head, 'head_branch': failed_branch, 'path': failed_path,
+        'status': 'completed', 'conclusion': 'failure',
+        'repository.full_name': REPOSITORY, 'head_repository.full_name': REPOSITORY,
+        'actor.id': ACTOR_ID, 'actor.type': 'User',
+        'triggering_actor.id': ACTOR_ID, 'triggering_actor.type': 'User',
+    }
+    check_fields(github_json(f'/actions/workflows/{failed_workflow}'), {
+        'id': failed_workflow, 'path': failed_path, 'state': 'disabled_manually',
+    }, 'Failed detail owner was not retired')
+    check_fields(github_json(f'/actions/runs/{failed_run}/attempts/1'), expected,
+                 'Exact zero-contact attempt differs')
+    inventory = github_json(f'/actions/workflows/{failed_workflow}/runs?per_page=2')
+    require(inventory['total_count'] == 1 and len(inventory['workflow_runs']) == 1,
+            'Failed detail owner has a different run history')
+    check_fields(inventory['workflow_runs'][0], expected, 'Failed detail latest attempt differs')
+    jobs = github_json(f'/actions/runs/{failed_run}/attempts/1/jobs?per_page=10')
+    require(jobs['total_count'] == 1 and len(jobs['jobs']) == 1, 'Failed detail job inventory differs')
+    job = jobs['jobs'][0]
+    check_fields(job, {
+        'id': 135502669735, 'run_id': failed_run, 'head_sha': failed_head,
+        'name': 'First contact eurodyssey', 'status': 'completed', 'conclusion': 'failure',
+    }, 'Failed detail job differs')
+    for step_name, conclusion in (
+        ('Capture exact Eurodyssey public responses', 'failure'),
+        ('Retain outcome, state and encrypted evidence', 'success'),
+    ):
+        steps = [step for step in job['steps'] if step['name'] == step_name]
+        require(len(steps) == 1, 'Failed detail job steps differ')
+        check_fields(steps[0], {'status': 'completed', 'conclusion': conclusion},
+                     'Failed detail job step outcome differs')
+    artifacts = github_json(f'/actions/runs/{failed_run}/artifacts?per_page=2')
+    require(artifacts['total_count'] == 1 and len(artifacts['artifacts']) == 1,
+            'Failed detail workflow published unexpected evidence')
+    check_fields(artifacts['artifacts'][0], {
+        'id': 14520202773, 'name': 'eurodyssey-detail-research-44507457363-1',
+        'size_in_bytes': 551, 'expired': False, 'digest': 'sha256:' + archive_sha,
+        'workflow_run.id': failed_run, 'workflow_run.head_sha': failed_head,
+    }, 'Failed detail zero-contact artifact differs')
+
+
+def verify_diagnostic_workflow(history):
+    """Permit only the known exact GitHub-only diagnostic workflow in the inventory."""
+    record = history['github_only_diagnostic']
+    run_id = 44508346707
+    workflow_id = 423706336
+    path = '.github/workflows/qa-eurodyssey-internships-control-diagnostics.yml'
+    head = '2e34ef679ee1b127fb38acbe59cd2414a6f2b593'
+    require(record['run_id'] == run_id and record['workflow_id'] == workflow_id
+            and record['head_sha'] == head and record['publisher_requests'] == 0
+            and record['control_routes_http_200'] == 16,
+            'Reviewed GitHub-only diagnostic evidence differs')
+    runs = github_json(f'/actions/workflows/{workflow_id}/runs?per_page=2')
+    require(runs['total_count'] == 1 and len(runs['workflow_runs']) == 1, 'Diagnostic inventory differs')
+    check_fields(runs['workflow_runs'][0], {
+        'id': run_id, 'workflow_id': workflow_id, 'run_attempt': 1, 'event': 'push',
+        'head_sha': head, 'head_branch': 'qa/eurodyssey-internships-control-diagnostics',
+        'path': path, 'status': 'completed', 'conclusion': 'success',
+        'repository.full_name': REPOSITORY, 'head_repository.full_name': REPOSITORY,
+        'actor.id': ACTOR_ID, 'actor.type': 'User',
+    }, 'Exact GitHub-only diagnostic run differs')
+
+
 def verify_authority(source):
     raw = (ROOT / "scope-OFF.json").read_bytes()
     manifest = json.loads(raw)
@@ -318,5 +459,10 @@ def verify_authority(source):
     scope["scope_sha256"] = sha(raw)
     row["decision"] = verify_approval(scope, scope["scope_sha256"])
     verify_predecessor()
+    history_raw = (ROOT / source / 'history-manifest.json').read_bytes()
+    require(sha(history_raw) == row['history_sha256'], 'Reviewed recovery history has changed')
+    history = json.loads(history_raw)
+    verify_failed_attempt(history)
+    verify_diagnostic_workflow(history)
     scope["pipeline_inventory_head"] = verify_pipeline_inventory(scope)
     return scope, manifest, row

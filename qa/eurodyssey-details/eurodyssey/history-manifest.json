@@ -40,6 +40,16 @@
   },
   "carry_sha256": "e2c3815f279e1a83a7c8451cb419fa7a2d83ed28f927784daf09763774a6415e",
   "decision_scope": "Continue the retired Eurodyssey owner into five actual offer links",
+  "failed_preflight_archive_base64": "UEsDBBQACAAIAMRUc10AAAAAAAAAAAAAAAAWAAAAcHJlZmxpZ2h0LWZhaWx1cmUuanNvbhXIMQqEMBAF0Lv82hPYC5Zb2A8xTvBDcGQmKbLL3l185fsh1xTBwpwa7cKMklj1kF2LuQovNqbKr7qYy933yjjVMUHdzaWNWzFj3bbP8gYmhHXPb2p3O0aEDvwfUEsHCEJO60FcAAAAagAAAFBLAwQUAAgACADDVHNdAAAAAAAAAAAAAAAADgAAAHByZWZsaWdodC5qc29uRcxBboQwEETRu9SaEUOAAL6M1djtuCViE7c9Ehrl7hGrbGr1671BtfL3WWEwoIM7SFWCOKqSEwxaenGRIOztWTgc8hWrTdm6fBzs7shSqzEXqRc68IvTbZ1NIzpEJm81EgzCOm7bxzDx7PZ9fg7jsKyjp311biYmCvvkN/KMDoUDzL3a34D2P9RzK9lfqnw9JFUuSaOc+vBcSQ69Ty1Z8TCYpvm5TPMyfo7ooLkVxzD4B/D7B1BLBwj8kxOatQAAAPYAAABQSwECLQMUAAgACADEVHNdQk7rQVwAAABqAAAAFgAAAAAAAAAAACAApIEAAAAAcHJlZmxpZ2h0LWZhaWx1cmUuanNvblBLAQItAxQACAAIAMNUc138kxOatQAAAPYAAAAOAAAAAAAAAAAAIACkgaAAAABwcmVmbGlnaHQuanNvblBLBQYAAAAAAgACAIAAAACRAQAAAAA=",
+  "github_only_diagnostic": {
+    "control_routes_http_200": 16,
+    "head_sha": "2e34ef679ee1b127fb38acbe59cd2414a6f2b593",
+    "historical_failure_cause": "unproven",
+    "pipeline_main_observed": "43c5e6d9faac2edc818fea31e48ce6e2e9516792",
+    "publisher_requests": 0,
+    "run_id": 44508346707,
+    "workflow_id": 423706336
+  },
   "original_state": {
     "blocked": false,
     "completed": 1795079793.6521697,

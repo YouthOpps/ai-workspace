@@ -1,9 +1,9 @@
-name: Eurodyssey traineeship detail research
+name: Eurodyssey traineeship detail recovery
 
 on:
   push:
     branches:
-      - qa/eurodyssey-internships-details
+      - qa/eurodyssey-internships-details-recovery
 
 permissions:
   contents: read
@@ -37,7 +37,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eurodyssey-detail-research-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/eurodyssey-internships-details/eurodyssey/
+          name: eurodyssey-detail-recovery-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/eurodyssey-internships-details-recovery/eurodyssey/
           if-no-files-found: error
           retention-days: 7

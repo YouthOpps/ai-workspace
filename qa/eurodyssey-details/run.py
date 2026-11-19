@@ -10,7 +10,7 @@ import subprocess
 import sys
 import tempfile
 
-from hosted_identity import (IdentityFailure, ROOT, SOURCES, display, require,
+from hosted_identity import (ControlPlaneHTTPFailure, IdentityFailure, ROOT, SOURCES, display, require,
                              verify_authority)
 
 LIMIT = 16_384
@@ -147,7 +147,7 @@ def encrypt(recipient, raw):
 def run():
     source = os.environ.get("SOURCE")
     require(source in SOURCES, "Unknown contact source")
-    output = Path(os.environ["RUNNER_TEMP"]) / "eurodyssey-internships-details" / source
+    output = Path(os.environ["RUNNER_TEMP"]) / "eurodyssey-internships-details-recovery" / source
     output.mkdir(parents=True, exist_ok=False, mode=0o700)
     write_once(output / "preflight.json", canonical({
         "classification": "unverified_preflight_no_collection_authority",
@@ -172,8 +172,10 @@ def run():
         }
         if isinstance(error, IdentityFailure):
             evidence.update({"reason": error.reason, "fields": error.fields})
+        if isinstance(error, ControlPlaneHTTPFailure):
+            evidence["github_control_plane"] = error.fields
         write_once(output / "preflight-failure.json", canonical(evidence))
-        if isinstance(error, IdentityFailure):
+        if isinstance(error, (IdentityFailure, ControlPlaneHTTPFailure)):
             print(error)
         else:
             print(f"{source}: preflight failed ({type(error).__name__})")

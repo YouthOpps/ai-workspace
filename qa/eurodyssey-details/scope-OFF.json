@@ -5,7 +5,7 @@
     "eurodyssey": {
       "env_prefix": "EURODYSSEY",
       "foundation_sha256": "d131b106ffe1a9183068e04a9aea2b7460d37ec99376880f639d2befdb631f8d",
-      "history_sha256": "472ab949125d5c85e7a53fcff87ac23a93ed779d4c9c1089086c5104814eb2d1",
+      "history_sha256": "448a8ad05cc556d13267215b9abf299bcb79a0811164a7e303ef8f1a39b353d7",
       "issue": 460,
       "urls": [
         "https://eurodyssey.aer.eu/robots.txt",
