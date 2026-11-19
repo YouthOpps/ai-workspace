@@ -4,7 +4,7 @@
   "sources": {
     "loreal468canonical": {
       "env_prefix": "LOREAL468CANONICAL",
-      "foundation_sha256": "01354b9289772be6216528fcf6ad47f34b028bbfadc8dbe21730230a6b0369af",
+      "foundation_sha256": "95170e9370e23523a311e1179156c8b313a89afe21e49a3c4486f29e752b29b6",
       "history_sha256": "83b6fb96ce455073991adc7685f0d5a15dc0df76960368c685592ad4d7009c89",
       "issue": 468,
       "urls": [

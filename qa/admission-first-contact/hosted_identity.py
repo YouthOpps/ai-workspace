@@ -238,15 +238,16 @@ def verify_run(source):
 
 
 def verify_predecessor():
-    """Verify exclusive ownership and both artifacts behind the signed continuation."""
-    for workflow, path in (
-        (423613642, ".github/workflows/qa-loreal-careers-terms-first-contact.yml"),
-        (423723705, ".github/workflows/qa-loreal-careers-detail-research.yml"),
-    ):
-        check_fields(github_json(f"/actions/workflows/{workflow}"), {
-            "id": workflow, "path": path, "state": "disabled_manually",
-        }, "Earlier publisher owner was reactivated")
+    """Require every prior owner to retain its only retired attempt and artifact."""
     predecessors = (
+        (423613642, 44493047521, 135453244632, "8740993b9f08b6cbf502657b1baf78ae7dcd8328",
+         "qa/loreal-careers-terms-first-contact", ".github/workflows/qa-loreal-careers-terms-first-contact.yml",
+         "success", "First contact loreal468", 14513483318, "first-contact-loreal468-44493047521-1",
+         118349, "c9dc7dd8634c141a960012eb433dc6649fc3132fe2920ff4cebf40fcc561bdd6"),
+        (423723705, 44511002583, 135514906382, "9cbf65a21e5db33676e9cf99074626944254e263",
+         "qa/loreal-careers-detail-research", ".github/workflows/qa-loreal-careers-detail-research.yml",
+         "success", "First contact loreal468detail", 14524480683, "detail-research-loreal468detail-44511002583-1",
+         246395, "b17397a1f061ef7a0043971bf9e66677a40d913ec794338f67d5f7c47368e34c"),
         (423733916, 44512663014, 135520585401, '2544b743a07994e9c5fb67fcc8c715d72645e441',
          'qa/loreal-careers-sitemap-research', '.github/workflows/qa-loreal-careers-sitemap-research.yml', "failure", "First contact loreal468sitemap",
          14524247971, "sitemap-research-loreal468sitemap-44512663014-1", 56625,
@@ -270,6 +271,7 @@ def verify_predecessor():
         check_fields(github_json(f"/actions/workflows/{workflow}"), {
             "id": workflow, "path": path, "state": "disabled_manually",
         }, "Exact predecessor owner or retirement differs")
+        check_fields(github_json(f"/actions/runs/{run_id}"), expected, "Latest predecessor attempt differs")
         check_fields(github_json(f"/actions/runs/{run_id}/attempts/1"), expected, "Predecessor run differs")
         inventory = github_json(f"/actions/workflows/{workflow}/runs?per_page=2")
         require(inventory["total_count"] == 1 and len(inventory["workflow_runs"]) == 1,
@@ -279,7 +281,7 @@ def verify_predecessor():
         require(jobs["total_count"] == 1 and len(jobs["jobs"]) == 1, "Exact predecessor job inventory differs")
         check_fields(jobs["jobs"][0], {
             "id": job_id, "run_id": run_id, "head_sha": head, "name": job_name,
-            "status": "completed", "conclusion": conclusion,
+            "head_branch": branch, "run_attempt": 1, "status": "completed", "conclusion": conclusion,
         }, "Predecessor job differs")
         artifacts = github_json(f"/actions/runs/{run_id}/artifacts?per_page=2")
         require(artifacts["total_count"] == 1 and len(artifacts["artifacts"]) == 1,
@@ -287,7 +289,7 @@ def verify_predecessor():
         check_fields(artifacts["artifacts"][0], {
             "id": artifact_id, "name": artifact_name, "size_in_bytes": size,
             "expired": False, "digest": "sha256:" + archive_digest,
-            "workflow_run.id": run_id, "workflow_run.head_sha": head,
+            "workflow_run.id": run_id, "workflow_run.head_sha": head, "workflow_run.head_branch": branch,
         }, "Predecessor artifact differs")
 
 

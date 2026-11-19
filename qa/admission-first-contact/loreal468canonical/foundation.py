@@ -59,6 +59,10 @@ class RateLimited(Stop):
     """A fully assessed timed limit, distinct from an unknown pending wire."""
 
 
+class UnrepresentableLimit(Stop):
+    """The known minimum was durable, but the full 429 fallback is unknown."""
+
+
 def digest(raw):
     return hashlib.sha256(raw).hexdigest()
 
@@ -764,10 +768,10 @@ def known_status(journal, status, robots):
     state['not_before'] = max(state['not_before'], state['rate_limit_until'])
     journal.save(state)
     if unsupported or state['rate_limit_strikes'] > 28:
-        raise Stop('Unrepresentable repeated rate limit; pending retained')
+        raise UnrepresentableLimit('Unrepresentable repeated rate limit; pending retained')
     until = stamp + 1800 * 2 ** (state['rate_limit_strikes'] - 1)
     if not math.isfinite(until) or until > MAX_CLOCK:
-        raise Stop('Unrepresentable rate clock; pending retained')
+        raise UnrepresentableLimit('Unrepresentable rate clock; pending retained')
     state['rate_limit_until'] = max(state['rate_limit_until'], until)
     state['not_before'] = max(state['not_before'], until)
     journal.save(state)
@@ -816,6 +820,42 @@ def retry_after(journal, headers):
         journal.save(state)
     if ambiguous:
         raise Stop('Unassessed Retry-After framing; pending retained')
+
+
+def assess_headers(journal, response, receipt, robots):
+    status_failure = None
+    try:
+        known_status(journal, receipt['status'], robots)
+    except BaseException as failure:
+        status_failure = failure
+
+    headers = None
+    header_failure = None
+    try:
+        headers = response.headers
+        for pair in headers.raw_items():
+            receipt['headers'].append(pair)
+    except BaseException as failure:
+        header_failure = failure
+        receipt['header_snapshot_error'] = type(failure).__name__
+
+    # An unrepresentable exponent leaves a durable minimum and a healthy
+    # journal, so an independently expressible Retry-After can still extend it.
+    # A storage or clock failure cannot safely enter another state operation.
+    if headers is not None and (status_failure is None
+                                or isinstance(status_failure, UnrepresentableLimit)):
+        try:
+            retry_after(journal, headers)
+        except BaseException as failure:
+            receipt['retry_after_error'] = type(failure).__name__
+            if status_failure is None and header_failure is None:
+                raise
+
+    if status_failure is not None:
+        raise status_failure
+    if header_failure is not None:
+        raise header_failure
+    return headers
 
 
 class Visible(HTMLParser):
@@ -1126,10 +1166,7 @@ def _request(journal, url):
                 if type(status) is not int or not 200 <= status <= 599:
                     raise Stop('Unassessed response status')
                 receipt['status'] = status
-                known_status(journal, status, robots)
-                response_headers = response.headers
-                receipt['headers'] = list(response_headers.items())
-                retry_after(journal, response_headers)
+                response_headers = assess_headers(journal, response, receipt, robots)
                 length = framing(response_headers)
                 while True:
                     try:
