@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "pipeline_expected_head": "483b219c403414050f4c5868e8a93e990f9376d5",
   "reviewer_sha256": "fa521d59341cff3b5f231bf07badea869e731806c9080eaaf6de1d12486a68b0",
   "sources": {
