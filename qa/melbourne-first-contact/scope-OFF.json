@@ -5,7 +5,7 @@
     "melbourne": {
       "issue": 457,
       "env_prefix": "MELBOURNE",
-      "foundation_sha256": "68061bfa7620638d9732d4429c5669284991fefd141d8537ea4bf396708a0baa",
+      "foundation_sha256": "4d7f0a3449e44a88f66b64aa235b2bf3799b2887d41329a1e3f15328240e0dc2",
       "history_sha256": "1665ed4ad7ee2ef246daa2282121ba1989be684a70e58cdffa4377fd6a30052e",
       "urls": [
         "https://scholarships.unimelb.edu.au/robots.txt",

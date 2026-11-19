@@ -62,7 +62,9 @@ def prepare(source, row, directory):
     )
     new_gate = (
         b"    from hosted_identity import verify_authority\n"
-        + f"    verify_authority({source!r})".encode("ascii")
+        + f"    _, _, verified = verify_authority({source!r})\n".encode("ascii")
+        + f"    if verified['decision'] != {row['decision']!r}:\n".encode("ascii")
+        + b"        raise Stop('Exact maintainer decision changed')"
     )
     bindings = (
         (old_gate, new_gate),

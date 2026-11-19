@@ -121,6 +121,7 @@ def verify_run(source):
     sha, run_text = env["GITHUB_SHA"], env["GITHUB_RUN_ID"]
     require(re.fullmatch(r"[0-9a-f]{40}", sha) and re.fullmatch(r"[1-9][0-9]*", run_text),
             "Invalid hosted identity")
+    require(env.get("GITHUB_WORKFLOW_SHA") == sha, "Workflow revision differs from job head")
     check_fields(event, {
         "created": True, "deleted": False, "ref": REF, "before": "0" * 40,
         "after": sha, "repository.full_name": REPOSITORY,
@@ -170,11 +171,16 @@ def sha(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
-def exact_checkout(scope):
+def exact_checkout(scope, scope_bytes):
     workspace = Path(os.environ["GITHUB_WORKSPACE"])
     head = scope["head_sha"]
+    scope_path = f"{BRANCH_SUBTREE}/scope-OFF.json"
+    checked_out = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=workspace, timeout=10, text=True,
+    ).strip()
+    require(checked_out == head, "Check-out head differs from the authorized Actions run")
     required = (
-        f"{BRANCH_SUBTREE}/scope-OFF.json", f"{BRANCH_SUBTREE}/hosted_identity.py",
+        scope_path, f"{BRANCH_SUBTREE}/hosted_identity.py",
         f"{BRANCH_SUBTREE}/run.py", f"{BRANCH_SUBTREE}/melbourne/foundation.py",
         f"{BRANCH_SUBTREE}/melbourne/history-manifest.json", f"{BRANCH_SUBTREE}/reviewer.pem",
         WORKFLOW,
@@ -186,6 +192,8 @@ def exact_checkout(scope):
         local = workspace / relative
         require(local.resolve() == local and local.read_bytes() == committed,
                 "Immutable checked-out input differs: " + relative)
+        if relative == scope_path:
+            require(scope_bytes == committed, "Scope bytes used to authorize differ from the commit")
 
 
 def verify_pipeline_inventory(scope):
@@ -258,7 +266,7 @@ def verify_authority(source):
     require(__debug__ and manifest.get("enabled") is True and set(manifest["sources"]) == SOURCES,
             "Melbourne bounded research is OFF")
     scope = verify_run(source)
-    exact_checkout(scope)
+    exact_checkout(scope, raw)
     row = dict(manifest["sources"][source])
     row["decision"] = verify_approval(scope, sha(raw))
     scope["pipeline_inventory_head"] = verify_pipeline_inventory(scope)
