@@ -1,0 +1,108 @@
+{
+  "carry": {
+    "blocked": false,
+    "completed": 1795078878.9784756,
+    "completed_logical_id": "d874d815859044d7a81ff3bad546ac77",
+    "completed_physical_id": "c92c7792bbda4737a848277dd41a6bbb",
+    "family": "youthopps-eth-zurich-fellowship-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795078878.9784756,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "d874d815859044d7a81ff3bad546ac77",
+    "not_before": 1795078891.1784756,
+    "observed_at": 1795078878.9784756,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "c92c7792bbda4737a848277dd41a6bbb",
+    "physical_pending": false,
+    "physical_started": 1795078876.5514343,
+    "policy": {
+      "body_sha256": "8be19d1865e3430bd8d68f0639540906977716496bc315db7167b8296c5171d4",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 404,
+      "unavailable": true,
+      "url": "https://inf.ethz.ch/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 1795078865.361548,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795078857.9057171,
+      1795078859.9547296,
+      1795078876.5514343,
+      1795078878.4587603
+    ],
+    "target": "https://inf.ethz.ch/studies/summer-research-fellowship/how-to-apply.html"
+  },
+  "carry_sha256": "f4ccf100bf0f1ad6fc9cac59d3cb77e9b32932a7c43a954e041749a171899321",
+  "decision_scope": "Assess the exact departmental copyright notice linked in retained application evidence",
+  "original_state": {
+    "blocked": false,
+    "completed": 1795078878.9784756,
+    "completed_logical_id": "d874d815859044d7a81ff3bad546ac77",
+    "completed_physical_id": "c92c7792bbda4737a848277dd41a6bbb",
+    "family": "youthopps-eth-zurich-fellowship-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795078878.9784756,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "d874d815859044d7a81ff3bad546ac77",
+    "not_before": 1795078891.1784756,
+    "observed_at": 1795078878.9784756,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "c92c7792bbda4737a848277dd41a6bbb",
+    "physical_pending": false,
+    "physical_started": 1795078876.5514343,
+    "policy": {
+      "body_sha256": "8be19d1865e3430bd8d68f0639540906977716496bc315db7167b8296c5171d4",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 404,
+      "unavailable": true,
+      "url": "https://inf.ethz.ch/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 1795078865.361548,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795078857.9057171,
+      1795078876.5514343
+    ],
+    "target": "https://inf.ethz.ch/studies/summer-research-fellowship/how-to-apply.html"
+  },
+  "predecessor": {
+    "archive_sha256": "a1f3697ba83dcc8d3c36b931700ac817fd5570302435e2ecac606990963584da",
+    "requests": [
+      {
+        "completion": 166.899380935,
+        "request_id": "403fe98cc95c453d831bf76e2a003d1d",
+        "start": 166.487690914,
+        "status": 404,
+        "url": "https://inf.ethz.ch/robots.txt",
+        "wall_completion": 1795078860.3664188,
+        "wall_start": 1795078859.9547296
+      },
+      {
+        "completion": 185.5107953,
+        "request_id": "c92c7792bbda4737a848277dd41a6bbb",
+        "start": 184.991721707,
+        "status": 200,
+        "url": "https://inf.ethz.ch/studies/summer-research-fellowship/how-to-apply.html",
+        "wall_completion": 1795078878.9778345,
+        "wall_start": 1795078878.4587603
+      }
+    ],
+    "state_sha256": "a4778932694baa910b15584516aee84afb8c45ca6d3f3d404507e57bd08c7fa1"
+  },
+  "request_urls": [
+    "https://inf.ethz.ch/robots.txt",
+    "https://inf.ethz.ch/footer/disclaimer-copyright.html"
+  ]
+}

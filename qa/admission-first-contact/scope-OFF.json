@@ -1,0 +1,15 @@
+{
+  "enabled": false,
+  "sources": {
+    "ethz456notice": {
+      "env_prefix": "ETHZ456NOTICE",
+      "foundation_sha256": "ddddbf4a0c0f8b781d8f410369121e0d266c020ca0290ac0f223fd0257989c4b",
+      "history_sha256": "e7862c6736c903abadc45610e034cbb4f6adf0b308ab81be61b43d72e84ce188",
+      "issue": 456,
+      "urls": [
+        "https://inf.ethz.ch/robots.txt",
+        "https://inf.ethz.ch/footer/disclaimer-copyright.html"
+      ]
+    }
+  }
+}
