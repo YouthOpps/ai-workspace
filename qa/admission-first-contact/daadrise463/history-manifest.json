@@ -1,0 +1,14 @@
+{
+  "aggregate_data_reviewed_at": "acc4db6790f290a7a0dcc4485ca9bb910a90694a",
+  "aggregate_records": [],
+  "candidate_urls": [
+    "https://www.daad.de/robots.txt",
+    "https://www.daad.de/rise/en/rise-germany/find-an-internship/what-applicants-need-to-know/"
+  ],
+  "issue": 463,
+  "known_producer_absence_reviewed_at": "1dcca6beb3023cf918f50cb87f68f3522b9978b2",
+  "publisher": "German Academic Exchange Service (DAAD)",
+  "publisher_host": "www.daad.de",
+  "publisher_requests": 0,
+  "unknown_history_preserved": true
+}

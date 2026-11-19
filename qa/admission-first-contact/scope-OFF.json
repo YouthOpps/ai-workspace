@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "daadrise463": {
+      "env_prefix": "DAADRISE463",
+      "foundation_sha256": "d309fa163db0e571a8bd712683496441a7818a260de6db01af803c77ac650094",
+      "history_sha256": "96e29df1e20d1a0b0a72e8f207b3b4dcd5b2af18b733cfa5892bb70e11e43a8b",
+      "issue": 463,
+      "urls": [
+        "https://www.daad.de/robots.txt",
+        "https://www.daad.de/rise/en/rise-germany/find-an-internship/what-applicants-need-to-know/"
+      ]
+    }
+  }
+}
