@@ -912,12 +912,11 @@ def robot_policy(journal, body, status, headers):
                 groups.append((agents, rules, directives))
                 agents, rules, directives, saw_rule = [], [], [], False
             agents.append(value.casefold())
-        elif agents:
+        elif agents and name in ('allow', 'disallow'):
             saw_rule = True
-            if name in ('allow', 'disallow'):
-                rules.append((name, value))
-            elif name in ('crawl-delay', 'request-rate'):
-                directives.append((name, value))
+            rules.append((name, value))
+        elif agents and name in ('crawl-delay', 'request-rate'):
+            directives.append((name, value))
     if agents:
         groups.append((agents, rules, directives))
     state = journal.read()

@@ -106,7 +106,7 @@ def poll_active(path, immutable, kind, select=lambda rows: rows):
         time.sleep(POLL_GAP_SECONDS)
 
 
-def exact_checkout(head, source):
+def exact_checkout(head, source, raw_scope):
     workspace = Path(os.environ["GITHUB_WORKSPACE"])
     required = (
         WORKFLOW, f"{SUBTREE}/hosted_identity.py", f"{SUBTREE}/run.py",
@@ -121,6 +121,8 @@ def exact_checkout(head, source):
         committed = subprocess.check_output(
             ["git", "show", f"{head}:{relative}"], cwd=workspace, timeout=10,
         )
+        if relative == f"{SUBTREE}/scope-OFF.json":
+            require(committed == raw_scope, "The active scope snapshot differs from the approved checkout")
         local = workspace / relative
         require(local.resolve() == local and local.read_bytes() == committed,
                 "Immutable checked-out input differs: " + relative)
@@ -242,7 +244,7 @@ def verify_authority(source):
     row = dict(manifest["sources"][source])
     require(row.get("issue") == ISSUE and "decision" not in row, "Invalid committed maintainer gate")
     scope = verify_run(source)
-    exact_checkout(scope["head_sha"], source)
+    exact_checkout(scope["head_sha"], source, raw)
     scope["scope_sha256"] = hashlib.sha256(raw).hexdigest()
     row["decision"] = verify_approval(scope, scope["scope_sha256"])
     return scope, manifest, row
