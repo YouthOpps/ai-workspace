@@ -1,0 +1,62 @@
+{
+  "enrollments_and_results_out_of_scope": true,
+  "known_producer_absence_reviewed_at": "483b219c403414050f4c5868e8a93e990f9376d5",
+  "purpose": "Verify landing classification and identify official future intake links",
+  "request_urls": [
+    "https://www.minedu.gov.gr/robots.txt",
+    "https://www.minedu.gov.gr/eisagogi-allodapon-allogenon-se-aei"
+  ],
+  "retained_notice_proof": {
+    "archive_sha256": "3cacbe311ba01a16dfe9a28b9d1a7370405076704647cb2d598d9fa84002f276",
+    "artifact_id": 14521660086,
+    "head_sha": "d5326ad0c43ce2912202e0c09df8a4d2dede2a83",
+    "job_id": 135506449026,
+    "run_id": 44508554801,
+    "source_url": "https://www.minedu.gov.gr/site/70243-01-07-26-ypobole-elektronikes-aiteses-mechanographikou-deltiou-gia-ten-eisagoge-allodapon-allogenon-sten-tritobathmia-ekpaideuse-gia-to-akademaiko-etos-2026-2027",
+    "state_sha256": "95430737d559fb00c30c5a885646e1e9711fe4b71f4941cd7999297df231f71b",
+    "workflow_id": 423707566
+  },
+  "retained_notice_state": {
+    "blocked": false,
+    "completed": 1795085241.9379165,
+    "completed_logical_id": "75870df464db487299a098d2fc73f84f",
+    "completed_physical_id": "8c5ea0c80d2e4a0d91c10964b30a10a1",
+    "family": "youthopps-greek-ministry-admissions-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795085241.9379165,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "75870df464db487299a098d2fc73f84f",
+    "not_before": 1795085254.1379166,
+    "observed_at": 1795085241.9379165,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "8c5ea0c80d2e4a0d91c10964b30a10a1",
+    "physical_pending": false,
+    "physical_started": 1795085235.6426497,
+    "policy": {
+      "body_sha256": "224de5e39f002463489264a9d59a6d62c9d21f76bdeb78a42191f909fb023bdd",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://www.minedu.gov.gr/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795078058.4820058,
+      1795078059.720024,
+      1795078075.0512183,
+      1795078076.331823,
+      1795085205.8440661,
+      1795085211.3957043,
+      1795085235.6426497,
+      1795085241.0979712
+    ],
+    "target": "https://www.minedu.gov.gr/site/70243-01-07-26-ypobole-elektronikes-aiteses-mechanographikou-deltiou-gia-ten-eisagoge-allodapon-allogenon-sten-tritobathmia-ekpaideuse-gia-to-akademaiko-etos-2026-2027"
+  }
+}
