@@ -1,0 +1,14 @@
+{
+  "authority": "Inaugural exact-contact scope for YouthOpps/data-pipeline#460",
+  "publisher": "Assembly of European Regions \u2014 Eurodyssey",
+  "publisher_host": "eurodyssey.aer.eu",
+  "candidate_urls": [
+    "https://eurodyssey.aer.eu/robots.txt",
+    "https://eurodyssey.aer.eu/traineeships/"
+  ],
+  "preparation_pipeline_main": "1dcca6beb3023cf918f50cb87f68f3522b9978b2",
+  "preparation_workspace_main": "3e67051114f1b25e1aa06e7d0ba7f8dc54ea2d45",
+  "known_eurodyssey_source_or_research": [],
+  "unknown_history_preserved": true,
+  "publisher_requests": 0
+}

@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "fa521d59341cff3b5f231bf07badea869e731806c9080eaaf6de1d12486a68b0",
+  "sources": {
+    "eurodyssey": {
+      "issue": 460,
+      "env_prefix": "EURODYSSEY",
+      "foundation_sha256": "5cc32271716b9416f14c834eabccf51ade3cebb3367336ef4774c2315af53fa4",
+      "history_sha256": "a39d85de7395eab17e4d274d44d20230d1bd5b14ff9ffa9d0be7f3881aa1dc97",
+      "urls": [
+        "https://eurodyssey.aer.eu/robots.txt",
+        "https://eurodyssey.aer.eu/traineeships/"
+      ]
+    }
+  }
+}
