@@ -1,0 +1,29 @@
+name: Record Eurodyssey received-redirect settlement
+
+on:
+  push:
+    branches: [qa/460-eurodyssey-received-redirect-settlement]
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  settle:
+    if: false && github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check the exact closed redirect and preserve journal lineage
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/eurodyssey-settlement/settle.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eurodyssey-redirect-settlement
+          path: ${{ runner.temp }}/eurodyssey-redirect-settlement
+          if-no-files-found: error
+          retention-days: 30
