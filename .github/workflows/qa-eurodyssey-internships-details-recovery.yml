@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/data-pipeline
-          ref: main
+          ref: 483b219c403414050f4c5868e8a93e990f9376d5
           path: .eurodyssey-pipeline
           persist-credentials: false
       - name: Capture exact Eurodyssey public responses

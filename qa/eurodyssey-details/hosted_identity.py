@@ -256,8 +256,9 @@ def verify_pipeline_inventory(scope):
     checked_out = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=checkout, timeout=10,
     ).decode("ascii").strip()
-    require(re.fullmatch(r"[0-9a-f]{40}", current) and checked_out == current,
-            "Pipeline main changed since its independent checkout")
+    expected = scope["pipeline_expected_head"]
+    require(re.fullmatch(r"[0-9a-f]{40}", expected) and checked_out == current == expected,
+            "Pipeline main or checkout differs from the reviewed pin")
     matches = subprocess.run(
         ["git", "grep", "-ilE", COLLISION, current, "--", "adapters", ".github/workflows"],
         cwd=checkout, capture_output=True, timeout=15, check=False,
@@ -464,5 +465,6 @@ def verify_authority(source):
     history = json.loads(history_raw)
     verify_failed_attempt(history)
     verify_diagnostic_workflow(history)
+    scope["pipeline_expected_head"] = manifest["pipeline_expected_head"]
     scope["pipeline_inventory_head"] = verify_pipeline_inventory(scope)
     return scope, manifest, row
