@@ -1,0 +1,37 @@
+name: OECD Internship Programme exact current policy
+
+on:
+  push:
+    branches:
+      - qa/466-oecd-current-policy
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  contact:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.run_attempt == 1
+    name: First contact oecd466
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: oecd-internship-publisher
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Capture the bounded publisher responses
+        env:
+          SOURCE: oecd466
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/admission-first-contact/run.py
+      - name: Retain outcome, source state and encrypted complete evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-contact-oecd466-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/admissions-first-contact/oecd466/
+          if-no-files-found: error
+          retention-days: 3
