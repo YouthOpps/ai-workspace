@@ -1,0 +1,37 @@
+name: ESC volunteering continuation recovery R2
+
+on:
+  push:
+    branches:
+      - qa/esc-volunteering-continuation-recovery-r2
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  contact:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.event.deleted == false && github.run_attempt == 1
+    name: First contact esc455continuation
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: youthopps-esc-publisher-v1
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Capture the bounded publisher responses
+        env:
+          SOURCE: esc455continuation
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/esc-continuation/run.py
+      - name: Retain outcome, source state and encrypted complete evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: esc-continuation-recovery-r2-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/esc-continuation/esc455continuation/
+          if-no-files-found: error
+          retention-days: 7
