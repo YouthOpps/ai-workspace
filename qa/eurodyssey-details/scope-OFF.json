@@ -1,0 +1,20 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "fa521d59341cff3b5f231bf07badea869e731806c9080eaaf6de1d12486a68b0",
+  "sources": {
+    "eurodyssey": {
+      "env_prefix": "EURODYSSEY",
+      "foundation_sha256": "d131b106ffe1a9183068e04a9aea2b7460d37ec99376880f639d2befdb631f8d",
+      "history_sha256": "472ab949125d5c85e7a53fcff87ac23a93ed779d4c9c1089086c5104814eb2d1",
+      "issue": 460,
+      "urls": [
+        "https://eurodyssey.aer.eu/robots.txt",
+        "https://eurodyssey.aer.eu/traineeship?id=156335",
+        "https://eurodyssey.aer.eu/traineeship?id=125754",
+        "https://eurodyssey.aer.eu/traineeship?id=145188",
+        "https://eurodyssey.aer.eu/traineeship?id=157450",
+        "https://eurodyssey.aer.eu/traineeship?id=158330"
+      ]
+    }
+  }
+}

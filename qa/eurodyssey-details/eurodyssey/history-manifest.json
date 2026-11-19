@@ -1,0 +1,136 @@
+{
+  "carry": {
+    "blocked": false,
+    "completed": 1795079793.6521697,
+    "completed_logical_id": "d6c78aff10d045e5b4f598d5b15934d5",
+    "completed_physical_id": "302a7b0cd8054db68ba83cd894d4886d",
+    "family": "youthopps-eurodyssey-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795079793.6521697,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "d6c78aff10d045e5b4f598d5b15934d5",
+    "not_before": 1795079805.8521698,
+    "observed_at": 1795079793.6521697,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "302a7b0cd8054db68ba83cd894d4886d",
+    "physical_pending": false,
+    "physical_started": 1795079790.3320274,
+    "policy": {
+      "body_sha256": "8fa3036c68bfcbd32365f6225d24333264093b7cd38d306e106b4dbdc934fd5b",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://eurodyssey.aer.eu/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795079775.0165799,
+      1795079776.334219,
+      1795079790.3320274,
+      1795079791.5868425
+    ],
+    "target": "https://eurodyssey.aer.eu/traineeships/"
+  },
+  "carry_sha256": "e2c3815f279e1a83a7c8451cb419fa7a2d83ed28f927784daf09763774a6415e",
+  "decision_scope": "Continue the retired Eurodyssey owner into five actual offer links",
+  "original_state": {
+    "blocked": false,
+    "completed": 1795079793.6521697,
+    "completed_logical_id": "d6c78aff10d045e5b4f598d5b15934d5",
+    "completed_physical_id": "302a7b0cd8054db68ba83cd894d4886d",
+    "family": "youthopps-eurodyssey-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795079793.6521697,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "d6c78aff10d045e5b4f598d5b15934d5",
+    "not_before": 1795079805.8521698,
+    "observed_at": 1795079793.6521697,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "302a7b0cd8054db68ba83cd894d4886d",
+    "physical_pending": false,
+    "physical_started": 1795079790.3320274,
+    "policy": {
+      "body_sha256": "8fa3036c68bfcbd32365f6225d24333264093b7cd38d306e106b4dbdc934fd5b",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://eurodyssey.aer.eu/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795079775.0165799,
+      1795079790.3320274
+    ],
+    "target": "https://eurodyssey.aer.eu/traineeships/"
+  },
+  "predecessor": {
+    "archive_sha256": "6eb2ea7cefa43baff84956ac8fcd7ae85c1c7ac043cf8596f0f8b2427643b51d",
+    "artifact": {
+      "id": 14515050477,
+      "name": "eurodyssey-first-contact-44494669298-1",
+      "size_in_bytes": 137499
+    },
+    "decision": "https://github.com/YouthOpps/data-pipeline/issues/460#issuecomment-7004843212",
+    "requests": [
+      {
+        "body_bytes": 1248,
+        "body_sha256": "8fa3036c68bfcbd32365f6225d24333264093b7cd38d306e106b4dbdc934fd5b",
+        "completion": 222.19854453,
+        "request_id": "a5a1030a3e634ec18dea5814a226e0ef",
+        "start": 221.700554418,
+        "status": 200,
+        "url": "https://eurodyssey.aer.eu/robots.txt",
+        "wall_completion": 1795079776.8322086,
+        "wall_start": 1795079776.334219
+      },
+      {
+        "body_bytes": 67749,
+        "body_sha256": "469f75c72cc402c0909147cb3cb9d5b24f6d91d30530c8b1564216435500144b",
+        "completion": 239.01794983,
+        "request_id": "302a7b0cd8054db68ba83cd894d4886d",
+        "start": 236.953178144,
+        "status": 200,
+        "url": "https://eurodyssey.aer.eu/traineeships/",
+        "wall_completion": 1795079793.6516137,
+        "wall_start": 1795079791.5868425
+      }
+    ],
+    "scope": {
+      "created_at": "2026-11-19T09:15:02Z",
+      "head_sha": "bf650e2eeaefbecff58513381b54b235ef5a9417",
+      "job_id": 135458713577,
+      "pipeline_inventory_head": "1dcca6beb3023cf918f50cb87f68f3522b9978b2",
+      "ref": "refs/heads/qa/eurodyssey-internships-first-contact",
+      "repository": "YouthOpps/ai-workspace",
+      "run_attempt": 1,
+      "run_id": 44494669298,
+      "scope_sha256": "4bc4a881a254fcbb6dea43a76ab8d7dc600d07dea2570825783a9c3d6d0c0812",
+      "source": "eurodyssey",
+      "workflow": ".github/workflows/qa-eurodyssey-internships-first-contact.yml",
+      "workflow_id": 423622763
+    },
+    "state_sha256": "44344d15cfeff17ffe491e6a23b6661054df7dd1f77fb192d6098b14d86e3a65"
+  },
+  "request_urls": [
+    "https://eurodyssey.aer.eu/robots.txt",
+    "https://eurodyssey.aer.eu/traineeship?id=156335",
+    "https://eurodyssey.aer.eu/traineeship?id=125754",
+    "https://eurodyssey.aer.eu/traineeship?id=145188",
+    "https://eurodyssey.aer.eu/traineeship?id=157450",
+    "https://eurodyssey.aer.eu/traineeship?id=158330"
+  ]
+}
