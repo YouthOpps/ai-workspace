@@ -1,0 +1,37 @@
+name: L’Oréal careers canonical sitemap
+
+on:
+  push:
+    branches:
+      - qa/468-loreal-canonical-sitemap
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  contact:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.run_attempt == 1
+    name: First contact loreal468canonical
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: loreal-careers-publisher
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Capture the bounded publisher responses
+        env:
+          SOURCE: loreal468canonical
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/admission-first-contact/run.py
+      - name: Retain outcome, source state and encrypted complete evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: canonical-sitemap-loreal468canonical-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/admissions-first-contact/loreal468canonical/
+          if-no-files-found: error
+          retention-days: 3
