@@ -3,9 +3,8 @@
   "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
   "sources": {
     "loreal468": {
-      "decision": null,
       "env_prefix": "LOREAL468",
-      "foundation_sha256": "9b348b9603586736841cab3ccf899cc66c1678f86b02d5274d8d0dcc68085eb7",
+      "foundation_sha256": "6486b311b6d4bc4bf928c8d43f1d1c2cac19f7b9df46b5289bdf204f8398dce3",
       "history_sha256": "7db0e41ae56d694c2572a73e288a791e13826cd5d72c12fbfb766be38ae4ce29",
       "issue": 468,
       "urls": [
