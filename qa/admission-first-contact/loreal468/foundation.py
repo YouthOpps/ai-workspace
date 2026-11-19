@@ -913,7 +913,6 @@ def robot_policy(journal, body, status):
             saw_rule = True
             rules.append((name, value))
         elif agents and name in ('crawl-delay', 'request-rate'):
-            saw_rule = True
             directives.append((name, value))
     if agents:
         groups.append((agents, rules, directives))
