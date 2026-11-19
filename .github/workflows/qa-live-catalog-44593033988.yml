@@ -1,0 +1,52 @@
+name: Verify the consolidated YouthOpps live release
+
+on:
+  push:
+    branches: [qa/live-catalog-44593033988]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: 080144323b5bc1e6b8eb3868a00eee8059102d25
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: cb89c65feea8391d1cc39362678ff07647ae3d22
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build the reviewed site against the exact published data
+        working-directory: website
+        env:
+          DATA_PATH: ${{ github.workspace }}/data-source/datas
+        run: npm run build
+      - name: Compare published site to the exact data revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-live-catalog-44593033988.py
+          cb89c65feea8391d1cc39362678ff07647ae3d22 at-fulbright-austria au-anu-international-admissions be-fulbright-belgium-luxembourg be-wbi dk-study-in-denmark dk-university-of-copenhagen es-uc3m-admissions fr-universite-de-strasbourg-m1-admissions pl-frse us-nasa-internships yildiz-pladis-careers youth-for-europe cern-summer-studentships ch-eth-zurich-summer-research-fellowship fr-ens-paris-international-selection erasmus-mundus-glodep at-grants-at
+          --website-revision 080144323b5bc1e6b8eb3868a00eee8059102d25
+          --output ${{ runner.temp }}/live-catalog-44593033988.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-catalog-44593033988
+          path: ${{ runner.temp }}/live-catalog-44593033988.json
+          if-no-files-found: error
+          retention-days: 7
