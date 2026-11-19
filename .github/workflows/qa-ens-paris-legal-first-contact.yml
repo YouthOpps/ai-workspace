@@ -1,0 +1,43 @@
+name: ENS Paris legal-notice first contact
+
+on:
+  push:
+    branches:
+      - qa/ens-paris-legal-first-contact
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  contact:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.event.deleted == false && github.run_attempt == 1
+    name: First contact ensparis458legal
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: youthopps-ens-paris-publisher-v1
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-pipeline
+          ref: main
+          path: .ens-paris-pipeline
+          persist-credentials: false
+      - name: Capture exact ENS Paris robots and legal notice
+        env:
+          SOURCE: ensparis458legal
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/ens-paris-legal-first-contact/run.py
+      - name: Retain outcome, state and encrypted evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ensparis458legal-first-contact-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/admissions-first-contact/ensparis458legal/
+          if-no-files-found: error
+          retention-days: 7
