@@ -61,7 +61,7 @@ def prepare(source, row, directory):
     )
     new_gate = (
         b"    from hosted_identity import verify_run\n"
-        + f"    if verify_run({source!r})['decision'] != selected:\n".encode("ascii")
+        + f"    if verify_run({source!r})[0]['decision'] != selected:\n".encode("ascii")
         + b"        raise Stop('Exact first-contact grant changed mid-run')"
     )
     bindings = (
@@ -149,10 +149,7 @@ def run():
         "attempt": display(os.environ.get("GITHUB_RUN_ATTEMPT")),
     }))
     try:
-        scope = verify_run(source)
-        manifest = json.loads((ROOT / "scope-OFF.json").read_bytes())
-        require(manifest["enabled"] is True and set(manifest["sources"]) == SOURCES,
-                "First contact is OFF")
+        scope, manifest = verify_run(source)
         row = dict(manifest["sources"][source], decision=scope["decision"])
         require(row["decision"].startswith(
             f"https://github.com/YouthOpps/data-pipeline/issues/{row['issue']}#issuecomment-"),

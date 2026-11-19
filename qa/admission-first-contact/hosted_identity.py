@@ -102,7 +102,7 @@ def poll_active(path, immutable, kind, select=lambda rows: rows):
         time.sleep(POLL_GAP_SECONDS)
 
 
-def verify_checkout(head, source):
+def verify_checkout(head, source, scope_bytes):
     """Compare the reviewed inputs to the actual authorized Git revision."""
     workspace = Path(os.environ["GITHUB_WORKSPACE"]).resolve()
     relative_root = ROOT.relative_to(workspace)
@@ -120,6 +120,8 @@ def verify_checkout(head, source):
         local = workspace / relative
         require(local.resolve() == local and local.read_bytes() == committed,
                 f"Checked-out input differs: {relative}")
+        if relative == relative_root / "scope-OFF.json":
+            require(scope_bytes == committed, "Scope bytes used to authorize differ from the commit")
 
 
 def verify_grant(head, manifest_bytes, run_created):
@@ -193,6 +195,7 @@ def verify_run(source):
     sha, run_text = env["GITHUB_SHA"], env["GITHUB_RUN_ID"]
     require(re.fullmatch(r"[0-9a-f]{40}", sha) and re.fullmatch(r"[1-9][0-9]*", run_text),
             "Invalid hosted identity")
+    require(env.get("GITHUB_WORKFLOW_SHA") == sha, "Workflow revision differs from job head")
     check_fields(event, {
         "created": True, "deleted": False, "ref": REF, "before": "0" * 40,
         "after": sha, "repository.full_name": REPOSITORY, "sender.id": MAINTAINER_ID,
@@ -227,10 +230,13 @@ def verify_run(source):
     manifest = json.loads(raw)
     require(manifest["enabled"] is True and set(manifest["sources"]) == SOURCES,
             "First contact is OFF")
-    verify_checkout(sha, source)
+    row = manifest["sources"][source]
+    require(row.get("issue") == 466 and "decision" not in row, "Invalid committed maintainer gate")
+    verify_checkout(sha, source, raw)
     decision = verify_grant(sha, raw, run.get("created_at"))
     return {
         "repository": REPOSITORY, "ref": REF, "workflow": WORKFLOW, "head_sha": sha,
         "run_id": run_id, "run_attempt": 1, "workflow_id": run["workflow_id"],
         "job_id": job["id"], "source": source, "decision": decision,
-    }
+        "scope_sha256": hashlib.sha256(raw).hexdigest(),
+    }, manifest
