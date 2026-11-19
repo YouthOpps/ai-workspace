@@ -1,0 +1,134 @@
+{
+  "carry": {
+    "blocked": false,
+    "completed": 1795079152.5454469,
+    "completed_logical_id": "4c73f63f990943d3925770682cfb2896",
+    "completed_physical_id": "264139b99e464901ace1e56ff6eb2b47",
+    "family": "youthopps-loreal-careers-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795079152.5454469,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "4c73f63f990943d3925770682cfb2896",
+    "not_before": 1795079164.745447,
+    "observed_at": 1795079152.5454469,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "264139b99e464901ace1e56ff6eb2b47",
+    "physical_pending": false,
+    "physical_started": 1795079150.9773407,
+    "policy": {
+      "body_sha256": "7fb95a2afe090d45054483af9ff9158490361a79f62b738b48a2772506f822d1",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://careers.loreal.com/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795079134.1527157,
+      1795079135.5604587,
+      1795079150.9773407,
+      1795079152.4012423
+    ],
+    "target": "https://careers.loreal.com/en/terms-of-use"
+  },
+  "carry_sha256": "c612226f537fed0e0c45da0f885896cdcc21c5132507aa143e10003430c42478",
+  "known_producer_absence_reviewed_at": "483b219c403414050f4c5868e8a93e990f9376d5",
+  "original_state": {
+    "blocked": false,
+    "completed": 1795079152.5454469,
+    "completed_logical_id": "4c73f63f990943d3925770682cfb2896",
+    "completed_physical_id": "264139b99e464901ace1e56ff6eb2b47",
+    "family": "youthopps-loreal-careers-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795079152.5454469,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "4c73f63f990943d3925770682cfb2896",
+    "not_before": 1795079164.745447,
+    "observed_at": 1795079152.5454469,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "264139b99e464901ace1e56ff6eb2b47",
+    "physical_pending": false,
+    "physical_started": 1795079150.9773407,
+    "policy": {
+      "body_sha256": "7fb95a2afe090d45054483af9ff9158490361a79f62b738b48a2772506f822d1",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://careers.loreal.com/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795079134.1527157,
+      1795079150.9773407
+    ],
+    "target": "https://careers.loreal.com/en/terms-of-use"
+  },
+  "predecessor": {
+    "archive_sha256": "c9dc7dd8634c141a960012eb433dc6649fc3132fe2920ff4cebf40fcc561bdd6",
+    "artifact": {
+      "ciphertext_sha256": "8c878f0f3da9c93a5b4ce61d101af737a50b2b599d60ed46439e39a74264a57f",
+      "id": 14513483318,
+      "name": "first-contact-loreal468-44493047521-1",
+      "size_in_bytes": 118349
+    },
+    "decision": "https://github.com/YouthOpps/data-pipeline/issues/468#issuecomment-7004604289",
+    "requests": [
+      {
+        "body_bytes": 219,
+        "body_read_and_response_closed": true,
+        "body_sha256": "7fb95a2afe090d45054483af9ff9158490361a79f62b738b48a2772506f822d1",
+        "completion": 90.711609068,
+        "request_id": "8efd9d09c35d4af2a6c11386e475656c",
+        "start": 90.478767711,
+        "status": 200,
+        "url": "https://careers.loreal.com/robots.txt",
+        "wall_completion": 1795079135.7932992,
+        "wall_start": 1795079135.5604587
+      },
+      {
+        "body_bytes": 54967,
+        "body_read_and_response_closed": true,
+        "body_sha256": "06c006745740f3dc554c00e0843308f1cc93409dac9afd8a5b2a81ba769371bd",
+        "completion": 107.463360576,
+        "request_id": "264139b99e464901ace1e56ff6eb2b47",
+        "start": 107.319551568,
+        "status": 200,
+        "url": "https://careers.loreal.com/en/terms-of-use",
+        "wall_completion": 1795079152.5450513,
+        "wall_start": 1795079152.4012423
+      }
+    ],
+    "scope": {
+      "created_at": "2026-11-19T09:04:22Z",
+      "head_sha": "8740993b9f08b6cbf502657b1baf78ae7dcd8328",
+      "job_id": 135453244632,
+      "ref": "refs/heads/qa/loreal-careers-terms-first-contact",
+      "repository": "YouthOpps/ai-workspace",
+      "run_attempt": 1,
+      "run_id": 44493047521,
+      "scope_sha256": "44fb45ce56f7c7cb28ee491cd9192b0e44071d71743e061664eaa5c105b1b745",
+      "source": "loreal468",
+      "workflow": ".github/workflows/qa-loreal-careers-terms-first-contact.yml",
+      "workflow_id": 423613642
+    },
+    "state_sha256": "efed01b4594535a1df38764f808fd28a3aa2311ab7f4df3d8a2aa28149f802a1"
+  },
+  "request_urls": [
+    "https://careers.loreal.com/robots.txt",
+    "https://careers.loreal.com/en/job/london/rewards-industrial-placement-2027-human-resources-6-months/3456/46795487872"
+  ]
+}
