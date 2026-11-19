@@ -1,9 +1,9 @@
-name: Eurodyssey traineeship detail recovery
+name: Eurodyssey verified canonical offer 156335
 
 on:
   push:
     branches:
-      - qa/eurodyssey-internships-details-recovery
+      - qa/eurodyssey-internships-canonical-156335
 
 permissions:
   contents: read
@@ -37,7 +37,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: eurodyssey-detail-recovery-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/eurodyssey-internships-details-recovery/eurodyssey/
+          name: eurodyssey-canonical-156335-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/eurodyssey-internships-canonical-156335/eurodyssey/
           if-no-files-found: error
           retention-days: 7

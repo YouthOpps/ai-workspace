@@ -1,7 +1,9 @@
 """OFF two-request university research foundation, not a source adapter."""
 
+import base64
 import contextlib
 import copy
+from io import BytesIO
 from datetime import datetime, timedelta, timezone
 from email.utils import parsedate_to_datetime
 import fcntl
@@ -20,13 +22,14 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
+from zipfile import ZipFile
 
 
 FAMILY = 'youthopps-eurodyssey-publisher-v1'
 USER_AGENT = 'YouthOppsBot/1.0 (+https://youthopps.org/bot/)'
 ROBOTS = 'https://eurodyssey.aer.eu/robots.txt'
-PREDECESSOR_TARGET = 'https://eurodyssey.aer.eu/traineeships/'
-DETAILS = ('https://eurodyssey.aer.eu/traineeship?id=156335', 'https://eurodyssey.aer.eu/traineeship?id=125754', 'https://eurodyssey.aer.eu/traineeship?id=145188', 'https://eurodyssey.aer.eu/traineeship?id=157450', 'https://eurodyssey.aer.eu/traineeship?id=158330')
+PREDECESSOR_TARGET = 'https://eurodyssey.aer.eu/traineeship?id=156335'
+DETAILS = ('https://eurodyssey.aer.eu/traineeship/?id=156335',)
 REQUEST_URLS = (ROBOTS, *DETAILS)
 URLS = (*REQUEST_URLS, PREDECESSOR_TARGET)
 ROOT_INITIALIZATION_DECISION = None
@@ -171,19 +174,22 @@ def checked_close(handles, primary=None):
 
 def initial_state():
     history = json.loads((WORK / 'history-manifest.json').read_bytes())
-    original = validate(history['original_state'])
-    restored = validate(history['carry'])
-    evidence = history['predecessor']
-    observed = [row['wall_start'] for row in evidence['requests']]
-    expected = {**original, 'starts': sorted(set(original['starts'] + observed))}
-    if (digest(canonical(original)) != evidence['state_sha256']
-            or digest(canonical(restored)) != history['carry_sha256']
-            or restored != expected or len(observed) != 2
+    packed = base64.b64decode(history['settlement_archive_base64'], validate=True)
+    if len(packed) != 1523 or digest(packed) != '7898b91ddfb900617052f6fa8a14b8f6760f71409d2a4329c0057fad5a99c6f1':
+        raise Stop('Exact signed settlement archive differs')
+    with ZipFile(BytesIO(packed)) as archive:
+        if sorted(archive.namelist()) != ['provenance.json', 'state.json']:
+            raise Stop('Exact settlement archive inventory differs')
+        raw_state = archive.read('state.json')
+        raw_provenance = archive.read('provenance.json')
+    state = validate(json.loads(raw_state))
+    if (raw_state != canonical(state) or digest(raw_state) != 'd2c58a3f072eaafedfa78e36a80c2fab2e3de6758a4fe47e9b958ee5d77391cd'
+            or digest(raw_provenance) != '9400ca842bda71e114575701726ff19e7da64ea47a834e902aea9972eb3e32cf'
             or tuple(history['request_urls']) != REQUEST_URLS
-            or restored['target'] != PREDECESSOR_TARGET
-            or restored['blocked'] or restored['physical_pending'] or restored['in_flight']):
+            or state['target'] != PREDECESSOR_TARGET
+            or state['blocked'] or state['physical_pending'] or state['in_flight']):
         raise Stop('Exact settled Eurodyssey predecessor state is required')
-    return restored
+    return state
 
 
 def validate(value):

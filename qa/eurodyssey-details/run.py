@@ -147,7 +147,7 @@ def encrypt(recipient, raw):
 def run():
     source = os.environ.get("SOURCE")
     require(source in SOURCES, "Unknown contact source")
-    output = Path(os.environ["RUNNER_TEMP"]) / "eurodyssey-internships-details-recovery" / source
+    output = Path(os.environ["RUNNER_TEMP"]) / "eurodyssey-internships-canonical-156335" / source
     output.mkdir(parents=True, exist_ok=False, mode=0o700)
     write_once(output / "preflight.json", canonical({
         "classification": "unverified_preflight_no_collection_authority",

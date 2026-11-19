@@ -16,8 +16,8 @@ from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = "YouthOpps/ai-workspace"
-WORKFLOW = ".github/workflows/qa-eurodyssey-internships-details-recovery.yml"
-BRANCH = "qa/eurodyssey-internships-details-recovery"
+WORKFLOW = ".github/workflows/qa-eurodyssey-internships-canonical-156335.yml"
+BRANCH = "qa/eurodyssey-internships-canonical-156335"
 REF = "refs/heads/" + BRANCH
 SOURCES = frozenset(("eurodyssey",))
 STARTUP_STATES = frozenset(("queued", "requested", "pending", "waiting"))
@@ -276,7 +276,9 @@ def verify_pipeline_inventory(scope):
                         (scope["workflow_id"], WORKFLOW),
                         (423622763, '.github/workflows/qa-eurodyssey-internships-first-contact.yml'),
                         (423700844, '.github/workflows/qa-eurodyssey-internships-details.yml'),
-                        (423706336, '.github/workflows/qa-eurodyssey-internships-control-diagnostics.yml'))):
+                        (423706336, '.github/workflows/qa-eurodyssey-internships-control-diagnostics.yml'),
+                        (423716738, '.github/workflows/qa-eurodyssey-internships-details-recovery.yml'),
+                        (423729692, '.github/workflows/qa-eurodyssey-received-redirect-settlement.yml'))):
                     continue
                 require(not WORKFLOW_COLLISION.search(workflow["name"] + " " + workflow["path"]),
                         "Possible Eurodyssey workflow history")
@@ -288,8 +290,8 @@ def verify_pipeline_inventory(scope):
 
 
 def verify_approval(scope, scope_sha256):
-    head_line = f"Approved Eurodyssey detail recovery research head {scope['head_sha']}"
-    scope_line = f"Eurodyssey detail recovery research scope {scope_sha256}"
+    head_line = f"Approved Eurodyssey canonical 156335 research head {scope['head_sha']}"
+    scope_line = f"Eurodyssey canonical 156335 research scope {scope_sha256}"
     matches = []
     for page in range(1, 6):
         rows = github_json(f"/issues/{ISSUE}/comments?per_page=100&page={page}", PIPELINE)
@@ -448,6 +450,53 @@ def verify_diagnostic_workflow(history):
     }, 'Exact GitHub-only diagnostic run differs')
 
 
+def verify_settled_predecessors():
+    """Require both exact retired latest owners before issuing any request."""
+    expected_runs = (
+        (423716738, 44509954278, 135511280645, '8ae19d42ce075906e15950af4b73ceda48df27f1',
+         'qa/eurodyssey-internships-details-recovery', '.github/workflows/qa-eurodyssey-internships-details-recovery.yml',
+         'failure', 'First contact eurodyssey', 14521661947,
+         'eurodyssey-detail-recovery-44509954278-1', 55336, 'c0840039ba8eebec76a177186fba67ad759800921e8427a9fd4ccb8f38856d3d'),
+        (423729692, 44511977390, 135518239284, '0bc1e5b4278dec905612821a8b6be6f96e889a38',
+         'qa/460-eurodyssey-received-redirect-settlement',
+         '.github/workflows/qa-eurodyssey-received-redirect-settlement.yml',
+         'success', 'settle', 14522498549, 'eurodyssey-redirect-settlement',
+         1523, '7898b91ddfb900617052f6fa8a14b8f6760f71409d2a4329c0057fad5a99c6f1'),
+    )
+    for (workflow, run_id, job_id, head, branch, path, conclusion, job_name,
+         artifact_id, artifact_name, size, archive_digest) in expected_runs:
+        expected = {
+            'id': run_id, 'workflow_id': workflow, 'run_attempt': 1, 'event': 'push',
+            'head_sha': head, 'head_branch': branch, 'path': path,
+            'status': 'completed', 'conclusion': conclusion,
+            'repository.full_name': REPOSITORY, 'head_repository.full_name': REPOSITORY,
+            'actor.id': ACTOR_ID, 'actor.type': 'User',
+            'triggering_actor.id': ACTOR_ID, 'triggering_actor.type': 'User',
+        }
+        check_fields(github_json(f'/actions/workflows/{workflow}'), {
+            'id': workflow, 'path': path, 'state': 'disabled_manually',
+        }, 'Exact original or settlement workflow retirement differs')
+        check_fields(github_json(f'/actions/runs/{run_id}/attempts/1'), expected,
+                     'Exact original or settlement run differs')
+        inventory = github_json(f'/actions/workflows/{workflow}/runs?per_page=2')
+        require(inventory['total_count'] == 1 and len(inventory['workflow_runs']) == 1,
+                'Exact original or settlement run inventory differs')
+        check_fields(inventory['workflow_runs'][0], expected, 'Exact latest run history differs')
+        jobs = github_json(f'/actions/runs/{run_id}/attempts/1/jobs?per_page=10')
+        require(jobs['total_count'] == 1 and len(jobs['jobs']) == 1, 'Exact latest job inventory differs')
+        check_fields(jobs['jobs'][0], {
+            'id': job_id, 'run_id': run_id, 'head_sha': head, 'name': job_name,
+            'status': 'completed', 'conclusion': conclusion,
+        }, 'Exact latest job differs')
+        rows = github_json(f'/actions/runs/{run_id}/artifacts?per_page=2')
+        require(rows['total_count'] == 1 and len(rows['artifacts']) == 1,
+                'Exact latest artifact inventory differs')
+        check_fields(rows['artifacts'][0], {
+            'id': artifact_id, 'name': artifact_name, 'size_in_bytes': size, 'expired': False,
+            'digest': 'sha256:' + archive_digest, 'workflow_run.id': run_id, 'workflow_run.head_sha': head,
+        }, 'Exact latest artifact differs')
+
+
 def verify_authority(source):
     raw = (ROOT / "scope-OFF.json").read_bytes()
     manifest = json.loads(raw)
@@ -465,6 +514,7 @@ def verify_authority(source):
     history = json.loads(history_raw)
     verify_failed_attempt(history)
     verify_diagnostic_workflow(history)
+    verify_settled_predecessors()
     scope["pipeline_expected_head"] = manifest["pipeline_expected_head"]
     scope["pipeline_inventory_head"] = verify_pipeline_inventory(scope)
     return scope, manifest, row

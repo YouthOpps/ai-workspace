@@ -39,7 +39,7 @@
     "target": "https://eurodyssey.aer.eu/traineeships/"
   },
   "carry_sha256": "e2c3815f279e1a83a7c8451cb419fa7a2d83ed28f927784daf09763774a6415e",
-  "decision_scope": "Continue the retired Eurodyssey owner into five actual offer links",
+  "decision_scope": "Review only the one officially observed canonical Eurodyssey offer 156335",
   "failed_preflight_archive_base64": "UEsDBBQACAAIAMRUc10AAAAAAAAAAAAAAAAWAAAAcHJlZmxpZ2h0LWZhaWx1cmUuanNvbhXIMQqEMBAF0Lv82hPYC5Zb2A8xTvBDcGQmKbLL3l185fsh1xTBwpwa7cKMklj1kF2LuQovNqbKr7qYy933yjjVMUHdzaWNWzFj3bbP8gYmhHXPb2p3O0aEDvwfUEsHCEJO60FcAAAAagAAAFBLAwQUAAgACADDVHNdAAAAAAAAAAAAAAAADgAAAHByZWZsaWdodC5qc29uRcxBboQwEETRu9SaEUOAAL6M1djtuCViE7c9Ehrl7hGrbGr1671BtfL3WWEwoIM7SFWCOKqSEwxaenGRIOztWTgc8hWrTdm6fBzs7shSqzEXqRc68IvTbZ1NIzpEJm81EgzCOm7bxzDx7PZ9fg7jsKyjp311biYmCvvkN/KMDoUDzL3a34D2P9RzK9lfqnw9JFUuSaOc+vBcSQ69Ty1Z8TCYpvm5TPMyfo7ooLkVxzD4B/D7B1BLBwj8kxOatQAAAPYAAABQSwECLQMUAAgACADEVHNdQk7rQVwAAABqAAAAFgAAAAAAAAAAACAApIEAAAAAcHJlZmxpZ2h0LWZhaWx1cmUuanNvblBLAQItAxQACAAIAMNUc138kxOatQAAAPYAAAAOAAAAAAAAAAAAIACkgaAAAABwcmVmbGlnaHQuanNvblBLBQYAAAAAAgACAIAAAACRAQAAAAA=",
   "github_only_diagnostic": {
     "control_routes_http_200": 16,
@@ -135,12 +135,20 @@
     },
     "state_sha256": "44344d15cfeff17ffe491e6a23b6661054df7dd1f77fb192d6098b14d86e3a65"
   },
-  "request_urls": [
+  "prior_reviewed_request_urls": [
     "https://eurodyssey.aer.eu/robots.txt",
     "https://eurodyssey.aer.eu/traineeship?id=156335",
     "https://eurodyssey.aer.eu/traineeship?id=125754",
     "https://eurodyssey.aer.eu/traineeship?id=145188",
     "https://eurodyssey.aer.eu/traineeship?id=157450",
     "https://eurodyssey.aer.eu/traineeship?id=158330"
-  ]
+  ],
+  "request_urls": [
+    "https://eurodyssey.aer.eu/robots.txt",
+    "https://eurodyssey.aer.eu/traineeship/?id=156335"
+  ],
+  "settlement_archive_base64": "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",
+  "settlement_archive_sha256": "7898b91ddfb900617052f6fa8a14b8f6760f71409d2a4329c0057fad5a99c6f1",
+  "settlement_provenance_sha256": "9400ca842bda71e114575701726ff19e7da64ea47a834e902aea9972eb3e32cf",
+  "settlement_state_sha256": "d2c58a3f072eaafedfa78e36a80c2fab2e3de6758a4fe47e9b958ee5d77391cd"
 }
