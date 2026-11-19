@@ -1,0 +1,17 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "cern459details": {
+      "env_prefix": "CERN459DETAILS",
+      "foundation_sha256": "c784fdabe67945c4ab99e158c6bb12e5bf573adcf6e1dbceb0e739627b7b54ec",
+      "history_sha256": "00aaf3d5a6bc1e718481f3aad10fbe84d67d6a299784a138377796b44cb0f998",
+      "issue": 459,
+      "urls": [
+        "https://careers.cern/robots.txt",
+        "https://careers.cern/jobs/cern-summer-student-programme-2026-member-and-non-member-state/",
+        "https://careers.cern/jobs/cern-openlab-summer-student-programme-2026/"
+      ]
+    }
+  }
+}

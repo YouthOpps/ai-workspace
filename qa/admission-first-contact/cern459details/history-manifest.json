@@ -1,0 +1,136 @@
+{
+  "carry": {
+    "blocked": false,
+    "completed": 1795077976.2277768,
+    "completed_logical_id": "613061c16be14c1096f32255027457d7",
+    "completed_physical_id": "53af4f1ede0842cfa950532787c1f710",
+    "family": "youthopps-cern-careers-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795077976.2277768,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "613061c16be14c1096f32255027457d7",
+    "not_before": 1795077988.4277768,
+    "observed_at": 1795077976.2277768,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "53af4f1ede0842cfa950532787c1f710",
+    "physical_pending": false,
+    "physical_started": 1795077974.3256795,
+    "policy": {
+      "body_sha256": "7168a82a1778b64d277695b5dec8dfb2fbc13e659dd1d942cd735918dd44d7ad",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://careers.cern/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795077957.7913802,
+      1795077958.6784432,
+      1795077974.3256795,
+      1795077975.27699
+    ],
+    "target": "https://careers.cern/programmes/summer-studentship/"
+  },
+  "carry_sha256": "41849a03926bc8a363d230086dbdad4a69b0035e815db2909e7d8d03e94b8755",
+  "decision_scope": "Retire the predecessor before reading the two linked CERN detail pages",
+  "known_producer_absence_reviewed_at": "1dcca6beb3023cf918f50cb87f68f3522b9978b2",
+  "original_state": {
+    "blocked": false,
+    "completed": 1795077976.2277768,
+    "completed_logical_id": "613061c16be14c1096f32255027457d7",
+    "completed_physical_id": "53af4f1ede0842cfa950532787c1f710",
+    "family": "youthopps-cern-careers-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795077976.2277768,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "613061c16be14c1096f32255027457d7",
+    "not_before": 1795077988.4277768,
+    "observed_at": 1795077976.2277768,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "53af4f1ede0842cfa950532787c1f710",
+    "physical_pending": false,
+    "physical_started": 1795077974.3256795,
+    "policy": {
+      "body_sha256": "7168a82a1778b64d277695b5dec8dfb2fbc13e659dd1d942cd735918dd44d7ad",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://careers.cern/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795077957.7913802,
+      1795077974.3256795
+    ],
+    "target": "https://careers.cern/programmes/summer-studentship/"
+  },
+  "predecessor": {
+    "archive_sha256": "df3a4524f5b91f302ca338b9a2250c9549e5e7e80f14f13fbb9b91aef57494de",
+    "artifact": {
+      "ciphertext_sha256": "6cf2520af0237635576f2c711e3ea9b930ff1fde2e58fd2be3536c9a86b3d90d",
+      "id": 14512830556,
+      "name": "first-contact-cern459-44490215147-1",
+      "size_in_bytes": 324598
+    },
+    "decision": "https://github.com/YouthOpps/data-pipeline/issues/459#issuecomment-7004200134",
+    "requests": [
+      {
+        "body_bytes": 1654,
+        "body_read_and_response_closed": true,
+        "body_sha256": "7168a82a1778b64d277695b5dec8dfb2fbc13e659dd1d942cd735918dd44d7ad",
+        "completion": 86.429299474,
+        "request_id": "05b13b228033492288c519946b6335dc",
+        "start": 84.941876153,
+        "status": 200,
+        "url": "https://careers.cern/robots.txt",
+        "wall_completion": 1795077960.1658666,
+        "wall_start": 1795077958.6784432
+      },
+      {
+        "body_bytes": 208681,
+        "body_read_and_response_closed": true,
+        "body_sha256": "e2a57cfac2c8124b8f9d630ce69f1c22de8e14331d35473bae984a24b5afdfb6",
+        "completion": 102.490502801,
+        "request_id": "53af4f1ede0842cfa950532787c1f710",
+        "start": 101.540423302,
+        "status": 200,
+        "url": "https://careers.cern/programmes/summer-studentship/",
+        "wall_completion": 1795077976.2270708,
+        "wall_start": 1795077975.27699
+      }
+    ],
+    "scope": {
+      "created_at": "2026-11-19T08:44:47Z",
+      "head_sha": "22345cfc33dacc755f5e1edf9e816caf65719a61",
+      "job_id": 135443638985,
+      "ref": "refs/heads/qa/cern-summer-studentship-first-contact",
+      "repository": "YouthOpps/ai-workspace",
+      "run_attempt": 1,
+      "run_id": 44490215147,
+      "scope_sha256": "3eccef328743500507a4292728fe52ddf59930e93e965246109732f985ec17f9",
+      "source": "cern459",
+      "workflow": ".github/workflows/qa-cern-summer-studentship-first-contact.yml",
+      "workflow_id": 423596095
+    },
+    "state_sha256": "6065dba4b5468a254dd3096217d64fc8ab5956b0f44931493438544167d2b1bd"
+  },
+  "request_urls": [
+    "https://careers.cern/robots.txt",
+    "https://careers.cern/jobs/cern-summer-student-programme-2026-member-and-non-member-state/",
+    "https://careers.cern/jobs/cern-openlab-summer-student-programme-2026/"
+  ]
+}
