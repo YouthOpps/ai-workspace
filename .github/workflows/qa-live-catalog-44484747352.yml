@@ -1,0 +1,47 @@
+name: Verify YouthOpps live catalogue release 44484747352
+
+on:
+  push:
+    branches: [qa/live-catalog-44484747352]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: c74cde5404d0362603047f42d40b73b475cf2d6e
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: acc4db6790f290a7a0dcc4485ca9bb910a90694a
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Compare published site to the exact data revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-live-catalog-44484747352.py
+          acc4db6790f290a7a0dcc4485ca9bb910a90694a cz-charles-university nestle ibm se-arbetsformedlingen-jobsearch be-wbi dk-university-of-copenhagen hu-fulbright-hungary at-university-of-vienna yildiz-pladis-careers pl-frse dk-fulbright-center de-bmw-group volkswagen-group
+          --website-revision c74cde5404d0362603047f42d40b73b475cf2d6e
+          --output ${{ runner.temp }}/live-catalog-44484747352.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-catalog-44484747352
+          path: ${{ runner.temp }}/live-catalog-44484747352.json
+          if-no-files-found: error
+          retention-days: 7
