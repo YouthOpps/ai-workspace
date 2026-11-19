@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import time
 import urllib.parse
 import urllib.request
@@ -15,8 +16,12 @@ WORKFLOW = ".github/workflows/qa-cern-summer-studentship-first-contact.yml"
 BRANCH = "qa/cern-summer-studentship-first-contact"
 REF = "refs/heads/" + BRANCH
 SOURCES = frozenset(("cern459",))
+PIPELINE = "YouthOpps/data-pipeline"
+ISSUE = 459
+SUBTREE = "qa/admission-first-contact"
 PIPELINE_SHA = "1dcca6beb3023cf918f50cb87f68f3522b9978b2"
 MAINTAINER_ID = 12278069
+UTC_SECOND = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z")
 STARTUP_STATES = frozenset(("queued", "requested", "pending", "waiting"))
 STATE_POLLS = 5
 POLL_GAP_SECONDS = 2
@@ -101,37 +106,65 @@ def poll_active(path, immutable, kind, select=lambda rows: rows):
         time.sleep(POLL_GAP_SECONDS)
 
 
-def verify_grant(manifest, source):
-    """Bind the explicit source decision to the frozen OFF scope."""
-    row = manifest["sources"][source]
-    decision = row["decision"]
-    match = re.fullmatch(
-        r"https://github\.com/YouthOpps/data-pipeline/issues/459#issuecomment-([1-9][0-9]*)",
-        decision or "",
+def exact_checkout(head, source):
+    workspace = Path(os.environ["GITHUB_WORKSPACE"])
+    required = (
+        WORKFLOW, f"{SUBTREE}/hosted_identity.py", f"{SUBTREE}/run.py",
+        f"{SUBTREE}/scope-OFF.json", f"{SUBTREE}/reviewer.pem",
+        f"{SUBTREE}/{source}/foundation.py", f"{SUBTREE}/{source}/history-manifest.json",
     )
-    require(manifest["enabled"] is True and set(manifest["sources"]) == SOURCES
-            and match is not None, "First contact is OFF or unreviewed")
-    off = json.loads(json.dumps(manifest))
-    off["enabled"] = False
-    off["sources"][source]["decision"] = None
-    canonical = json.dumps(off, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
-    digest = hashlib.sha256(canonical).hexdigest()
-    result = public_pipeline_json(f"/issues/comments/{match[1]}")
-    require(
-        result.get("html_url") == decision
-        and result.get("issue_url") == "https://api.github.com/repos/YouthOpps/data-pipeline/issues/459"
-        and result.get("user", {}).get("id") == MAINTAINER_ID
-        and result.get("created_at") == result.get("updated_at")
-        and type(result.get("created_at")) is str
-        and f"Approved CERN first-contact scope {digest}" in result.get("body", "").splitlines(),
-        "Exact maintainer decision is absent or changed",
-    )
+    checked_out = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=workspace, timeout=10, text=True,
+    ).strip()
+    require(checked_out == head, "Checkout head differs from the authorized Actions run")
+    for relative in required:
+        committed = subprocess.check_output(
+            ["git", "show", f"{head}:{relative}"], cwd=workspace, timeout=10,
+        )
+        local = workspace / relative
+        require(local.resolve() == local and local.read_bytes() == committed,
+                "Immutable checked-out input differs: " + relative)
+
+
+def verify_approval(scope, scope_sha256):
+    head_line = f"Approved CERN research head {scope['head_sha']}"
+    scope_line = f"CERN research scope {scope_sha256}"
+    matches = []
+    for page in range(1, 6):
+        rows = public_pipeline_json(f"/issues/{ISSUE}/comments?per_page=100&page={page}")
+        require(type(rows) is list, "Invalid approval comment inventory")
+        for comment in rows:
+            user = comment.get("user") or {}
+            if user.get("id") != MAINTAINER_ID or user.get("type") != "User":
+                continue
+            lines = (comment.get("body") or "").splitlines()
+            if head_line not in lines or scope_line not in lines:
+                continue
+            comment_id = comment.get("id")
+            url = f"https://github.com/{PIPELINE}/issues/{ISSUE}#issuecomment-{comment_id}"
+            created = comment.get("created_at")
+            require(
+                type(comment_id) is int and comment_id > 0
+                and comment.get("html_url") == url
+                and comment.get("issue_url") == f"https://api.github.com/repos/{PIPELINE}/issues/{ISSUE}"
+                and type(created) is str and UTC_SECOND.fullmatch(created)
+                and created < scope["created_at"] and comment.get("updated_at") == created
+                and lines.count(head_line) == lines.count(scope_line) == 1,
+                "Exact maintainer grant is late, altered or malformed",
+            )
+            matches.append(url)
+        if len(rows) < 100:
+            break
+    else:
+        raise RuntimeError("Incomplete approval comment pagination")
+    require(len(matches) == 1, "Expected exactly one pre-run unedited maintainer grant")
+    return matches[0]
 
 
 def public_pipeline_json(path):
     """Read the public control plane without sending the job's repository token."""
     request = urllib.request.Request(
-        "https://api.github.com/repos/YouthOpps/data-pipeline" + path,
+        "https://api.github.com/repos/" + PIPELINE + path,
         headers={"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
     )
     with urllib.request.build_opener(RejectRedirect()).open(request, timeout=15) as response:
@@ -163,14 +196,16 @@ def verify_run(source):
             "Invalid hosted identity")
     check_fields(event, {
         "created": True, "deleted": False, "ref": REF, "before": "0" * 40,
-        "after": sha, "repository.full_name": REPOSITORY, "sender.id": MAINTAINER_ID,
+        "after": sha, "repository.full_name": REPOSITORY,
+        "sender.id": MAINTAINER_ID, "sender.type": "User",
     }, "Not an exact first branch creation")
     run_id = int(run_text)
     run = poll_active(f"/actions/runs/{run_id}", {
         "id": run_id, "event": "push", "run_attempt": 1, "head_branch": BRANCH,
         "head_sha": sha, "path": WORKFLOW, "head_repository.full_name": REPOSITORY,
         "repository.full_name": REPOSITORY, "actor.id": MAINTAINER_ID,
-        "triggering_actor.id": MAINTAINER_ID,
+        "triggering_actor.id": MAINTAINER_ID, "actor.type": "User",
+        "triggering_actor.type": "User",
     }, "Run API")
     branch = urllib.parse.quote(BRANCH, safe="")
     history = github_json(f"/actions/runs?branch={branch}&event=push&per_page=2")
@@ -190,9 +225,24 @@ def verify_run(source):
             "Unexpected current workflow or job identifier")
     require(public_pipeline_json("/branches/main")["commit"]["sha"] == PIPELINE_SHA,
             "Published producer inventory changed since scope review")
-    verify_grant(json.loads((ROOT / "scope-OFF.json").read_bytes()), source)
+    created = run.get("created_at")
+    require(type(created) is str and UTC_SECOND.fullmatch(created), "Invalid run creation time")
     return {
         "repository": REPOSITORY, "ref": REF, "workflow": WORKFLOW, "head_sha": sha,
         "run_id": run_id, "run_attempt": 1, "workflow_id": run["workflow_id"],
-        "job_id": job["id"], "source": source,
+        "job_id": job["id"], "source": source, "created_at": created,
     }
+
+
+def verify_authority(source):
+    raw = (ROOT / "scope-OFF.json").read_bytes()
+    manifest = json.loads(raw)
+    require(__debug__ and manifest.get("enabled") is True and set(manifest["sources"]) == SOURCES,
+            "CERN first contact is OFF")
+    row = dict(manifest["sources"][source])
+    require(row.get("issue") == ISSUE and "decision" not in row, "Invalid committed maintainer gate")
+    scope = verify_run(source)
+    exact_checkout(scope["head_sha"], source)
+    scope["scope_sha256"] = hashlib.sha256(raw).hexdigest()
+    row["decision"] = verify_approval(scope, scope["scope_sha256"])
+    return scope, manifest, row

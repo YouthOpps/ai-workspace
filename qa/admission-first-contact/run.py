@@ -10,7 +10,7 @@ import subprocess
 import sys
 import tempfile
 
-from hosted_identity import IdentityFailure, ROOT, SOURCES, display, require, verify_run
+from hosted_identity import IdentityFailure, ROOT, SOURCES, display, require, verify_authority
 
 LIMIT = 16_384
 
@@ -60,8 +60,10 @@ def prepare(source, row, directory):
         b"        raise Stop('Nonpublishing local research only')"
     )
     new_gate = (
-        b"    from hosted_identity import verify_run\n"
-        + f"    verify_run({source!r})".encode("ascii")
+        b"    from hosted_identity import verify_authority\n"
+        + f"    _, _, authority = verify_authority({source!r})\n".encode("ascii")
+        + b"    if authority['decision'] != selected:\n"
+        + b"        raise Stop('Original maintainer decision differs')"
     )
     bindings = (
         (old_gate, new_gate),
@@ -148,14 +150,7 @@ def run():
         "attempt": display(os.environ.get("GITHUB_RUN_ATTEMPT")),
     }))
     try:
-        scope = verify_run(source)
-        manifest = json.loads((ROOT / "scope-OFF.json").read_bytes())
-        require(manifest["enabled"] is True and set(manifest["sources"]) == SOURCES,
-                "First contact is OFF")
-        row = manifest["sources"][source]
-        require(row["decision"].startswith(
-            f"https://github.com/YouthOpps/data-pipeline/issues/{row['issue']}#issuecomment-"),
-            "Wrong source decision")
+        scope, manifest, row = verify_authority(source)
         recipient = ROOT / "reviewer.pem"
         checked_bytes(recipient, manifest["reviewer_sha256"])
         trial = subprocess.run(
