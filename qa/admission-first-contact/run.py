@@ -152,7 +152,7 @@ def run():
         manifest = json.loads((ROOT / "scope-OFF.json").read_bytes())
         require(manifest["enabled"] is True and set(manifest["sources"]) == SOURCES,
                 "First contact is OFF")
-        row = manifest["sources"][source]
+        row = dict(manifest["sources"][source], decision=scope["decision"])
         require(row["decision"].startswith(
             f"https://github.com/YouthOpps/data-pipeline/issues/{row['issue']}#issuecomment-"),
             "Wrong source decision")

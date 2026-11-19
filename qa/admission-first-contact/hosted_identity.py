@@ -4,9 +4,11 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import time
 import urllib.parse
 import urllib.request
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -101,31 +103,60 @@ def poll_active(path, immutable, kind, select=lambda rows: rows):
         time.sleep(POLL_GAP_SECONDS)
 
 
-def verify_grant(manifest, source):
-    """Bind the explicit source decision to the frozen OFF scope."""
-    row = manifest["sources"][source]
-    decision = row["decision"]
-    match = re.fullmatch(
-        r"https://github\.com/YouthOpps/data-pipeline/issues/465#issuecomment-([1-9][0-9]*)",
-        decision or "",
-    )
+def utc_timestamp(value):
+    require(type(value) is str and re.fullmatch(
+        r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z", value),
+        "Invalid GitHub timestamp")
+    return datetime.fromisoformat(value)
+
+
+def verify_checkout(sha):
+    workspace = ROOT.parent.parent
+    actual = subprocess.check_output(["git", "-C", str(workspace), "rev-parse", "HEAD"],
+                                     text=True, timeout=10).strip()
+    require(actual == sha, "Hosted checkout differs from the approved commit")
+    owned = [WORKFLOW, "qa/admission-first-contact"]
+    changes = subprocess.check_output(
+        ["git", "-C", str(workspace), "status", "--porcelain", "--untracked-files=all", "--", *owned],
+        timeout=10)
+    require(not changes, "Hosted workflow or capture inputs have changed")
+
+
+def verify_grant(manifest, source, sha, run_created):
+    """Find the single unchanged scope and revision grant made before this run."""
     require(manifest["enabled"] is True and set(manifest["sources"]) == SOURCES
-            and match is not None, "First contact is OFF or unreviewed")
-    off = json.loads(json.dumps(manifest))
-    off["enabled"] = False
-    off["sources"][source]["decision"] = None
-    canonical = json.dumps(off, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+            and manifest["sources"][source]["decision"] is None, "First contact is OFF or unreviewed")
+    manifest["enabled"] = False
+    canonical = json.dumps(manifest, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
     digest = hashlib.sha256(canonical).hexdigest()
-    result = public_pipeline_json(f"/issues/comments/{match[1]}")
-    require(
-        result.get("html_url") == decision
-        and result.get("issue_url") == "https://api.github.com/repos/YouthOpps/data-pipeline/issues/465"
-        and result.get("user", {}).get("id") == MAINTAINER_ID
-        and result.get("created_at") == result.get("updated_at")
-        and type(result.get("created_at")) is str
-        and f"Approved Greek Ministry first-contact scope {digest}" in result.get("body", "").splitlines(),
-        "Exact maintainer decision is absent or changed",
-    )
+    scope_line = f"Approved Greek Ministry first-contact scope {digest}"
+    head_line = f"Approved Greek Ministry research head {sha}"
+    pre_run = utc_timestamp(run_created)
+    issue_api = "https://api.github.com/repos/YouthOpps/data-pipeline/issues/465"
+    comments = []
+    for page in range(1, 6):
+        rows = public_pipeline_json(f"/issues/465/comments?per_page=100&page={page}")
+        require(type(rows) is list, "Invalid approval inventory")
+        for row in rows:
+            lines = (row.get("body") or "").splitlines()
+            if scope_line not in lines or head_line not in lines:
+                continue
+            identifier = row.get("id")
+            url = f"https://github.com/YouthOpps/data-pipeline/issues/465#issuecomment-{identifier}"
+            created = row.get("created_at")
+            if (type(identifier) is int and identifier > 0
+                    and row.get("html_url") == url and row.get("issue_url") == issue_api
+                    and row.get("user", {}).get("id") == MAINTAINER_ID
+                    and row.get("user", {}).get("type") == "User"
+                    and created == row.get("updated_at") and utc_timestamp(created) < pre_run
+                    and lines.count(scope_line) == lines.count(head_line) == 1):
+                comments.append(url)
+        if len(rows) < 100:
+            break
+    else:
+        raise RuntimeError("Incomplete approval inventory")
+    require(len(comments) == 1, "Exactly one prior maintainer head and scope grant is required")
+    return comments[0]
 
 
 def public_pipeline_json(path):
@@ -161,6 +192,8 @@ def verify_run(source):
     sha, run_text = env["GITHUB_SHA"], env["GITHUB_RUN_ID"]
     require(re.fullmatch(r"[0-9a-f]{40}", sha) and re.fullmatch(r"[1-9][0-9]*", run_text),
             "Invalid hosted identity")
+    require(env.get("GITHUB_WORKFLOW_SHA") == sha, "Workflow revision differs from job head")
+    verify_checkout(sha)
     check_fields(event, {
         "created": True, "deleted": False, "ref": REF, "before": "0" * 40,
         "after": sha, "repository.full_name": REPOSITORY, "sender.id": MAINTAINER_ID,
@@ -190,9 +223,10 @@ def verify_run(source):
             "Unexpected current workflow or job identifier")
     require(public_pipeline_json("/branches/main")["commit"]["sha"] == PIPELINE_SHA,
             "Published producer inventory changed since scope review")
-    verify_grant(json.loads((ROOT / "scope-OFF.json").read_bytes()), source)
+    decision = verify_grant(json.loads((ROOT / "scope-OFF.json").read_bytes()),
+                            source, sha, run.get("created_at"))
     return {
         "repository": REPOSITORY, "ref": REF, "workflow": WORKFLOW, "head_sha": sha,
         "run_id": run_id, "run_attempt": 1, "workflow_id": run["workflow_id"],
-        "job_id": job["id"], "source": source,
+        "job_id": job["id"], "source": source, "decision": decision,
     }
