@@ -1,0 +1,52 @@
+name: Verify live CERN and ETH Zürich search and sitemaps
+
+on:
+  push:
+    branches: [qa/live-catalog-44510036982]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: 2ed1f4f7c16c0a1b65c3e96c78c41c2532a04f23
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: cb9d4d89379f21308c9ae789a4c51aaa21c34d1c
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build the reviewed site against the exact published data
+        working-directory: website
+        env:
+          DATA_PATH: ${{ github.workspace }}/data-source/datas
+        run: npm run build
+      - name: Compare published site to the exact data revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-live-catalog-44510036982.py
+          cb9d4d89379f21308c9ae789a4c51aaa21c34d1c cern-summer-studentships ch-eth-zurich-summer-research-fellowship
+          --website-revision 2ed1f4f7c16c0a1b65c3e96c78c41c2532a04f23
+          --output ${{ runner.temp }}/live-catalog-44510036982.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-catalog-44510036982
+          path: ${{ runner.temp }}/live-catalog-44510036982.json
+          if-no-files-found: error
+          retention-days: 7
