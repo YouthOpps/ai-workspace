@@ -106,7 +106,7 @@ def poll_active(path, immutable, kind, select=lambda rows: rows):
         time.sleep(POLL_GAP_SECONDS)
 
 
-def exact_checkout(head, source):
+def exact_checkout(head, source, scope_bytes):
     workspace = Path(os.environ["GITHUB_WORKSPACE"])
     required = (
         WORKFLOW, f"{SUBTREE}/hosted_identity.py", f"{SUBTREE}/run.py",
@@ -124,6 +124,8 @@ def exact_checkout(head, source):
         local = workspace / relative
         require(local.resolve() == local and local.read_bytes() == committed,
                 "Immutable checked-out input differs: " + relative)
+        if relative == f"{SUBTREE}/scope-OFF.json":
+            require(scope_bytes == committed, "Scope bytes used to authorize differ from the commit")
 
 
 def verify_approval(scope, scope_sha256):
@@ -194,6 +196,7 @@ def verify_run(source):
     sha, run_text = env["GITHUB_SHA"], env["GITHUB_RUN_ID"]
     require(re.fullmatch(r"[0-9a-f]{40}", sha) and re.fullmatch(r"[1-9][0-9]*", run_text),
             "Invalid hosted identity")
+    require(env.get("GITHUB_WORKFLOW_SHA") == sha, "Workflow revision differs from job head")
     check_fields(event, {
         "created": True, "deleted": False, "ref": REF, "before": "0" * 40,
         "after": sha, "repository.full_name": REPOSITORY,
@@ -238,11 +241,11 @@ def verify_authority(source):
     raw = (ROOT / "scope-OFF.json").read_bytes()
     manifest = json.loads(raw)
     require(__debug__ and manifest.get("enabled") is True and set(manifest["sources"]) == SOURCES,
-            "Schuman first contact is OFF")
+            "Schuman research is OFF")
     row = dict(manifest["sources"][source])
     require(row.get("issue") == ISSUE and "decision" not in row, "Invalid committed maintainer gate")
     scope = verify_run(source)
-    exact_checkout(scope["head_sha"], source)
+    exact_checkout(scope["head_sha"], source, raw)
     scope["scope_sha256"] = hashlib.sha256(raw).hexdigest()
     row["decision"] = verify_approval(scope, scope["scope_sha256"])
     return scope, manifest, row
