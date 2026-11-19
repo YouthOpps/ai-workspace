@@ -1,0 +1,25 @@
+{
+  "aggregate_data_reviewed_at": "acc4db6790f290a7a0dcc4485ca9bb910a90694a",
+  "aggregate_records": [
+    {
+      "cycle": null,
+      "id": "at-grants-at-44315-0",
+      "provider_reference": null
+    },
+    {
+      "cycle": 2026,
+      "id": "opportunities-for-youth-44453",
+      "provider_reference": null
+    }
+  ],
+  "candidate_urls": [
+    "https://careers.cern/robots.txt",
+    "https://careers.cern/programmes/summer-studentship/"
+  ],
+  "issue": 459,
+  "known_producer_absence_reviewed_at": "1dcca6beb3023cf918f50cb87f68f3522b9978b2",
+  "publisher": "CERN",
+  "publisher_host": "careers.cern",
+  "publisher_requests": 0,
+  "unknown_history_preserved": true
+}

@@ -1,0 +1,37 @@
+name: CERN summer studentship first contact
+
+on:
+  push:
+    branches:
+      - qa/cern-summer-studentship-first-contact
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  contact:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.run_attempt == 1
+    name: First contact cern459
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: cern-careers-publisher
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Capture the bounded publisher responses
+        env:
+          SOURCE: cern459
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/admission-first-contact/run.py
+      - name: Retain outcome, source state and encrypted complete evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-contact-cern459-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/admissions-first-contact/cern459/
+          if-no-files-found: error
+          retention-days: 3
