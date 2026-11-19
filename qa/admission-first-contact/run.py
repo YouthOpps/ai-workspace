@@ -149,7 +149,7 @@ def run():
     }))
     try:
         scope = verify_run(source)
-        manifest = json.loads((ROOT / "scope-OFF.json").read_bytes())
+        manifest = json.loads(checked_bytes(ROOT / "scope-OFF.json", scope["scope_sha256"]))
         require(manifest["enabled"] is True and set(manifest["sources"]) == SOURCES,
                 "First contact is OFF")
         row = dict(manifest["sources"][source], decision=scope["decision"])

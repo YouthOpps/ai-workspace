@@ -120,6 +120,12 @@ def verify_checkout(sha):
         ["git", "-C", str(workspace), "status", "--porcelain", "--untracked-files=all", "--", *owned],
         timeout=10)
     require(not changes, "Hosted workflow or capture inputs have changed")
+    raw_scope = (ROOT / "scope-OFF.json").read_bytes()
+    committed = subprocess.check_output(
+        ["git", "-C", str(workspace), "show", f"{sha}:qa/admission-first-contact/scope-OFF.json"],
+        timeout=10)
+    require(raw_scope == committed, "Approved checkout does not contain this scope")
+    return raw_scope
 
 
 def verify_grant(manifest, source, sha, run_created):
@@ -193,7 +199,7 @@ def verify_run(source):
     require(re.fullmatch(r"[0-9a-f]{40}", sha) and re.fullmatch(r"[1-9][0-9]*", run_text),
             "Invalid hosted identity")
     require(env.get("GITHUB_WORKFLOW_SHA") == sha, "Workflow revision differs from job head")
-    verify_checkout(sha)
+    raw_scope = verify_checkout(sha)
     check_fields(event, {
         "created": True, "deleted": False, "ref": REF, "before": "0" * 40,
         "after": sha, "repository.full_name": REPOSITORY, "sender.id": MAINTAINER_ID,
@@ -223,10 +229,11 @@ def verify_run(source):
             "Unexpected current workflow or job identifier")
     require(public_pipeline_json("/branches/main")["commit"]["sha"] == PIPELINE_SHA,
             "Published producer inventory changed since scope review")
-    decision = verify_grant(json.loads((ROOT / "scope-OFF.json").read_bytes()),
+    decision = verify_grant(json.loads(raw_scope),
                             source, sha, run.get("created_at"))
     return {
         "repository": REPOSITORY, "ref": REF, "workflow": WORKFLOW, "head_sha": sha,
         "run_id": run_id, "run_attempt": 1, "workflow_id": run["workflow_id"],
         "job_id": job["id"], "source": source, "decision": decision,
+        "scope_sha256": hashlib.sha256(raw_scope).hexdigest(),
     }
