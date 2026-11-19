@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "reviewer_sha256": "fa521d59341cff3b5f231bf07badea869e731806c9080eaaf6de1d12486a68b0",
   "sources": {
     "eurodyssey": {
