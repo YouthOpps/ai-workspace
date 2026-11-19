@@ -61,7 +61,8 @@ def prepare(source, row, directory):
     )
     new_gate = (
         b"    from hosted_identity import verify_run\n"
-        + f"    verify_run({source!r})".encode("ascii")
+        + f"    if verify_run({source!r})['decision'] != selected:\n".encode("ascii")
+        + b"        raise Stop('Exact first-contact grant changed mid-run')"
     )
     bindings = (
         (old_gate, new_gate),
@@ -152,7 +153,7 @@ def run():
         manifest = json.loads((ROOT / "scope-OFF.json").read_bytes())
         require(manifest["enabled"] is True and set(manifest["sources"]) == SOURCES,
                 "First contact is OFF")
-        row = manifest["sources"][source]
+        row = dict(manifest["sources"][source], decision=scope["decision"])
         require(row["decision"].startswith(
             f"https://github.com/YouthOpps/data-pipeline/issues/{row['issue']}#issuecomment-"),
             "Wrong source decision")

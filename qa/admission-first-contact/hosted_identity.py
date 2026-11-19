@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import re
+import subprocess
 import time
 import urllib.parse
 import urllib.request
@@ -101,31 +102,62 @@ def poll_active(path, immutable, kind, select=lambda rows: rows):
         time.sleep(POLL_GAP_SECONDS)
 
 
-def verify_grant(manifest, source):
-    """Bind the explicit source decision to the frozen OFF scope."""
-    row = manifest["sources"][source]
-    decision = row["decision"]
-    match = re.fullmatch(
-        r"https://github\.com/YouthOpps/data-pipeline/issues/466#issuecomment-([1-9][0-9]*)",
-        decision or "",
+def verify_checkout(head, source):
+    """Compare the reviewed inputs to the actual authorized Git revision."""
+    workspace = Path(os.environ["GITHUB_WORKSPACE"]).resolve()
+    relative_root = ROOT.relative_to(workspace)
+    current = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=workspace, timeout=10)
+    require(current.decode("ascii").strip() == head, "Checkout HEAD differs from the authorized run")
+    inputs = (
+        Path(WORKFLOW), relative_root / "scope-OFF.json", relative_root / "reviewer.pem",
+        relative_root / "hosted_identity.py", relative_root / "run.py",
+        relative_root / source / "foundation.py", relative_root / source / "history-manifest.json",
     )
-    require(manifest["enabled"] is True and set(manifest["sources"]) == SOURCES
-            and match is not None, "First contact is OFF or unreviewed")
-    off = json.loads(json.dumps(manifest))
-    off["enabled"] = False
-    off["sources"][source]["decision"] = None
-    canonical = json.dumps(off, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
-    digest = hashlib.sha256(canonical).hexdigest()
-    result = public_pipeline_json(f"/issues/comments/{match[1]}")
-    require(
-        result.get("html_url") == decision
-        and result.get("issue_url") == "https://api.github.com/repos/YouthOpps/data-pipeline/issues/466"
-        and result.get("user", {}).get("id") == MAINTAINER_ID
-        and result.get("created_at") == result.get("updated_at")
-        and type(result.get("created_at")) is str
-        and f"Approved OECD first-contact scope {digest}" in result.get("body", "").splitlines(),
-        "Exact maintainer decision is absent or changed",
-    )
+    for relative in inputs:
+        committed = subprocess.check_output(
+            ["git", "show", f"{head}:{relative.as_posix()}"], cwd=workspace, timeout=10,
+        )
+        local = workspace / relative
+        require(local.resolve() == local and local.read_bytes() == committed,
+                f"Checked-out input differs: {relative}")
+
+
+def verify_grant(head, manifest_bytes, run_created):
+    """Find the one unedited, pre-run authorization for this head and scope."""
+    def timestamp(value):
+        return type(value) is str and re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z", value)
+
+    require(timestamp(run_created), "Missing exact workflow creation time")
+    head_line = f"Approved OECD research head {head}"
+    scope_line = f"OECD research scope {hashlib.sha256(manifest_bytes).hexdigest()}"
+    matches = []
+    for page in range(1, 6):
+        comments = public_pipeline_json(f"/issues/466/comments?per_page=100&page={page}")
+        require(type(comments) is list and len(comments) <= 100, "Unexpected OECD approval inventory")
+        for comment in comments:
+            body = comment.get("body")
+            if type(body) is not str:
+                continue
+            lines = body.splitlines()
+            if lines.count(head_line) != 1 or lines.count(scope_line) != 1:
+                continue
+            comment_id = comment.get("id")
+            created = comment.get("created_at")
+            url = f"https://github.com/YouthOpps/data-pipeline/issues/466#issuecomment-{comment_id}"
+            if (type(comment_id) is int and comment_id > 0
+                    and comment.get("html_url") == url
+                    and comment.get("issue_url") == "https://api.github.com/repos/YouthOpps/data-pipeline/issues/466"
+                    and nested(comment, "user.id") == MAINTAINER_ID
+                    and nested(comment, "user.type") == "User"
+                    and timestamp(created) and created < run_created
+                    and created == comment.get("updated_at")):
+                matches.append(url)
+        if len(comments) < 100:
+            break
+    else:
+        raise RuntimeError("Incomplete OECD approval inventory")
+    require(len(matches) == 1, "Expected one exact unedited maintainer approval before the run")
+    return matches[0]
 
 
 def public_pipeline_json(path):
@@ -164,13 +196,14 @@ def verify_run(source):
     check_fields(event, {
         "created": True, "deleted": False, "ref": REF, "before": "0" * 40,
         "after": sha, "repository.full_name": REPOSITORY, "sender.id": MAINTAINER_ID,
+        "sender.type": "User",
     }, "Not an exact first branch creation")
     run_id = int(run_text)
     run = poll_active(f"/actions/runs/{run_id}", {
         "id": run_id, "event": "push", "run_attempt": 1, "head_branch": BRANCH,
         "head_sha": sha, "path": WORKFLOW, "head_repository.full_name": REPOSITORY,
         "repository.full_name": REPOSITORY, "actor.id": MAINTAINER_ID,
-        "triggering_actor.id": MAINTAINER_ID,
+        "triggering_actor.id": MAINTAINER_ID, "actor.type": "User", "triggering_actor.type": "User",
     }, "Run API")
     branch = urllib.parse.quote(BRANCH, safe="")
     history = github_json(f"/actions/runs?branch={branch}&event=push&per_page=2")
@@ -190,9 +223,14 @@ def verify_run(source):
             "Unexpected current workflow or job identifier")
     require(public_pipeline_json("/branches/main")["commit"]["sha"] == PIPELINE_SHA,
             "Published producer inventory changed since scope review")
-    verify_grant(json.loads((ROOT / "scope-OFF.json").read_bytes()), source)
+    raw = (ROOT / "scope-OFF.json").read_bytes()
+    manifest = json.loads(raw)
+    require(manifest["enabled"] is True and set(manifest["sources"]) == SOURCES,
+            "First contact is OFF")
+    verify_checkout(sha, source)
+    decision = verify_grant(sha, raw, run.get("created_at"))
     return {
         "repository": REPOSITORY, "ref": REF, "workflow": WORKFLOW, "head_sha": sha,
         "run_id": run_id, "run_attempt": 1, "workflow_id": run["workflow_id"],
-        "job_id": job["id"], "source": source,
+        "job_id": job["id"], "source": source, "decision": decision,
     }
