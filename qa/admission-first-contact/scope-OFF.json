@@ -1,0 +1,17 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "loreal468samples": {
+      "env_prefix": "LOREAL468SAMPLES",
+      "foundation_sha256": "32262d9a656df03d1529c71f7efacce9160fe6ff27a21308e1b11228b9a704ff",
+      "history_sha256": "336a92b08c37c24f6e363e0b8c7b2c3770605b333b4e0df92b66a7a28b390bde",
+      "issue": 468,
+      "urls": [
+        "https://careers.loreal.com/robots.txt",
+        "https://careers.loreal.com/en/job/paris/12-month-apprenticeship-starting-january-2027-armani-social-media-master-s-1700-month/3456/47033188480",
+        "https://careers.loreal.com/en/job/dusseldorf/seedz-management-trainee-programm-m-w-d-track-general-management-april-2027/3456/43938547392"
+      ]
+    }
+  }
+}

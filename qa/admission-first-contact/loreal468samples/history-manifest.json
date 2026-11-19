@@ -1,0 +1,112 @@
+{
+  "inventory_review": {
+    "job_locations": 1556,
+    "shared_job_lastmod_not_per_record_evidence": "2026-11-19T14:46:33.9801639Z",
+    "sitemap_membership": [
+      "https://careers.loreal.com/en/job/paris/12-month-apprenticeship-starting-january-2027-armani-social-media-master-s-1700-month/3456/47033188480",
+      "https://careers.loreal.com/en/job/dusseldorf/seedz-management-trainee-programm-m-w-d-track-general-management-april-2027/3456/43938547392",
+      "https://careers.loreal.com/en/job/london/rewards-industrial-placement-2027-human-resources-6-months/3456/46795487872"
+    ],
+    "total_locations": 3253,
+    "url_keyword_matches_are_discovery_only": 195
+  },
+  "known_producer_absence_reviewed_at": "11fa75c3e745c5e0d8c12ee8a5c9f8371417d764",
+  "latest_acknowledged_state": {
+    "blocked": false,
+    "completed": 1795115356.7506547,
+    "completed_logical_id": "694ded4f2ab846cd91d05a63cd7a0094",
+    "completed_physical_id": "f03bee4ab1104e79b4bd213399e7e88c",
+    "family": "youthopps-loreal-careers-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795115356.7506547,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "694ded4f2ab846cd91d05a63cd7a0094",
+    "not_before": 1795115368.9506547,
+    "observed_at": 1795115356.7506547,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "f03bee4ab1104e79b4bd213399e7e88c",
+    "physical_pending": false,
+    "physical_started": 1795115345.865067,
+    "policy": {
+      "body_sha256": "7fb95a2afe090d45054483af9ff9158490361a79f62b738b48a2772506f822d1",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://careers.loreal.com/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795079134.1527157,
+      1795079135.5604587,
+      1795079150.9773407,
+      1795079152.4012423,
+      1795086171.563193,
+      1795086175.0491414,
+      1795086194.6159022,
+      1795086198.1998827,
+      1795086809.2897613,
+      1795086811.7408485,
+      1795086829.0385857,
+      1795086831.6458833,
+      1795115305.37898,
+      1795115314.389591,
+      1795115345.865067,
+      1795115354.9078872
+    ],
+    "target": "https://careers.loreal.com/en/sitemap.xml"
+  },
+  "latest_hosted": {
+    "acknowledged_state_sha256": "2b85d2b957eac860718262a38a99e5950cdd846da195fd9124ee4c490e42c317",
+    "archive_id": 14566031405,
+    "archive_sha256": "de7283e10238dcc810c256ab9e0727e5c1400517113a3047b37a2b72e2a19c83",
+    "canonical_body_sha256": "70bfd7cfd9d767ecbfb690b9c16b218fd33f561b784a7922368142bb83b52dc7",
+    "encrypted_capture_sha256": "3720647ed43469b7b3e7550132a520d95af543413c545fe90f12f5d1f15ff23e",
+    "requests": [
+      {
+        "completion": 140.408304639,
+        "request_id": "abbbca9c32944ae0aa3faa11b9a73153",
+        "start": 139.634490707,
+        "status": 200,
+        "url": "https://careers.loreal.com/robots.txt",
+        "wall_completion": 1795115315.1634045,
+        "wall_start": 1795115314.389591
+      },
+      {
+        "completion": 181.994965102,
+        "request_id": "f03bee4ab1104e79b4bd213399e7e88c",
+        "start": 180.152786971,
+        "status": 200,
+        "url": "https://careers.loreal.com/en/sitemap.xml",
+        "wall_completion": 1795115356.750068,
+        "wall_start": 1795115354.9078872
+      }
+    ],
+    "robots_body_sha256": "7fb95a2afe090d45054483af9ff9158490361a79f62b738b48a2772506f822d1",
+    "scope": {
+      "created_at": "2026-11-19T19:06:34Z",
+      "head_sha": "89dd0ed5d3820eb801ae9ef64856dc2eaa2bc942",
+      "job_id": 135810284005,
+      "ref": "refs/heads/qa/468-loreal-canonical-sitemap",
+      "repository": "YouthOpps/ai-workspace",
+      "run_attempt": 1,
+      "run_id": 44594857926,
+      "scope_sha256": "64eaee79e4646422b1c6a1a6616d572fdc15ad4192796ae41f515c597d54d1c0",
+      "source": "loreal468canonical",
+      "workflow": ".github/workflows/qa-loreal-careers-canonical-sitemap.yml",
+      "workflow_id": 424218049
+    }
+  },
+  "request_urls": [
+    "https://careers.loreal.com/robots.txt",
+    "https://careers.loreal.com/en/job/paris/12-month-apprenticeship-starting-january-2027-armani-social-media-master-s-1700-month/3456/47033188480",
+    "https://careers.loreal.com/en/job/dusseldorf/seedz-management-trainee-programm-m-w-d-track-general-management-april-2027/3456/43938547392"
+  ],
+  "required_current_robots_advertisement": "https://careers.loreal.com/sitemap.xml"
+}
