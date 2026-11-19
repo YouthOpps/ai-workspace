@@ -1,0 +1,186 @@
+{
+  "carry": {
+    "blocked": false,
+    "completed": 1795077590.5128772,
+    "completed_logical_id": "df2af17b72f64f1d9578c11dba7a305c",
+    "completed_physical_id": "b47f3fc187ea46fa97965f132991f5a7",
+    "family": "youthopps-esc-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795077590.5128772,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "df2af17b72f64f1d9578c11dba7a305c",
+    "not_before": 1795077602.7128773,
+    "observed_at": 1795077590.5128772,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "b47f3fc187ea46fa97965f132991f5a7",
+    "physical_pending": false,
+    "physical_started": 1795077588.963567,
+    "policy": {
+      "body_sha256": "e9c4846eb5fb506421ef4cd431163389ccef09f9a6703c5964b94312904bcc5a",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://youth.europa.eu/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795077574.5539193,
+      1795077576.547332,
+      1795077588.963567,
+      1795077590.364058
+    ],
+    "target": "https://youth.europa.eu/go-abroad/volunteering/opportunities_en"
+  },
+  "carry_sha256": "be5c855807635810d253056e91cabd3bc53afd8724ff3f0a12a48076e3c4265b",
+  "decision_scope": "Retire the sole first-contact owner before static capture of the portal-advertised JS and one listed opportunity",
+  "failed_successor": {
+    "artifact": {
+      "archive_sha256": "322369049f34de83e4ef53ab88e8d0c34549aa6712123f660d15bfe894a9ff02",
+      "ciphertext_sha256": "b6bab8b473d49bdc05644ba086da7a6c46757e9e7a7a39ea3a6d7f4107ddd36d",
+      "id": 14514096455,
+      "name": "esc-continuation-44493281462-1",
+      "size_in_bytes": 4215
+    },
+    "initializer_exit": 1,
+    "persistence_attempts": 0,
+    "publisher_requests": 0,
+    "scope": {
+      "created_at": "2026-11-19T09:05:55Z",
+      "head_sha": "810315458f68cf666c8de57569b8be2ef709a4ab",
+      "job_id": 135454024921,
+      "ref": "refs/heads/qa/esc-volunteering-continuation",
+      "repository": "YouthOpps/ai-workspace",
+      "run_attempt": 1,
+      "run_id": 44493281462,
+      "scope_sha256": "c0d591fa0e101a675f90c358407b57bef8bfbfe2856a85cd2f06ccb545209f54",
+      "source": "esc455continuation",
+      "workflow": ".github/workflows/qa-esc-volunteering-continuation.yml",
+      "workflow_id": 423614905
+    },
+    "state_present": false
+  },
+  "known_producer_absence_reviewed_at": "1dcca6beb3023cf918f50cb87f68f3522b9978b2",
+  "original_state": {
+    "blocked": false,
+    "completed": 1795077590.5128772,
+    "completed_logical_id": "df2af17b72f64f1d9578c11dba7a305c",
+    "completed_physical_id": "b47f3fc187ea46fa97965f132991f5a7",
+    "family": "youthopps-esc-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795077590.5128772,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "df2af17b72f64f1d9578c11dba7a305c",
+    "not_before": 1795077602.7128773,
+    "observed_at": 1795077590.5128772,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "b47f3fc187ea46fa97965f132991f5a7",
+    "physical_pending": false,
+    "physical_started": 1795077588.963567,
+    "policy": {
+      "body_sha256": "e9c4846eb5fb506421ef4cd431163389ccef09f9a6703c5964b94312904bcc5a",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://youth.europa.eu/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795077574.5539193,
+      1795077588.963567
+    ],
+    "target": "https://youth.europa.eu/go-abroad/volunteering/opportunities_en"
+  },
+  "predecessor": {
+    "archive_sha256": "c8b2995187f82b3158b06f6ad9fb6d9454666aba8917622bfcbaa0a5a9e3b4a5",
+    "artifact": {
+      "ciphertext_sha256": "95681314eed0c45d64629b33a7b81af56408e164e5fed298c1f377398c03aacb",
+      "id": 14512561125,
+      "name": "esc-first-contact-44489312404-1",
+      "size_in_bytes": 104416
+    },
+    "decision": "https://github.com/YouthOpps/data-pipeline/issues/455#issuecomment-7004070940",
+    "requests": [
+      {
+        "body_bytes": 2244,
+        "body_sha256": "e9c4846eb5fb506421ef4cd431163389ccef09f9a6703c5964b94312904bcc5a",
+        "complete_eof": true,
+        "content_type": "text/plain; charset=UTF-8",
+        "encoding": null,
+        "error": null,
+        "request_id": "c4a15b664d444632b0f969090cf53210",
+        "retry_header_present": false,
+        "robots_header_present": false,
+        "status": 200,
+        "transport": {
+          "connection_closed": true,
+          "opener_disconnected": false,
+          "response_file_closed": true,
+          "status_line_eof": false,
+          "statuses": [
+            200
+          ]
+        },
+        "url": "https://youth.europa.eu/robots.txt",
+        "wall_completion": 1795077576.7626846,
+        "wall_start": 1795077576.547332
+      },
+      {
+        "body_bytes": 42058,
+        "body_sha256": "41db204666cc75c32c6a8836f70b7a916c8f3368f1a226426f704af6b27b05a8",
+        "complete_eof": true,
+        "content_type": "text/html; charset=utf-8",
+        "encoding": null,
+        "error": null,
+        "request_id": "b47f3fc187ea46fa97965f132991f5a7",
+        "retry_header_present": false,
+        "robots_header_present": false,
+        "status": 200,
+        "transport": {
+          "connection_closed": true,
+          "opener_disconnected": false,
+          "response_file_closed": true,
+          "status_line_eof": false,
+          "statuses": [
+            200
+          ]
+        },
+        "url": "https://youth.europa.eu/go-abroad/volunteering/opportunities_en",
+        "wall_completion": 1795077590.5125823,
+        "wall_start": 1795077590.364058
+      }
+    ],
+    "scope": {
+      "created_at": "2026-11-19T08:38:25Z",
+      "head_sha": "0110fd4136332cb56b0483d9c593f07757e72a0f",
+      "job_id": 135440594654,
+      "pipeline_inventory_head": "1dcca6beb3023cf918f50cb87f68f3522b9978b2",
+      "ref": "refs/heads/qa/esc-volunteering-first-contact",
+      "repository": "YouthOpps/ai-workspace",
+      "run_attempt": 1,
+      "run_id": 44489312404,
+      "source": "esc",
+      "workflow": ".github/workflows/qa-esc-volunteering-first-contact.yml",
+      "workflow_id": 423590700
+    },
+    "state_sha256": "ee6c8b98ef0197f2416269c46b1cd36495a83874c9a4906a1c966a1e92026207"
+  },
+  "request_urls": [
+    "https://youth.europa.eu/robots.txt",
+    "https://youth.europa.eu/sites/default/files/js/js_U44DMT5Kx2X33_414Isrht6cX0imV2CdQsU_eJkmDCQ.js?scope=footer&delta=0&language=en&theme=eyp_ng&include=eJxVj-EOgzAIhF_I2vhEDVI0KBYHNYt7-lUTl-wf94XjDlSjmO3YQXqvUMk7vBCXSlYaXF4H2dlPaltH5x5hGM4E2JYya7kRanEq9Z4zO4xCAabmDyiM682rAa5h8UBman6xRI4RySpPjC25_7uayhxnEGnhPyk6gjxqaxZjEP7Qg8qcUEVgd24dkh_jRuXolNKbxqoq_rz66OAbWBWFTPYFkV1naQ",
+    "https://youth.europa.eu/solidarity/opportunity/55122_en"
+  ]
+}
