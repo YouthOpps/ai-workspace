@@ -1,0 +1,24 @@
+name: Eurodyssey GitHub control plane diagnostics
+
+on:
+  push:
+    branches:
+      - qa/eurodyssey-internships-control-diagnostics
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  diagnostics:
+    if: false && github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.event.deleted == false && github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Report bounded GitHub API statuses
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/eurodyssey-diagnostics/probe.py
