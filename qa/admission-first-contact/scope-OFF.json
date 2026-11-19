@@ -1,0 +1,17 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "dapes462": {
+      "decision": null,
+      "env_prefix": "DAPES462",
+      "foundation_sha256": "af541b6ddd918d7cbc86b360ef5c6017167150bbc04dafc7165e0613eeea23a4",
+      "history_sha256": "fe037062bf125ebc75aab607a4e499b1d0ed4b4ce33abbc1b42ebd3b4127d34f",
+      "issue": 462,
+      "urls": [
+        "https://www.enseignementsup-recherche.gouv.fr/robots.txt",
+        "https://www.enseignementsup-recherche.gouv.fr/fr/dossier-blanc-demande-d-admission-prealable-dap-pour-une-premiere-inscription-dans-une-universite-46452"
+      ]
+    }
+  }
+}
