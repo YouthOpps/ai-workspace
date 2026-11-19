@@ -881,10 +881,16 @@ def robot_policy(journal, body, status):
     if status != 200:
         raise Stop('REP unreachable or redirected; no follow')
     text = body.decode('utf-8-sig', 'strict')
+    if text.lstrip().startswith('<'):
+        raise Stop('Unrecognized robots HTML/XML response; no content follow')
+    lines = [line.split('#', 1)[0].strip() for line in text.splitlines()]
+    if any(lines) and not any(re.fullmatch(
+            r'(?i)(?:user-agent|allow|disallow|sitemap|crawl-delay|request-rate)\s*:.*',
+            line) for line in lines):
+        raise Stop('Unrecognized robots representation; no content follow')
     groups, agents, rules, directives = [], [], [], []
     saw_rule = False
-    for line in text.splitlines():
-        line = line.split('#', 1)[0].strip()
+    for line in lines:
         if not line or ':' not in line:
             continue
         name, value = (p.strip() for p in line.split(':', 1))
