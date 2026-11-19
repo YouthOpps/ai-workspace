@@ -1,0 +1,23 @@
+name: Verify GitHub-only authenticated pipeline control reads
+
+on:
+  push:
+    branches: [qa/pipeline-public-control-api-44596790681]
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  public-pipeline-control:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Compare public GitHub control endpoints with read-only runner authentication
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -B .github/qa/check-public-pipeline-control-auth.py
