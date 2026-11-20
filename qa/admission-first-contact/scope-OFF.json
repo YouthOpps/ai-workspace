@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "unilever260": {
+      "env_prefix": "UNILEVER260",
+      "foundation_sha256": "9cf088115dd4981062100ebb9c2514aabfece326436bf5d4b4b16f201e6f19c9",
+      "history_sha256": "81c1cfc17ffa4c66430c74e8a9dbaaa20fe4a22ed450a54ab5cbd05da41de4b0",
+      "issue": 260,
+      "urls": [
+        "https://careers.unilever.com/robots.txt",
+        "https://careers.unilever.com/en/search-jobs"
+      ]
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "aggregate_data_reviewed_at": "83b35bd235bc813018b9e3612bca9e1e73e03a3b",
+  "candidate_urls": [
+    "https://careers.unilever.com/robots.txt",
+    "https://careers.unilever.com/en/search-jobs"
+  ],
+  "issue": 260,
+  "known_producer_absence_reviewed_at": "11fa75c3e745c5e0d8c12ee8a5c9f8371417d764",
+  "legacy_local_observations": {
+    "completed": 1794849436.9739714,
+    "host": "careers.unilever.com",
+    "interval": 12.2,
+    "inventory_completed": 1794849436.9739716,
+    "legacy_history_unknown": true,
+    "page_interval": 30,
+    "pending": false,
+    "purpose": "robots-only discovery",
+    "starts": [
+      1794849395.6389034,
+      1794849433.8236053
+    ],
+    "status": 200
+  },
+  "old_ledger_sha256": "2df9041107b9da4a82bc123426cc22cc64eb59412f8a31ffa32cf291d98acaea",
+  "prior_429_or_refusal_observed": false,
+  "prior_complete_bodies_available": false,
+  "prior_observation_provenance": "Historical bounded local research; starts are conservative timing observations, not opener-level attestations",
+  "publisher": "Unilever Careers",
+  "publisher_host": "careers.unilever.com",
+  "publisher_requests": 0,
+  "unknown_history_preserved": true
+}
