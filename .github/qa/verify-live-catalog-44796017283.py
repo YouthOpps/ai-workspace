@@ -144,9 +144,10 @@ for source in args.sources:
     ids = {row['id'] for row in rows}
     assert ids, source
     index = collection('/sources/publisher/' + source + '/')
-    assert len(index) == len(ids)
-    assert {row['id'] for row in index} == ids
-    assert {row['id'] for row in global_index if row['source'] == source} == ids
+    searchable_ids = ids & browse
+    assert len(index) == len(searchable_ids)
+    assert {row['id'] for row in index} == searchable_ids
+    assert {row['id'] for row in global_index if row['source'] == source} == searchable_ids
     for row in rows:
         assert '/opportunity/' + route_ids[row['id']] + '/' in report['routes']
     positions = sorted({0, len(rows) // 2, len(rows) - 1})
