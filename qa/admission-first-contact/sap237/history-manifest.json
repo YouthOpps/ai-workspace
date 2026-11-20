@@ -1,0 +1,38 @@
+{
+  "candidate_urls": [
+    "https://jobs.sap.com/robots.txt",
+    "https://jobs.sap.com/en/jobs/"
+  ],
+  "historical_raw_robots_body_available": false,
+  "historical_robots_only": {
+    "closure_observation": "original saved after complete bound and response closure",
+    "original_sha256": "c3a6bb233d0fe2892b55ca0b34f86d80fe05a50914e3014b6ad1cbe352e2a070",
+    "receipt": {
+      "completed": 1794849458.9878418,
+      "host": "jobs.sap.com",
+      "interval": 12.2,
+      "legacy_history_unknown": true,
+      "page_interval": 30,
+      "pending": false,
+      "purpose": "robots-only discovery",
+      "starts": [
+        1794849458.3646884
+      ],
+      "status": 200
+    },
+    "scope_exclusions": [
+      "search query key",
+      "keyword query key",
+      "query query key",
+      "q query key"
+    ],
+    "start_observation": "acknowledged reservation before the historical opener"
+  },
+  "issue": 237,
+  "origin": "https://jobs.sap.com",
+  "producer_absence_reviewed_at": "11fa75c3e745c5e0d8c12ee8a5c9f8371417d764",
+  "publisher": "SAP public jobs",
+  "publisher_requests": 0,
+  "reason": "Review the exact official jobs browse page and its current old/new portal disclosure. Program landing pages alone do not establish advertised openings or global rollout coverage.",
+  "unknown_history_preserved": true
+}

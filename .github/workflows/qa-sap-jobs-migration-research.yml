@@ -1,0 +1,37 @@
+name: SAP jobs migration research
+
+on:
+  push:
+    branches:
+      - qa/sap-jobs-migration-research
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  contact:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.run_attempt == 1
+    name: First contact sap237
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: sap-jobs-publisher
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Capture the bounded publisher responses
+        env:
+          SOURCE: sap237
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/admission-first-contact/run.py
+      - name: Retain outcome, source state and encrypted complete evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-contact-sap237-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/admissions-first-contact/sap237/
+          if-no-files-found: error
+          retention-days: 3

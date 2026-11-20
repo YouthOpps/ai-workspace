@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "sap237": {
+      "env_prefix": "SAP237",
+      "foundation_sha256": "9bf30bfdf093d284eefe471fbd5cb222b22f7a04580d235c457f71ce0048a685",
+      "history_sha256": "b308a7859684fb854657cafc875c71ce98b913912cb4da9757b5661cb905f953",
+      "issue": 237,
+      "urls": [
+        "https://jobs.sap.com/robots.txt",
+        "https://jobs.sap.com/en/jobs/"
+      ]
+    }
+  }
+}
