@@ -1,0 +1,60 @@
+name: Verify the consolidated YouthOpps live release
+
+on:
+  push:
+    branches: [qa/live-catalog-44692844857]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: b35611559f7e342f908571174e88386231f447e7
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: 2124a7cc4324a83311e3c6a5677d5f9f76ba7ebc
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build the reviewed site against the exact published data
+        working-directory: website
+        env:
+          DATA_PATH: ${{ github.workspace }}/data-source/datas
+        run: npm run build
+      - name: Compare published site to the exact data revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-live-catalog-44692844857.py
+          2124a7cc4324a83311e3c6a5677d5f9f76ba7ebc nestle ibm se-arbetsformedlingen-jobsearch be-wbi dk-university-of-copenhagen at-university-of-vienna yildiz-pladis-careers pl-frse dk-fulbright-center de-bmw-group
+          --website-revision b35611559f7e342f908571174e88386231f447e7
+          --output ${{ runner.temp }}/live-catalog-44692844857.json
+      - name: Verify every live source status, index and sitemap
+        run: >-
+          python -B .github/qa/verify-live-source-directory-44692844857.py
+          2124a7cc4324a83311e3c6a5677d5f9f76ba7ebc
+          --website-revision b35611559f7e342f908571174e88386231f447e7
+          --output ${{ runner.temp }}/live-source-directory-44692844857.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-catalog-44692844857
+          path: |
+            ${{ runner.temp }}/live-catalog-44692844857.json
+            ${{ runner.temp }}/live-source-directory-44692844857.json
+          if-no-files-found: error
+          retention-days: 7
