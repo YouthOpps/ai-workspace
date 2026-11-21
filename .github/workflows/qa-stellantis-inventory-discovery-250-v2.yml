@@ -3,7 +3,7 @@ name: Stellantis careers inventory discovery
 on:
   push:
     branches:
-      - qa/stellantis-inventory-discovery-250
+      - qa/stellantis-inventory-discovery-250-v2
 
 permissions:
   contents: read

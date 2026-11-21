@@ -5,7 +5,7 @@
     "stellantis250": {
       "env_prefix": "STELLANTIS250",
       "foundation_sha256": "c38b5cbd61c5f6eaa7ff328e85492db51d40f2153eecf767b831f95f31915563",
-      "history_sha256": "8ca4833f99ed11146993bab268be6c0903b07fb8c8d801419bd41c44852e828c",
+      "history_sha256": "393b219a6289a6f19121ea5d6fbeb64b85ddb969e0c4bb9b616c7fea9ac2b8c5",
       "issue": 250,
       "urls": [
         "https://careers.stellantis.com/robots.txt",

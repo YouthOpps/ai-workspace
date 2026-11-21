@@ -13,8 +13,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = "YouthOpps/ai-workspace"
-WORKFLOW = ".github/workflows/qa-stellantis-inventory-discovery-250.yml"
-BRANCH = "qa/stellantis-inventory-discovery-250"
+WORKFLOW = ".github/workflows/qa-stellantis-inventory-discovery-250-v2.yml"
+BRANCH = "qa/stellantis-inventory-discovery-250-v2"
 REF = "refs/heads/" + BRANCH
 SOURCES = frozenset(("stellantis250",))
 PIPELINE = "YouthOpps/data-pipeline"
@@ -37,13 +37,17 @@ class IdentityFailure(RuntimeError):
         super().__init__(f"{reason}: {json.dumps(fields, sort_keys=True)}")
 
 
+class ScopeFailure(RuntimeError):
+    pass
+
+
 class GitHubControlFailure(IdentityFailure):
     """Report the requested GitHub control and safe status metadata only."""
 
 
 def require(condition, message):
     if not condition:
-        raise RuntimeError(message)
+        raise ScopeFailure(message)
 
 
 class RejectRedirect(urllib.request.HTTPRedirectHandler):
@@ -239,7 +243,11 @@ def verify_run(source):
         "triggering_actor.type": "User",
     }, "Run API")
     branch = urllib.parse.quote(BRANCH, safe="")
-    history = github_json(f"/actions/runs?branch={branch}&event=push&per_page=2")
+    for attempt in range(STATE_POLLS):
+        history = github_json(f"/actions/runs?branch={branch}&event=push&per_page=2")
+        if history.get("total_count") != 0 or history.get("workflow_runs") != [] or attempt == STATE_POLLS - 1:
+            break
+        time.sleep(POLL_GAP_SECONDS)
     require(history["total_count"] == 1 and [x["id"] for x in history["workflow_runs"]] == [run_id],
             "Branch already has a run or history is ambiguous")
 
@@ -268,6 +276,24 @@ def verify_run(source):
     }
 
 
+def verify_preflight_predecessor():
+    path = ".github/workflows/qa-stellantis-inventory-discovery-250.yml"
+    wf = 426084532
+    run_id = 44920653622
+    head = "90e35c982499f5014f97a49b73d72bf74e76946a"
+    prev_branch = "qa/stellantis-inventory-discovery-250"
+    check_fields(github_json(f"/actions/workflows/{wf}"), {"id": wf, "path": path, "state": "disabled_manually"}, "Previous workflow changed")
+    history = github_json(f"/actions/workflows/{wf}/runs?per_page=2")
+    require(history["total_count"] == 1 and len(history["workflow_runs"]) == 1, "Prior run inventory changed")
+    check_fields(history["workflow_runs"][0], {"id": run_id, "run_attempt": 1, "head_sha": head, "head_branch": prev_branch, "status": "completed", "conclusion": "failure", "workflow_id": wf, "actor.id": MAINTAINER_ID, "path": path}, "Prior attempt differs")
+    jobs = github_json(f"/actions/runs/{run_id}/attempts/1/jobs?per_page=2")
+    require(jobs["total_count"] == 1 and len(jobs["jobs"]) == 1, "Prior job inventory changed")
+    check_fields(jobs["jobs"][0], {"id": 136895731759, "run_id": run_id, "head_sha": head, "status": "completed", "conclusion": "failure", "name": "First contact stellantis250"}, "Prior job changed")
+    archives = github_json(f"/actions/runs/{run_id}/artifacts?per_page=2")
+    require(archives["total_count"] == 1 and len(archives["artifacts"]) == 1, "Prior archive inventory changed")
+    check_fields(archives["artifacts"][0], {"id": 14713661255, "name": "first-contact-stellantis250-44920653622-1", "expired": False, "size_in_bytes": 560, "digest": "sha256:d71709aef7455cf7959961083c0ccaff3fa218b945d2337938d5c57d9ce73a7f", "workflow_run.id": run_id, "workflow_run.head_sha": head}, "Prior prewire evidence changed")
+
+
 def verify_authority(source):
     raw = (ROOT / "scope-OFF.json").read_bytes()
     manifest = json.loads(raw)
@@ -276,6 +302,7 @@ def verify_authority(source):
     row = dict(manifest["sources"][source])
     require(row.get("issue") == ISSUE and "decision" not in row, "Invalid committed maintainer gate")
     scope = verify_run(source)
+    verify_preflight_predecessor()
     exact_checkout(scope["head_sha"], source, raw)
     scope["scope_sha256"] = hashlib.sha256(raw).hexdigest()
     row["decision"] = verify_approval(scope, scope["scope_sha256"])

@@ -10,7 +10,7 @@ import subprocess
 import sys
 import tempfile
 
-from hosted_identity import IdentityFailure, ROOT, SOURCES, display, require, verify_authority
+from hosted_identity import ScopeFailure, IdentityFailure, ROOT, SOURCES, display, require, verify_authority
 
 LIMIT = 16_384
 
@@ -60,7 +60,7 @@ def prepare(source, row, directory):
         b"        raise Stop('Nonpublishing local research only')"
     )
     new_gate = (
-        b"    from hosted_identity import verify_authority\n"
+        b"    from hosted_identity import ScopeFailure, verify_authority\n"
         + f"    _, _, authority = verify_authority({source!r})\n".encode("ascii")
         + b"    if authority['decision'] != selected:\n"
         + b"        raise Stop('Original maintainer decision differs')"
@@ -168,6 +168,8 @@ def run():
         }
         if isinstance(error, IdentityFailure):
             evidence.update({"reason": error.reason, "fields": error.fields})
+        if isinstance(error, ScopeFailure):
+            evidence["reason"] = str(error)
         write_once(output / "preflight-failure.json", canonical(evidence))
         if isinstance(error, IdentityFailure):
             print(error)

@@ -6,6 +6,15 @@
   ],
   "issue": 250,
   "known_producer_absence_reviewed_at": "286f436823a6e4d262469a533e2e22b6b429c1db",
+  "prior_first_contact": {
+    "archive": 14713661255,
+    "archive_sha256": "d71709aef7455cf7959961083c0ccaff3fa218b945d2337938d5c57d9ce73a7f",
+    "attempt": 1,
+    "job": 136895731759,
+    "run": 44920653622,
+    "verified_before_initializer": true,
+    "verified_issuer_requests": 0
+  },
   "publisher": "Stellantis",
   "publisher_host": "careers.stellantis.com",
   "publisher_requests": 0,
