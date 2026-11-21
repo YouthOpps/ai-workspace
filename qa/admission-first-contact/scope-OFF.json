@@ -5,7 +5,7 @@
     "sap237": {
       "env_prefix": "SAP237",
       "foundation_sha256": "9bf30bfdf093d284eefe471fbd5cb222b22f7a04580d235c457f71ce0048a685",
-      "history_sha256": "b308a7859684fb854657cafc875c71ce98b913912cb4da9757b5661cb905f953",
+      "history_sha256": "c201779c3921db95557802819c5cd349bd93f5d60274247fe35c5fe768f53594",
       "issue": 237,
       "urls": [
         "https://jobs.sap.com/robots.txt",

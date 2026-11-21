@@ -6,6 +6,7 @@ import os
 import re
 import subprocess
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -19,7 +20,7 @@ SOURCES = frozenset(("sap237",))
 PIPELINE = "YouthOpps/data-pipeline"
 ISSUE = 237
 SUBTREE = "qa/admission-first-contact"
-PIPELINE_SHA = "11fa75c3e745c5e0d8c12ee8a5c9f8371417d764"
+PIPELINE_SHA = "286f436823a6e4d262469a533e2e22b6b429c1db"
 MAINTAINER_ID = 12278069
 UTC_SECOND = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z")
 STARTUP_STATES = frozenset(("queued", "requested", "pending", "waiting"))
@@ -36,6 +37,10 @@ class IdentityFailure(RuntimeError):
         super().__init__(f"{reason}: {json.dumps(fields, sort_keys=True)}")
 
 
+class GitHubControlFailure(IdentityFailure):
+    """Report the requested GitHub control and safe status metadata only."""
+
+
 def require(condition, message):
     if not condition:
         raise RuntimeError(message)
@@ -46,20 +51,51 @@ class RejectRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
-def github_json(path):
+def control_json(repository, path):
+    allowed = (
+        repository == REPOSITORY and re.fullmatch(r"/actions/[a-zA-Z0-9/?=_&%-]+", path)
+        or repository == PIPELINE and (
+            path == "/git/ref/heads/main"
+            or re.fullmatch(rf"/issues/{ISSUE}/comments\?per_page=100&page=[1-5]", path)))
+    require(allowed, "Unreviewed GitHub control endpoint")
     request = urllib.request.Request(
-        "https://api.github.com/repos/" + REPOSITORY + path,
+        "https://api.github.com/repos/" + repository + path,
         headers={
             "Accept": "application/vnd.github+json",
             "Authorization": "Bearer " + os.environ["GITHUB_TOKEN"],
             "X-GitHub-Api-Version": "2022-11-28",
         },
+        method="GET",
     )
-    with urllib.request.build_opener(RejectRedirect()).open(request, timeout=15) as response:
-        require(response.status == 200, "Unexpected GitHub identity response")
-        payload = response.read(2_000_001)
-    require(len(payload) <= 2_000_000, "GitHub identity response too large")
+    endpoint = f"/repos/{repository}{path}"
+    try:
+        with urllib.request.build_opener(RejectRedirect()).open(request, timeout=15) as response:
+            require(response.status == 200, "Unexpected GitHub control response")
+            payload = response.read(2_000_001)
+    except urllib.error.HTTPError as failure:
+        fields = {"endpoint": endpoint, "status": failure.code}
+        for header, field in (
+            ("X-RateLimit-Limit", "rate_limit"),
+            ("X-RateLimit-Remaining", "rate_limit_remaining"),
+            ("X-RateLimit-Reset", "rate_limit_reset"),
+            ("Retry-After", "retry_after_seconds"),
+        ):
+            value = failure.headers.get(header) if failure.headers is not None else None
+            if isinstance(value, str) and re.fullmatch(r"[0-9]{1,12}", value):
+                fields[field] = int(value)
+        try:
+            failure.close()
+        except Exception:
+            fields["close_error"] = True
+        raise GitHubControlFailure("GitHub control HTTP failure", fields) from None
+    except urllib.error.URLError:
+        raise GitHubControlFailure("GitHub control connection failure", {"endpoint": endpoint}) from None
+    require(len(payload) <= 2_000_000, "GitHub control response too large")
     return json.loads(payload)
+
+
+def github_json(path):
+    return control_json(REPOSITORY, path)
 
 
 def nested(row, field):
@@ -164,16 +200,8 @@ def verify_approval(scope, scope_sha256):
 
 
 def public_pipeline_json(path):
-    """Read the public control plane without sending the job's repository token."""
-    request = urllib.request.Request(
-        "https://api.github.com/repos/" + PIPELINE + path,
-        headers={"Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
-    )
-    with urllib.request.build_opener(RejectRedirect()).open(request, timeout=15) as response:
-        require(response.status == 200, "Unexpected public GitHub response")
-        payload = response.read(2_000_001)
-    require(len(payload) <= 2_000_000, "Public control response too large")
-    return json.loads(payload)
+    """Authenticate the approved read-only public pipeline control endpoints."""
+    return control_json(PIPELINE, path)
 
 
 def verify_run(source):
@@ -226,8 +254,11 @@ def verify_run(source):
     }, "Job API", select_job)
     require(type(run.get("workflow_id")) is int and type(job.get("id")) is int,
             "Unexpected current workflow or job identifier")
-    require(public_pipeline_json("/branches/main")["commit"]["sha"] == PIPELINE_SHA,
+    require(public_pipeline_json("/git/ref/heads/main")["object"]["sha"] == PIPELINE_SHA,
             "Published producer inventory changed since scope review")
+    registered = github_json(f"/actions/workflows/{run['workflow_id']}")
+    check_fields(registered, {"id": run["workflow_id"], "path": WORKFLOW, "state": "active"},
+                 "Current discovery workflow differs")
     created = run.get("created_at")
     require(type(created) is str and UTC_SECOND.fullmatch(created), "Invalid run creation time")
     return {
