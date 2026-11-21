@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "schneider258": {
+      "env_prefix": "SCHNEIDER258",
+      "foundation_sha256": "394cfc6f7fd5eeee580322f8d65857d993a8624212343e313d5b1b85d67b1422",
+      "history_sha256": "e00dc95e37623707d3c54be7ec823025f4800353b74ce09996237edb5fc1c820",
+      "issue": 258,
+      "urls": [
+        "https://careers.se.com/robots.txt",
+        "https://careers.se.com/early-careers"
+      ]
+    }
+  }
+}
