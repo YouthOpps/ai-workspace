@@ -961,7 +961,7 @@ def robot_policy(journal, body, status):
                 if end:
                     pattern += '$'
                 if re.search(pattern, normalize_octets(
-                        urllib.parse.urlsplit(ENTRY).path)):
+                        urllib.parse.urlsplit(ENTRY).path + '?' + urllib.parse.urlsplit(ENTRY).query)):
                     matches.append((len(prefix.replace('*', '')),
                                     name == 'allow'))
         if matches:

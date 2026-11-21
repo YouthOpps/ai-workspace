@@ -4,7 +4,7 @@
   "sources": {
     "telefonica245": {
       "env_prefix": "TELEFONICA245",
-      "foundation_sha256": "e8cd979123460b2ade12b5a8cbc6c528a1b0e59a30847ca45426d5c7b532a29c",
+      "foundation_sha256": "7f66c81369724dbb5cfab13f3b984d322b7ac8c356dac051946c1413302bde04",
       "history_sha256": "657f62c4ca98e5e55bfae6c58ef477fe9b8d028eeb16abf382417ddb43f5eab6",
       "issue": 245,
       "urls": [
