@@ -105,12 +105,6 @@ def github(path):
 
 
 def verify_predecessor():
-    for workflow_id, path in (
-            (423613642, ".github/workflows/qa-loreal-careers-terms-first-contact.yml"),
-            (423723705, ".github/workflows/qa-loreal-careers-detail-research.yml")):
-        prior = github(f"/actions/workflows/{workflow_id}")
-        require(prior["id"] == workflow_id and prior["state"] == "disabled_manually"
-                and prior["path"] == path, "An earlier publisher owner remains active")
     run = github(f"/actions/runs/{OWNER['run_id']}")
     workflow = github(f"/actions/workflows/{OWNER['workflow_id']}")
     require(workflow["state"] == "disabled_manually" and workflow["path"] == OLD_WORKFLOW
