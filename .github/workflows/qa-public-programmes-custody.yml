@@ -1,0 +1,31 @@
+name: Retain public programme research evidence
+
+on:
+  push:
+    branches: [qa/public-programmes-retain-20261121]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  custody:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.ref == 'refs/heads/qa/public-programmes-retain-20261121' && github.event.created == true && github.event.before == '0000000000000000000000000000000000000000' && github.event.sender.id == 12278069 && github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify and copy the pinned GitHub-owned ZIPs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 -B qa/public-programmes-custody/retain.py
+      - name: Retain opaque issuer bytes and verification manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-programmes-evidence-custody-${{ github.run_id }}-1
+          path: ${{ runner.temp }}/public-programmes-evidence-custody/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
