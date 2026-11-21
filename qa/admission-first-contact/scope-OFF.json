@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "xai241": {
+      "env_prefix": "XAI241",
+      "foundation_sha256": "ab493ce47c232fe75630d1b41f9e819c7da496c5fc0683a998ec092929829226",
+      "history_sha256": "21d8fa20a32ae8bdb3372e834452f8e65df5cdbf24ee853e74acc4819c962dfa",
+      "issue": 241,
+      "urls": [
+        "https://x.ai/robots.txt",
+        "https://x.ai/careers/open-roles"
+      ]
+    }
+  }
+}
