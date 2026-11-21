@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "spacex257": {
+      "env_prefix": "SPACEX257",
+      "foundation_sha256": "5f29fcf8a259571655ba9b7ddbf0e44d446d60dceb858871e538ff66a10ec726",
+      "history_sha256": "1b5683af710c4074f92988cc7c81a9e795dc98f3850d1e5a4d3f30ed90d13d34",
+      "issue": 257,
+      "urls": [
+        "https://new.spacex.com/robots.txt",
+        "https://new.spacex.com/internships"
+      ]
+    }
+  }
+}
