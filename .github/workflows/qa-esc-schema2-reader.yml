@@ -1,0 +1,20 @@
+name: Verify ESC historical state reader
+on:
+  push:
+    branches: [qa/455-esc-schema2-reader]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify both owned archives and cancellation without publisher access
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/esc455-admin-cancellation/check_reader.py
