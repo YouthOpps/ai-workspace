@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "amd233": {
+      "env_prefix": "AMD233",
+      "foundation_sha256": "ab4383ee0179ba335db526a4a38a3a3fe21a49032a86d61493595fb94d2f736f",
+      "history_sha256": "d698b3459245bb9dc6498be7e2eb8bcba23669a35e74b28cb7995240598d370f",
+      "issue": 233,
+      "urls": [
+        "https://careers.amd.com/robots.txt",
+        "https://careers.amd.com/students/"
+      ]
+    }
+  }
+}
