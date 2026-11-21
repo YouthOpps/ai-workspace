@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "nokia247": {
+      "env_prefix": "NOKIA247",
+      "foundation_sha256": "fcc3fbd61c8d51889f5210fb6c362d8112a2b1327f5915fd90e0f6a4041a818d",
+      "history_sha256": "7e5709e612ad72f7d2432b3fa354c90bc4db82165f0b8dd8bf82fa1c56f7262d",
+      "issue": 247,
+      "urls": [
+        "https://www.nokia.com/robots.txt",
+        "https://www.nokia.com/careers/students-and-graduates/"
+      ]
+    }
+  }
+}
