@@ -1,0 +1,34 @@
+name: ESC administrative cancellation
+on:
+  push:
+    branches: [qa/455-esc-administrative-cancellation]
+
+permissions:
+  actions: read
+  contents: read
+  issues: read
+
+concurrency:
+  group: youthopps-esc-publisher-v1
+  cancel-in-progress: false
+
+jobs:
+  transition:
+    if: false && github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Record exact zero-publisher administrative ownership cancellation
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/esc455-admin-cancellation/transition.py
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: esc455-cancelled-before-send
+          path: ${{ runner.temp }}/esc455-cancelled-before-send/ownership-transition.json
+          if-no-files-found: error
+          retention-days: 30
