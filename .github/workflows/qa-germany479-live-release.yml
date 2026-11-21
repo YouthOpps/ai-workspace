@@ -1,0 +1,59 @@
+name: Verify Fulbright Germany production and live catalogue
+on:
+  push:
+    branches: [qa/germany479-live-release]
+permissions:
+  contents: read
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    env:
+      SOURCE_REVISION: 723d3929a97351a2bff1c60d150eedd76e8226f5
+      WEBSITE_REVISION: e9d271bcdfa4ab450598631e19331fb005ebd4b6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: ${{ env.WEBSITE_REVISION }}
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: ${{ env.SOURCE_REVISION }}
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify website submodule pin and build
+        env:
+          DATA_PATH: ${{ github.workspace }}/data-source/datas
+        working-directory: website
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD:data-source)" = "$SOURCE_REVISION"
+          npm run build
+      - name: Verify current release and original programme detail
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python -B .github/qa/verify-germany479-live-catalog.py "$SOURCE_REVISION" de-fulbright-germany \
+            --website-revision "$WEBSITE_REVISION" --output "$RUNNER_TEMP/germany-catalog.json"
+      - name: Verify every source index, status and sitemap
+        run: |
+          python -B .github/qa/verify-germany479-live-directory.py "$SOURCE_REVISION" \
+            --website-revision "$WEBSITE_REVISION" --output "$RUNNER_TEMP/germany-sources.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: germany479-live-release
+          path: |
+            ${{ runner.temp }}/germany-catalog.json
+            ${{ runner.temp }}/germany-sources.json
+          if-no-files-found: error
+          retention-days: 7
