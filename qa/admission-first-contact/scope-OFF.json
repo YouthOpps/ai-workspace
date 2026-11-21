@@ -4,12 +4,12 @@
   "sources": {
     "ford253": {
       "env_prefix": "FORD253",
-      "foundation_sha256": "0bf4a676940dfac69d1329f3e08266d05b15cedaf192724bad0a38172645bc16",
-      "history_sha256": "4502588357860bf816cb23108d5b0695e63eef5e2de18e070fea77b5c4d0ae85",
+      "foundation_sha256": "5f58c867001dd93665e42a40a4df00c9e6699ea8b68a6b03ff6fe1edccb105cb",
+      "history_sha256": "a07249b61a7be6df4be3330bcf7239b22218eadf6bc332040da7c749eb181c87",
       "issue": 253,
       "urls": [
         "https://www.careers.ford.com/robots.txt",
-        "https://www.careers.ford.com/students-graduates"
+        "https://www.careers.ford.com/en/students-graduates"
       ]
     }
   }

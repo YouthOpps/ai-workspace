@@ -1,9 +1,9 @@
-name: Ford careers inventory discovery
+name: Ford canonical students discovery
 
 on:
   push:
     branches:
-      - qa/ford-inventory-discovery-253
+      - qa/ford-canonical-students-253
 
 permissions:
   contents: read
