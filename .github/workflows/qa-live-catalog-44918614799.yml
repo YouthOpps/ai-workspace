@@ -2,7 +2,7 @@ name: Verify the consolidated YouthOpps live release
 
 on:
   push:
-    branches: [qa/live-catalog-44885567604]
+    branches: [qa/live-catalog-44918614799]
 
 permissions:
   contents: read
@@ -19,13 +19,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/youthopps.github.io
-          ref: 0c6ff4818953aca266178c6c5e84cdd90e6f6550
+          ref: 5f82df01a7bfb9698d208d9dec7153b461716f10
           path: website
           persist-credentials: false
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/data-source
-          ref: 6b0ce2d209ca19ad9af1e2aa6336103589c41c19
+          ref: bddbbf384b1ed77de119c50c0568e8f36435593f
           path: data-source
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -41,14 +41,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >-
           python -B .github/qa/verify-live-catalog-44796017283.py
-          6b0ce2d209ca19ad9af1e2aa6336103589c41c19 nestle ibm se-arbetsformedlingen-jobsearch be-wbi dk-university-of-copenhagen at-university-of-vienna yildiz-pladis-careers pl-frse hu-fulbright-hungary dk-fulbright-center de-bmw-group
-          --website-revision 0c6ff4818953aca266178c6c5e84cdd90e6f6550
+          bddbbf384b1ed77de119c50c0568e8f36435593f au-anu-international-admissions dk-university-of-copenhagen es-uc3m-admissions us-nasa-internships yildiz-pladis-careers youth-for-europe
+          --website-revision 5f82df01a7bfb9698d208d9dec7153b461716f10
           --output ${{ runner.temp }}/live-catalog-44796017283.json
       - name: Verify every live source status, index and sitemap
         run: >-
           python -B .github/qa/verify-live-source-directory-44796017283.py
-          6b0ce2d209ca19ad9af1e2aa6336103589c41c19
-          --website-revision 0c6ff4818953aca266178c6c5e84cdd90e6f6550
+          bddbbf384b1ed77de119c50c0568e8f36435593f
+          --website-revision 5f82df01a7bfb9698d208d9dec7153b461716f10
           --output ${{ runner.temp }}/live-source-directory-44796017283.json
       - uses: actions/upload-artifact@v4
         with:
