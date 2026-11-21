@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "toyota252": {
+      "env_prefix": "TOYOTA252",
+      "foundation_sha256": "9bb1a9e9d165d42b2b5d5058a36abafdef54fb74adc87a0f82ebc03ae8d3e63f",
+      "history_sha256": "c41b80f81337bacfe6d855377bbf26bd88e76e4c694b92ae69bdb25c67dcc771",
+      "issue": 252,
+      "urls": [
+        "https://careers.toyota.com/robots.txt",
+        "https://careers.toyota.com/us/en/students"
+      ]
+    }
+  }
+}
