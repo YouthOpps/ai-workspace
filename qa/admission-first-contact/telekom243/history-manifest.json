@@ -1,0 +1,13 @@
+{
+  "aggregate_data_reviewed_at": "bddbbf384b1ed77de119c50c0568e8f36435593f",
+  "candidate_urls": [
+    "https://careers.telekom.com/robots.txt",
+    "https://careers.telekom.com/en/early-careers"
+  ],
+  "issue": 243,
+  "known_producer_absence_reviewed_at": "286f436823a6e4d262469a533e2e22b6b429c1db",
+  "publisher": "Deutsche Telekom",
+  "publisher_host": "careers.telekom.com",
+  "publisher_requests": 0,
+  "unknown_history_preserved": true
+}
