@@ -115,6 +115,22 @@ explicit unknown history. Do not synthesize zero history, settled `False` or an
 empty bootstrap merely because local state or the
 newest owned artifact is absent.
 
+### Fulbright Germany incident of 20–21 November 2026
+
+Only for [data-pipeline issue 479](https://github.com/YouthOpps/data-pipeline/issues/479), a separately approved state-only job may attest continuity across the following consecutive scheduled attempts of `YouthOpps/data-pipeline` workflow `378390061` on `main` at `.github/workflows/fetch-de-fulbright-germany.yml`. The job must run on an isolated, reviewed GitHub Actions ref with no publisher access or publication credential.
+
+| Production run / attempt | Terminal job | Required evidence |
+|---|---|---|
+| 44435787861 / 1 | 135264177722 | Immediate successful predecessor at `1dcca6beb3023cf918f50cb87f68f3522b9978b2`; sole unexpired archive `14489820002`, ZIP SHA-256 `d4d4c9280a122f4e33e0242cb40fa682d69d8f801de63cbdd6e9663eb35835c1` |
+| 44652934438 / 1 | 136012035069 | Failed during GitHub workflow inventory before publisher access; zero artifacts |
+| 44846595786 / 1 | 136667720087 | Same failure before publisher access; zero artifacts |
+
+Both failures must match checkout `11fa75c3e745c5e0d8c12ee8a5c9f8371417d764`. Independently verify each exact job log, normal command, unique startup exception and skipped archive step against the immutable adapter and workflow. Reconcile complete workflow history, reruns and exact job completion chronology. Require exclusive paused production ownership and the above unique latest sequence before creating or accepting the attestation; any newer or active source attempt, missing evidence or conflicting ownership invalidates it.
+
+Keep the authenticated predecessor archive and its original owner envelope byte-for-byte, including starts, MAX, backoff, holds, pending state and unknown legacy rate history. Store the new job's repository, workflow, ref, SHA, job, attempt and evidence of both gaps in separate provenance. Independently verify archive metadata, digest, original owner and the actual adapter decoder. Never assign the old bytes to a failed run. The normal newest-owner rule continues to govern all other histories.
+
+The attestation alone grants no publication or publisher access. A separately reviewed source-specific consumer and one-shot native grant must bind the attestation, historical sequence and intended consumer revision and reject reuse or changed history before publisher access. Retain the actual resulting native state, including interrupted or failed access. Hand it back under a distinct reviewed production grant and verify the first normal publication and live index before closing the product issue. A failed handback keeps publisher access paused.
+
 When hosted research or QA relies on a production pause, verify the exact
 workflow ID, path and disabled state before history restoration or state
 initialization. Verify them again after startup quiet and immediately before
