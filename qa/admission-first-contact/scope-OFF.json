@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "abb259": {
+      "env_prefix": "ABB259",
+      "foundation_sha256": "266bb9b251a8b5f43459f70880944d085313a17e897b65f2f22bebe64d296f34",
+      "history_sha256": "fe8fe82829ac00d6ec109cf3561fe95d1807bb7c29108ee63afef1b638037711",
+      "issue": 259,
+      "urls": [
+        "https://careers.abb/robots.txt",
+        "https://careers.abb/us/en/abb-discovery"
+      ]
+    }
+  }
+}

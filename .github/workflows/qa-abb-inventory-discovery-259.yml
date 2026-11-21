@@ -1,0 +1,38 @@
+name: ABB careers inventory discovery
+
+on:
+  push:
+    branches:
+      - qa/abb-inventory-discovery-259
+
+permissions:
+  contents: read
+  actions: read
+  issues: read
+
+jobs:
+  contact:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.run_attempt == 1
+    name: First contact abb259
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: abb-careers-publisher
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Capture the bounded publisher responses
+        env:
+          SOURCE: abb259
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/admission-first-contact/run.py
+      - name: Retain outcome, source state and encrypted complete evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-contact-abb259-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/admissions-first-contact/abb259/
+          if-no-files-found: error
+          retention-days: 14
