@@ -341,7 +341,11 @@ def verify_exclusive(owner):
                         "disabled_manually"), "Reviewed DZS owner differs")
                     inventory = github("/actions/workflows/378390058/runs?per_page=100", repository)
                     dzs_runs = inventory["workflow_runs"]
-                    require(inventory["total_count"] == len(dzs_runs) == 12
+                    fields = ("id", "run_attempt", "head_sha", "updated_at", "status", "conclusion")
+                    dzs_history = sorted([run[field] for field in fields] for run in dzs_runs)
+                    require(sha(canonical(dzs_history)) ==
+                            "a7066f15c7ff62d448f73e9a514da2aaa22f53fd9cc8c0953f7a9f81db06aff1"
+                            and inventory["total_count"] == len(dzs_runs) == 12
                             and all(run["status"] == "completed" for run in dzs_runs)
                             and (dzs_runs[0]["id"], dzs_runs[0]["run_attempt"]) == (38979389959, 1),
                             "Reviewed DZS history differs")
