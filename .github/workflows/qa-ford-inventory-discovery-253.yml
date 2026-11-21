@@ -1,0 +1,38 @@
+name: Ford careers inventory discovery
+
+on:
+  push:
+    branches:
+      - qa/ford-inventory-discovery-253
+
+permissions:
+  contents: read
+  actions: read
+  issues: read
+
+jobs:
+  contact:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.run_attempt == 1
+    name: First contact ford253
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: ford-careers-publisher
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Capture the bounded publisher responses
+        env:
+          SOURCE: ford253
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -B qa/admission-first-contact/run.py
+      - name: Retain outcome, source state and encrypted complete evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-contact-ford253-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/admissions-first-contact/ford253/
+          if-no-files-found: error
+          retention-days: 14
