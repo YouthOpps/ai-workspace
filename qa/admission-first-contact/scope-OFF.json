@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "tesla256": {
+      "env_prefix": "TESLA256",
+      "foundation_sha256": "f2057e6c87ee4fcaca805781540ee68b0ae9339f80736d0dc2445ca4f4bacae8",
+      "history_sha256": "0e76a8fee528c3926afa8c433365d1064f107ebd3dd8bedd7999b522b57c7cb1",
+      "issue": 256,
+      "urls": [
+        "https://www.tesla.com/robots.txt",
+        "https://www.tesla.com/careers/students"
+      ]
+    }
+  }
+}
