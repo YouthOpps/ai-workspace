@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "cisco236": {
+      "env_prefix": "CISCO236",
+      "foundation_sha256": "d446c079c5cb59d2592782f896a99365bf3a857e269a4aa97079440f73012333",
+      "history_sha256": "0e6743d42df6e4f63309b7695e0c64bf4f6d3c21d05c63e5f9df08fe08a61c93",
+      "issue": 236,
+      "urls": [
+        "https://careers.cisco.com/robots.txt",
+        "https://careers.cisco.com/global/en/product-intern"
+      ]
+    }
+  }
+}
