@@ -1,0 +1,48 @@
+name: Verify the published Hungary awards and catalogue indexes
+on:
+  push:
+    branches: [qa/hungary481-final-live-index]
+permissions:
+  contents: read
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: c98e78c6838f16cae29f402412cec409f4fb00f2
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: dc1d190374f824779f72e58039ace6679c2ffc77
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build the reviewed site from the exact published revision
+        working-directory: website
+        env:
+          DATA_PATH: ${{ github.workspace }}/data-source/datas
+        run: npm run build
+      - name: Verify the Hungary awards in live search, source and sitemap
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-hungary-final.py
+          dc1d190374f824779f72e58039ace6679c2ffc77 hu-fulbright-hungary --website-revision c98e78c6838f16cae29f402412cec409f4fb00f2
+          --output ${{ runner.temp }}/hu481-final-live-index.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hu481-final-live-index
+          path: ${{ runner.temp }}/hu481-final-live-index.json
+          if-no-files-found: error
+          retention-days: 7
