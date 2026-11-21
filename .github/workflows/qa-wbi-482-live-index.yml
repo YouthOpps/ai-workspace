@@ -1,0 +1,48 @@
+name: Verify the published WBI residency and catalogue indexes
+on:
+  push:
+    branches: [qa/wbi-482-live-index]
+permissions:
+  contents: read
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: 941256e6cc361648501569cc650fd4af08d41e67
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: 2986440ccff9f044b96aec5e9205517095d45a07
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build the reviewed site from the exact published revision
+        working-directory: website
+        env:
+          DATA_PATH: ${{ github.workspace }}/data-source/datas
+        run: npm run build
+      - name: Verify the WBI opportunity in live search, source and sitemap
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-wbi-live-index.py
+          2986440ccff9f044b96aec5e9205517095d45a07 be-wbi hu-fulbright-hungary --website-revision 941256e6cc361648501569cc650fd4af08d41e67
+          --output ${{ runner.temp }}/wbi-482-live-index.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wbi-482-live-index
+          path: ${{ runner.temp }}/wbi-482-live-index.json
+          if-no-files-found: error
+          retention-days: 7
