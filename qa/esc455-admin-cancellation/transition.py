@@ -333,6 +333,19 @@ def verify_exclusive(owner):
                 identity = row["id"]
                 require(identity not in seen, "Publisher workflow inventory duplicated")
                 seen.add(identity)
+                if repository == PIPELINE and identity == 378390058:
+                    # DZS lists Czech grants on www.dzs.cz, outside the European Youth Portal.
+                    # A changed, re-enabled or recently executed DZS owner needs review.
+                    require((row["name"], row["path"], row["state"]) == (
+                        "Fetch DZS European Solidarity Corps", ".github/workflows/fetch-cz-dzs.yml",
+                        "disabled_manually"), "Reviewed DZS owner differs")
+                    inventory = github("/actions/workflows/378390058/runs?per_page=100", repository)
+                    dzs_runs = inventory["workflow_runs"]
+                    require(inventory["total_count"] == len(dzs_runs) == 12
+                            and all(run["status"] == "completed" for run in dzs_runs)
+                            and (dzs_runs[0]["id"], dzs_runs[0]["run_attempt"]) == (38979389959, 1),
+                            "Reviewed DZS history differs")
+                    continue
                 if collision.search(row["name"] + " " + row["path"]):
                     require(repository == REPO and allowed.get(identity) == row["path"],
                             "Other ESC workflow ownership requires review")
