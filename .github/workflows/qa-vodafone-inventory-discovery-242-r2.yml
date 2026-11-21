@@ -3,7 +3,7 @@ name: Vodafone careers inventory discovery
 on:
   push:
     branches:
-      - qa/vodafone-inventory-discovery-242
+      - qa/vodafone-inventory-discovery-242-r2
 
 permissions:
   contents: read
