@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   transition:
-    if: false && github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    if: true && github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 7
     steps:
