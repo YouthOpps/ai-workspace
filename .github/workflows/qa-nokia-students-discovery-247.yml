@@ -1,9 +1,9 @@
-name: Nokia careers inventory discovery
+name: Nokia students discovery
 
 on:
   push:
     branches:
-      - qa/nokia-inventory-discovery-247
+      - qa/nokia-students-discovery-247
 
 permissions:
   contents: read

@@ -5,7 +5,7 @@
     "nokia247": {
       "env_prefix": "NOKIA247",
       "foundation_sha256": "fcc3fbd61c8d51889f5210fb6c362d8112a2b1327f5915fd90e0f6a4041a818d",
-      "history_sha256": "7e5709e612ad72f7d2432b3fa354c90bc4db82165f0b8dd8bf82fa1c56f7262d",
+      "history_sha256": "f0ae43af608870ef6c46382864ca707391f2f0000376e372945fd611ac859154",
       "issue": 247,
       "urls": [
         "https://www.nokia.com/robots.txt",
