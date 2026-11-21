@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "stellantis250": {
+      "env_prefix": "STELLANTIS250",
+      "foundation_sha256": "c38b5cbd61c5f6eaa7ff328e85492db51d40f2153eecf767b831f95f31915563",
+      "history_sha256": "8ca4833f99ed11146993bab268be6c0903b07fb8c8d801419bd41c44852e828c",
+      "issue": 250,
+      "urls": [
+        "https://careers.stellantis.com/robots.txt",
+        "https://careers.stellantis.com/early-careers/"
+      ]
+    }
+  }
+}
