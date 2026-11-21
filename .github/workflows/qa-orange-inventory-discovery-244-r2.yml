@@ -3,7 +3,7 @@ name: Orange careers inventory discovery
 on:
   push:
     branches:
-      - qa/orange-inventory-discovery-244
+      - qa/orange-inventory-discovery-244-r2
 
 permissions:
   contents: read
