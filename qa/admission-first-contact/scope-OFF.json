@@ -4,8 +4,8 @@
   "sources": {
     "hyundai251": {
       "env_prefix": "HYUNDAI251",
-      "foundation_sha256": "f4ee5cc99585fe98adc1e8f18022f0388ffa91d1c9b2ab8c91983f891b82fbfe",
-      "history_sha256": "6259bdcdc05de27e4ef3bf98fdf7f47abc380ade3c2e79587a821a9c26e139e7",
+      "foundation_sha256": "f9942531b60bd1b66103a6b3049691e0b6b7d95d56231ca49a38eb7176435b54",
+      "history_sha256": "20422e088a3c5c59d2ebd509a6435392030d3214da878826f6248e248791f433",
       "issue": 251,
       "urls": [
         "https://www.hyundai.com/robots.txt",

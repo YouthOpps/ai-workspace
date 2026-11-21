@@ -1,9 +1,9 @@
-name: Hyundai careers inventory discovery
+name: Hyundai assessed Singapore discovery
 
 on:
   push:
     branches:
-      - qa/hyundai-inventory-discovery-251
+      - qa/hyundai-canonical-discovery-251
 
 permissions:
   contents: read

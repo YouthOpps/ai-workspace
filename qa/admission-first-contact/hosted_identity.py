@@ -13,8 +13,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = "YouthOpps/ai-workspace"
-WORKFLOW = ".github/workflows/qa-hyundai-inventory-discovery-251.yml"
-BRANCH = "qa/hyundai-inventory-discovery-251"
+WORKFLOW = ".github/workflows/qa-hyundai-canonical-discovery-251.yml"
+BRANCH = "qa/hyundai-canonical-discovery-251"
 REF = "refs/heads/" + BRANCH
 SOURCES = frozenset(("hyundai251",))
 PIPELINE = "YouthOpps/data-pipeline"
@@ -165,8 +165,8 @@ def exact_checkout(head, source, scope_bytes):
 
 
 def verify_approval(scope, scope_sha256):
-    head_line = f"Approved Hyundai careers inventory research head {scope['head_sha']}"
-    scope_line = f"Hyundai careers inventory research scope {scope_sha256}"
+    head_line = f"Approved Hyundai assessed Singapore research head {scope['head_sha']}"
+    scope_line = f"Hyundai assessed Singapore research scope {scope_sha256}"
     matches = []
     for page in range(1, 6):
         rows = public_pipeline_json(f"/issues/{ISSUE}/comments?per_page=100&page={page}")
@@ -239,7 +239,11 @@ def verify_run(source):
         "triggering_actor.type": "User",
     }, "Run API")
     branch = urllib.parse.quote(BRANCH, safe="")
-    history = github_json(f"/actions/runs?branch={branch}&event=push&per_page=2")
+    for attempt in range(STATE_POLLS):
+        history = github_json(f"/actions/runs?branch={branch}&event=push&per_page=2")
+        if history.get("total_count") != 0 or history.get("workflow_runs") != [] or attempt + 1 == STATE_POLLS:
+            break
+        time.sleep(POLL_GAP_SECONDS)
     require(history["total_count"] == 1 and [x["id"] for x in history["workflow_runs"]] == [run_id],
             "Branch already has a run or history is ambiguous")
 
@@ -268,6 +272,44 @@ def verify_run(source):
     }
 
 
+def verify_predecessor():
+    """Require every prior owner to retain its only retired attempt and artifact."""
+    predecessors = ((426086692, 44920912547, 136896522389, '98c4c84626cdf4dd23200136bdd766bd04c71805', 'qa/hyundai-inventory-discovery-251', '.github/workflows/qa-hyundai-inventory-discovery-251.yml', 'failure', 'First contact hyundai251', 14713313110, 'first-contact-hyundai251-44920912547-1', 20609, '7060399db9ffe5995f653f438e4e588161d0e127a914b327dbb34c457cb9c82f'),(426103703, 44922972628, 136902804535, 'da6e292f6c58a2b79bba917f63d1125483c16378', 'qa/251-hyundai-received-policy-attestation', '.github/workflows/qa-hyundai-received-policy-attestation.yml', 'success', 'settle', 14714711475, 'hyundai251-policy-attestation', 1376, '80d5e44626884e104c5e68cdd82148a5c885ffa2607ef9e34e4c93e9f1fad508'))
+    for (workflow, run_id, job_id, head, branch, path, conclusion, job_name,
+         artifact_id, artifact_name, size, archive_digest) in predecessors:
+        expected = {
+            "id": run_id, "workflow_id": workflow, "run_attempt": 1, "event": "push",
+            "head_sha": head, "head_branch": branch, "path": path,
+            "status": "completed", "conclusion": conclusion,
+            "repository.full_name": REPOSITORY, "head_repository.full_name": REPOSITORY,
+            "actor.id": MAINTAINER_ID, "actor.type": "User",
+            "triggering_actor.id": MAINTAINER_ID, "triggering_actor.type": "User",
+        }
+        check_fields(github_json(f"/actions/workflows/{workflow}"), {
+            "id": workflow, "path": path, "state": "disabled_manually",
+        }, "Exact predecessor owner or retirement differs")
+        check_fields(github_json(f"/actions/runs/{run_id}"), expected, "Latest predecessor attempt differs")
+        check_fields(github_json(f"/actions/runs/{run_id}/attempts/1"), expected, "Predecessor run differs")
+        inventory = github_json(f"/actions/workflows/{workflow}/runs?per_page=2")
+        require(inventory["total_count"] == 1 and len(inventory["workflow_runs"]) == 1,
+                "Exact predecessor run inventory differs")
+        check_fields(inventory["workflow_runs"][0], expected, "Predecessor workflow inventory differs")
+        jobs = github_json(f"/actions/runs/{run_id}/attempts/1/jobs?per_page=2")
+        require(jobs["total_count"] == 1 and len(jobs["jobs"]) == 1, "Exact predecessor job inventory differs")
+        check_fields(jobs["jobs"][0], {
+            "id": job_id, "run_id": run_id, "head_sha": head, "name": job_name,
+            "head_branch": branch, "run_attempt": 1, "status": "completed", "conclusion": conclusion,
+        }, "Predecessor job differs")
+        artifacts = github_json(f"/actions/runs/{run_id}/artifacts?per_page=2")
+        require(artifacts["total_count"] == 1 and len(artifacts["artifacts"]) == 1,
+                "Exact predecessor artifact inventory differs")
+        check_fields(artifacts["artifacts"][0], {
+            "id": artifact_id, "name": artifact_name, "size_in_bytes": size,
+            "expired": False, "digest": "sha256:" + archive_digest,
+            "workflow_run.id": run_id, "workflow_run.head_sha": head, "workflow_run.head_branch": branch,
+        }, "Predecessor artifact differs")
+
+
 def verify_authority(source):
     raw = (ROOT / "scope-OFF.json").read_bytes()
     manifest = json.loads(raw)
@@ -276,6 +318,7 @@ def verify_authority(source):
     row = dict(manifest["sources"][source])
     require(row.get("issue") == ISSUE and "decision" not in row, "Invalid committed maintainer gate")
     scope = verify_run(source)
+    verify_predecessor()
     exact_checkout(scope["head_sha"], source, raw)
     scope["scope_sha256"] = hashlib.sha256(raw).hexdigest()
     row["decision"] = verify_approval(scope, scope["scope_sha256"])

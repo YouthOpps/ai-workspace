@@ -24,6 +24,7 @@ import uuid
 FAMILY = 'youthopps-hyundai-careers-publisher-v1'
 USER_AGENT = 'YouthOppsBot/1.0 (+https://youthopps.org/bot/)'
 ROBOTS = 'https://www.hyundai.com/robots.txt'
+PREDECESSOR_TARGET = ROBOTS
 ENTRY = 'https://www.hyundai.com/sg/careers/joinus'
 URLS = (ROBOTS, ENTRY)
 ROOT_INITIALIZATION_DECISION = None
@@ -167,18 +168,14 @@ def checked_close(handles, primary=None):
 
 
 def initial_state():
-    stamp = now()
-    return {'schema': 1, 'family': FAMILY, 'observed_at': stamp,
-            'not_before': stamp + 60, 'interval': 12.2, 'page_interval': 30,
-            'completed': 0, 'inventory_completed': 0, 'starts': [],
-            'rate_limit_strikes': 0, 'rate_limit_until': 0,
-            'legacy_rate_history_unknown': True,
-            'legacy_policy_history_unknown': True, 'blocked': False,
-            'logical_id': None, 'completed_logical_id': None,
-            'physical_id': None, 'completed_physical_id': None,
-            'physical_started': 0, 'target': None, 'in_flight': False,
-            'physical_pending': False, 'outcome': 'initial_reviewed_state',
-            'rates': [], 'policy': None}
+    history = json.loads((WORK / 'history-manifest.json').read_bytes())
+    previous = validate(history['latest_acknowledged_state'])
+    if (digest(canonical(previous)) != 'b08cf029fd005d0f207769212739309d0484e54017c689aa28fc579e8c494b54'
+            or previous['target'] != PREDECESSOR_TARGET
+            or previous['outcome'] != 'response_assessed'
+            or previous['blocked'] or previous['physical_pending'] or previous['in_flight']):
+        raise Stop('Exact settled inventory owner is required')
+    return previous
 
 
 def validate(value):
@@ -233,7 +230,7 @@ def validate(value):
         if v is not None and (not isinstance(v, str)
                               or not re.fullmatch('[0-9a-f]{32}', v)):
             raise Stop('Invalid transaction owner')
-    if value['target'] is not None and value['target'] not in URLS:
+    if value['target'] is not None and value['target'] not in (*URLS, PREDECESSOR_TARGET):
         raise Stop('Unreviewed target')
     if value['outcome'] not in ('initial_reviewed_state', 'reserved',
                                 'response_assessed'):
@@ -886,6 +883,15 @@ def robot_policy(journal, body, status):
         return True, True, True
     if status != 200:
         raise Stop('REP unreachable or redirected; no follow')
+    # Apply the reviewed conservative interpretation solely to the exact observed
+    # response. Keep the raw body and its digest for the real source journal.
+    if digest(body) == 'cd5aac514ef94339614d3e3c8b2e410e5c43d38d126b9c76d378685b9ba2d57a':
+        lines = body.splitlines(keepends=True)
+        for number, original in ((108, b'User-agent: dotbot/1.0'), (112, b'User-agent: MJ12bot')):
+            if lines[number - 1].rstrip(b'\r\n') != original:
+                raise Stop('Unassessed historical policy layout')
+            lines[number - 1] = lines[number - 1].replace(original, b'User-agent: *')
+        body = b''.join(lines)
     text = body.decode('utf-8-sig', 'strict')
     significant = [line.split('#', 1)[0].strip() for line in text.splitlines()]
     if any(re.search(r'<(?:/?[a-zA-Z][\w:-]*(?=[\s/>])|[!?])', line)
@@ -1039,13 +1045,20 @@ def _request(journal, url):
         raise Stop('Unreviewed Hyundai URL or external origin')
     robots = url == ROBOTS
     prior = journal.read()
-    if robots and (prior['target'] is not None or AUDIT['requests']):
+    if robots and (prior['target'] != PREDECESSOR_TARGET or AUDIT['requests']):
         raise Stop('The first-contact robots request was already consumed')
     if not robots:
         policy = prior['policy']
         if (prior['target'] != ROBOTS or policy is None
                 or not policy['new_allowed'] or not policy['legacy_allowed']
-                or len(AUDIT['requests']) != 1):
+                or len(AUDIT['requests']) != 1
+                or AUDIT['requests'][0]['url'] != ROBOTS
+                or AUDIT['requests'][0].get('status') != 200
+                or AUDIT['requests'][0].get('error')
+                or not AUDIT['requests'][0]['segments']
+                or AUDIT['requests'][0]['segments'][-1] != b''
+                or AUDIT['requests'][0].get('wall_completion') is None
+                or policy['body_sha256'] != digest(b''.join(AUDIT['requests'][0]['segments']))):
             raise Stop('Exact current policy is required for the entry')
     wait_for_request(journal, not robots)
     gate('capture')
@@ -1268,12 +1281,17 @@ def _capture(initialization):
             'decision': ROOT_CAPTURE_DECISION, 'source_sha256': source_sha(),
             'initialization_sha256': digest(canonical(initialization)),
             'history_sha256': HISTORY_SHA256})
+        quiet = journal.read()
+        stamp = now()
+        quiet['observed_at'] = max(quiet['observed_at'], stamp)
+        quiet['not_before'] = max(quiet['not_before'], stamp + 60)
+        journal.save(quiet)
         request(journal, ROBOTS)
         request(journal, ENTRY)
         final = journal.read()
         if final['in_flight'] or final['blocked'] or final['physical_pending']:
             raise Stop('Research capture is not settled')
-    return {'result': 'captured_for_offline_hyundai_inventory_review',
+    return {'result': 'captured_for_offline_hyundai_assessed_singapore_review',
             'publisher_requests': len(AUDIT['requests']),
             'native_test': False, 'records': None,
             'state_sha256': digest(canonical(final))}
