@@ -4,12 +4,12 @@
   "sources": {
     "huawei248": {
       "env_prefix": "HUAWEI248",
-      "foundation_sha256": "d10c7876d5b6eebf6ac97d5da5503ae2cafcba86cbcf0d7c174f70b12249696a",
-      "history_sha256": "9ec67b0b1bd8c913559d3545381180f39375bf317e5fc1118cbb078b08a3abe1",
+      "foundation_sha256": "5bc68105db82bb392c353dbb4cadd2008a29f427dcdc1b698f1b9b0094445a7d",
+      "history_sha256": "00fda4c71edb72e038cfead9133cf513b1751098d6875d10da3f4030aaf3421f",
       "issue": 248,
       "urls": [
         "https://www.huawei.com/robots.txt",
-        "https://www.huawei.com/en/seeds-for-the-future/"
+        "https://www.huawei.com/en/seeds-for-the-future"
       ]
     }
   }

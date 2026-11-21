@@ -1,9 +1,9 @@
-name: Huawei careers inventory discovery
+name: Huawei official canonical discovery
 
 on:
   push:
     branches:
-      - qa/huawei-inventory-discovery-248
+      - qa/huawei-canonical-discovery-248
 
 permissions:
   contents: read
