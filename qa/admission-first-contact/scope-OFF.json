@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "sources": {
+    "qualcomm235": {
+      "env_prefix": "QUALCOMM235",
+      "foundation_sha256": "9dbf619721066a41e7eef4e115af38b59ea9467b4b913e7c6c10936802d784c7",
+      "history_sha256": "e475e7148d1a4604b272720f95b3cd091bfb9bcb637105747886a19e04325804",
+      "issue": 235,
+      "urls": [
+        "https://www.qualcomm.com/robots.txt",
+        "https://www.qualcomm.com/company/careers/internships-and-early-in-career-opportunities/americas"
+      ]
+    }
+  }
+}
