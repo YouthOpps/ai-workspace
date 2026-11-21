@@ -2,10 +2,52 @@
   "aggregate_data_reviewed_at": "c958fa65a69518471473d974c598a47e15185a3c",
   "candidate_urls": [
     "https://search-careers.gm.com/robots.txt",
-    "https://search-careers.gm.com/en/early-careers/"
+    "https://search-careers.gm.com/en/jobs/jr-202624606/2027-summer-intern-cybersecurity-education-awareness-program-intern/"
   ],
   "issue": 254,
   "known_producer_absence_reviewed_at": "286f436823a6e4d262469a533e2e22b6b429c1db",
+  "latest_acknowledged_state": {
+    "blocked": false,
+    "completed": 1795276378.988669,
+    "completed_logical_id": "3c4a374102b24869a5c934c271798628",
+    "completed_physical_id": "a38d0ac080214de39970586943f80e7e",
+    "family": "youthopps-gm-careers-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795276378.988669,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "3c4a374102b24869a5c934c271798628",
+    "not_before": 1795276391.188669,
+    "observed_at": 1795276378.988669,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "a38d0ac080214de39970586943f80e7e",
+    "physical_pending": false,
+    "physical_started": 1795276377.1289454,
+    "policy": {
+      "body_sha256": "8b2b1c1a8123f06339d60015c1243444af0509f28f21ccf392fdd210852f1693",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://search-careers.gm.com/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795276359.0277498,
+      1795276377.1289454
+    ],
+    "target": "https://search-careers.gm.com/en/early-careers/"
+  },
+  "previous_artifact": 14713554753,
+  "previous_job": 136897992143,
+  "previous_run": 44921395475,
+  "previous_state_sha256": "69c144c4a24c1f8195f6ba1a8f41ca6941a146cc80f5c28743dfeb41b480625d",
+  "previous_zip_sha256": "0f374f794f8f73a0404df6ed32dd2a6dc0cdcb9c69494b033084b87d4d0d8f22",
   "publisher": "General Motors",
   "publisher_host": "search-careers.gm.com",
   "publisher_requests": 0,

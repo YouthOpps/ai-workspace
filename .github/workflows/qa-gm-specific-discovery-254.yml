@@ -1,9 +1,9 @@
-name: General Motors careers inventory discovery
+name: General Motors internship detail discovery
 
 on:
   push:
     branches:
-      - qa/gm-inventory-discovery-254
+      - qa/gm-specific-discovery-254
 
 permissions:
   contents: read
