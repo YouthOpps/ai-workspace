@@ -2,10 +2,49 @@
   "aggregate_data_reviewed_at": "bddbbf384b1ed77de119c50c0568e8f36435593f",
   "candidate_urls": [
     "https://careers.unilever.com/robots.txt",
-    "https://careers.unilever.com/en/search-jobs"
+    "https://careers.unilever.com/en/sitemap"
   ],
   "issue": 260,
   "known_producer_absence_reviewed_at": "286f436823a6e4d262469a533e2e22b6b429c1db",
+  "latest_acknowledged_state": {
+    "blocked": false,
+    "completed": 1795274739.8301392,
+    "completed_logical_id": "ff3603be055544ceb9052ac1a86d2027",
+    "completed_physical_id": "fd1aa9b0d4c74eec836477d8e710c886",
+    "family": "youthopps-unilever-careers-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795274739.8301392,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "ff3603be055544ceb9052ac1a86d2027",
+    "not_before": 1795274752.0301392,
+    "observed_at": 1795274739.8301392,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "fd1aa9b0d4c74eec836477d8e710c886",
+    "physical_pending": false,
+    "physical_started": 1795274737.2364576,
+    "policy": {
+      "body_sha256": "ec23d75d4379fc1226f6ef6d925165e7438fb40261265b6be428f5a28c91ee03",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://careers.unilever.com/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1794849395.6389034,
+      1794849433.8236053,
+      1795274718.159231,
+      1795274737.2364576
+    ],
+    "target": "https://careers.unilever.com/en/search-jobs"
+  },
   "legacy_local_observations": {
     "completed": 1794849436.9739714,
     "host": "careers.unilever.com",
@@ -22,6 +61,11 @@
     "status": 200
   },
   "old_ledger_sha256": "2df9041107b9da4a82bc123426cc22cc64eb59412f8a31ffa32cf291d98acaea",
+  "previous_artifact": 14712653007,
+  "previous_job": 136890627574,
+  "previous_run": 44918979867,
+  "previous_state_sha256": "e14bd92c6b1fa604e92f57ea230b89f145c15ba82c765b355b31a6dadda72a71",
+  "previous_zip_sha256": "e35b8539d00c83d5c905cf90041da8b597a14f49e7a696a63de56791b4431b62",
   "prior_429_or_refusal_observed": false,
   "prior_complete_bodies_available": false,
   "prior_observation_provenance": "Historical bounded local research; starts are conservative timing observations, not opener-level attestations",

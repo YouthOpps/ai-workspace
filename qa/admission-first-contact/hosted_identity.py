@@ -13,8 +13,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = "YouthOpps/ai-workspace"
-WORKFLOW = ".github/workflows/qa-unilever-inventory-discovery-260.yml"
-BRANCH = "qa/unilever-inventory-discovery-260"
+WORKFLOW = ".github/workflows/qa-unilever-sitemap-discovery-260.yml"
+BRANCH = "qa/unilever-sitemap-discovery-260"
 REF = "refs/heads/" + BRANCH
 SOURCES = frozenset(("unilever260",))
 PIPELINE = "YouthOpps/data-pipeline"
@@ -165,8 +165,8 @@ def exact_checkout(head, source, scope_bytes):
 
 
 def verify_approval(scope, scope_sha256):
-    head_line = f"Approved Unilever careers inventory research head {scope['head_sha']}"
-    scope_line = f"Unilever careers inventory research scope {scope_sha256}"
+    head_line = f"Approved Unilever official sitemap research head {scope['head_sha']}"
+    scope_line = f"Unilever official sitemap research scope {scope_sha256}"
     matches = []
     for page in range(1, 6):
         rows = public_pipeline_json(f"/issues/{ISSUE}/comments?per_page=100&page={page}")
@@ -268,6 +268,44 @@ def verify_run(source):
     }
 
 
+def verify_predecessor():
+    """Require every prior owner to retain its only retired attempt and artifact."""
+    predecessors = ((426071160, 44918979867, 136890627574, 'ff9a3e3b2d43e6a437368a338452ee68488e1fb5', 'qa/unilever-inventory-discovery-260', '.github/workflows/qa-unilever-inventory-discovery-260.yml', 'success', 'First contact unilever260', 14712653007, 'first-contact-unilever260-44918979867-1', 1162353, 'e35b8539d00c83d5c905cf90041da8b597a14f49e7a696a63de56791b4431b62'),)
+    for (workflow, run_id, job_id, head, branch, path, conclusion, job_name,
+         artifact_id, artifact_name, size, archive_digest) in predecessors:
+        expected = {
+            "id": run_id, "workflow_id": workflow, "run_attempt": 1, "event": "push",
+            "head_sha": head, "head_branch": branch, "path": path,
+            "status": "completed", "conclusion": conclusion,
+            "repository.full_name": REPOSITORY, "head_repository.full_name": REPOSITORY,
+            "actor.id": MAINTAINER_ID, "actor.type": "User",
+            "triggering_actor.id": MAINTAINER_ID, "triggering_actor.type": "User",
+        }
+        check_fields(github_json(f"/actions/workflows/{workflow}"), {
+            "id": workflow, "path": path, "state": "disabled_manually",
+        }, "Exact predecessor owner or retirement differs")
+        check_fields(github_json(f"/actions/runs/{run_id}"), expected, "Latest predecessor attempt differs")
+        check_fields(github_json(f"/actions/runs/{run_id}/attempts/1"), expected, "Predecessor run differs")
+        inventory = github_json(f"/actions/workflows/{workflow}/runs?per_page=2")
+        require(inventory["total_count"] == 1 and len(inventory["workflow_runs"]) == 1,
+                "Exact predecessor run inventory differs")
+        check_fields(inventory["workflow_runs"][0], expected, "Predecessor workflow inventory differs")
+        jobs = github_json(f"/actions/runs/{run_id}/attempts/1/jobs?per_page=2")
+        require(jobs["total_count"] == 1 and len(jobs["jobs"]) == 1, "Exact predecessor job inventory differs")
+        check_fields(jobs["jobs"][0], {
+            "id": job_id, "run_id": run_id, "head_sha": head, "name": job_name,
+            "head_branch": branch, "run_attempt": 1, "status": "completed", "conclusion": conclusion,
+        }, "Predecessor job differs")
+        artifacts = github_json(f"/actions/runs/{run_id}/artifacts?per_page=2")
+        require(artifacts["total_count"] == 1 and len(artifacts["artifacts"]) == 1,
+                "Exact predecessor artifact inventory differs")
+        check_fields(artifacts["artifacts"][0], {
+            "id": artifact_id, "name": artifact_name, "size_in_bytes": size,
+            "expired": False, "digest": "sha256:" + archive_digest,
+            "workflow_run.id": run_id, "workflow_run.head_sha": head, "workflow_run.head_branch": branch,
+        }, "Predecessor artifact differs")
+
+
 def verify_authority(source):
     raw = (ROOT / "scope-OFF.json").read_bytes()
     manifest = json.loads(raw)
@@ -276,6 +314,7 @@ def verify_authority(source):
     row = dict(manifest["sources"][source])
     require(row.get("issue") == ISSUE and "decision" not in row, "Invalid committed maintainer gate")
     scope = verify_run(source)
+    verify_predecessor()
     exact_checkout(scope["head_sha"], source, raw)
     scope["scope_sha256"] = hashlib.sha256(raw).hexdigest()
     row["decision"] = verify_approval(scope, scope["scope_sha256"])

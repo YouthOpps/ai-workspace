@@ -1,9 +1,9 @@
-name: Unilever careers inventory discovery
+name: Unilever official sitemap discovery
 
 on:
   push:
     branches:
-      - qa/unilever-inventory-discovery-260
+      - qa/unilever-sitemap-discovery-260
 
 permissions:
   contents: read

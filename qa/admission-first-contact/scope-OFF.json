@@ -4,12 +4,12 @@
   "sources": {
     "unilever260": {
       "env_prefix": "UNILEVER260",
-      "foundation_sha256": "9cf088115dd4981062100ebb9c2514aabfece326436bf5d4b4b16f201e6f19c9",
-      "history_sha256": "e51bef35b4460ab350507edcbfebb322850bfe3dbbbce2753e7ecf5c0f0c6bb4",
+      "foundation_sha256": "9c85e5fc10f6526fc4e13675c4132f670c5e3ea8ce2ede048e9afd7967eb876d",
+      "history_sha256": "d0f1e4d7fe4da0f5d86bf1c0dccd615449ab3cfa23e4f6b8465ad18da50bcb17",
       "issue": 260,
       "urls": [
         "https://careers.unilever.com/robots.txt",
-        "https://careers.unilever.com/en/search-jobs"
+        "https://careers.unilever.com/en/sitemap"
       ]
     }
   }

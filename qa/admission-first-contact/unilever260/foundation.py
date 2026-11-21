@@ -24,7 +24,8 @@ import uuid
 FAMILY = 'youthopps-unilever-careers-publisher-v1'
 USER_AGENT = 'YouthOppsBot/1.0 (+https://youthopps.org/bot/)'
 ROBOTS = 'https://careers.unilever.com/robots.txt'
-ENTRY = 'https://careers.unilever.com/en/search-jobs'
+PREDECESSOR_TARGET = 'https://careers.unilever.com/en/search-jobs'
+ENTRY = 'https://careers.unilever.com/en/sitemap'
 URLS = (ROBOTS, ENTRY)
 ROOT_INITIALIZATION_DECISION = None
 ROOT_CAPTURE_DECISION = None
@@ -167,30 +168,14 @@ def checked_close(handles, primary=None):
 
 
 def initial_state():
-    stamp = now()
     history = json.loads((WORK / 'history-manifest.json').read_bytes())
-    prior = history['legacy_local_observations']
-    if (prior['host'] != 'careers.unilever.com' or prior['pending'] is not False
-            or prior['legacy_history_unknown'] is not True or prior['status'] != 200
-            or prior['interval'] < 12.2 or prior['page_interval'] < 30
-            or len(prior['starts']) != 2 or prior['starts'] != sorted(set(prior['starts']))
-            or not 0 < prior['starts'][0] < prior['starts'][1] <= prior['completed']
-            or not prior['starts'][1] <= prior['inventory_completed'] <= stamp):
-        raise Stop('Original settled Unilever observations differ')
-    completed = max(prior['completed'], prior['inventory_completed'])
-    return {'schema': 1, 'family': FAMILY, 'observed_at': stamp,
-            'not_before': max(stamp + 60, completed + prior['interval']),
-            'interval': prior['interval'], 'page_interval': prior['page_interval'],
-            'completed': completed, 'inventory_completed': prior['inventory_completed'],
-            'starts': list(prior['starts']),
-            'rate_limit_strikes': 0, 'rate_limit_until': 0,
-            'legacy_rate_history_unknown': True,
-            'legacy_policy_history_unknown': True, 'blocked': False,
-            'logical_id': None, 'completed_logical_id': None,
-            'physical_id': None, 'completed_physical_id': None,
-            'physical_started': 0, 'target': None, 'in_flight': False,
-            'physical_pending': False, 'outcome': 'initial_reviewed_state',
-            'rates': [], 'policy': None}
+    previous = validate(history['latest_acknowledged_state'])
+    if (digest(canonical(previous)) != 'e14bd92c6b1fa604e92f57ea230b89f145c15ba82c765b355b31a6dadda72a71'
+            or previous['target'] != PREDECESSOR_TARGET
+            or previous['outcome'] != 'response_assessed'
+            or previous['blocked'] or previous['physical_pending'] or previous['in_flight']):
+        raise Stop('Exact settled inventory owner is required')
+    return previous
 
 
 def validate(value):
@@ -245,7 +230,7 @@ def validate(value):
         if v is not None and (not isinstance(v, str)
                               or not re.fullmatch('[0-9a-f]{32}', v)):
             raise Stop('Invalid transaction owner')
-    if value['target'] is not None and value['target'] not in URLS:
+    if value['target'] is not None and value['target'] not in (*URLS, PREDECESSOR_TARGET):
         raise Stop('Unreviewed target')
     if value['outcome'] not in ('initial_reviewed_state', 'reserved',
                                 'response_assessed'):
@@ -1051,7 +1036,7 @@ def _request(journal, url):
         raise Stop('Unreviewed Unilever URL or external origin')
     robots = url == ROBOTS
     prior = journal.read()
-    if robots and (prior['target'] is not None or AUDIT['requests']):
+    if robots and (prior['target'] != PREDECESSOR_TARGET or AUDIT['requests']):
         raise Stop('The first-contact robots request was already consumed')
     if not robots:
         policy = prior['policy']
@@ -1280,12 +1265,17 @@ def _capture(initialization):
             'decision': ROOT_CAPTURE_DECISION, 'source_sha256': source_sha(),
             'initialization_sha256': digest(canonical(initialization)),
             'history_sha256': HISTORY_SHA256})
+        quiet = journal.read()
+        stamp = now()
+        quiet['observed_at'] = max(quiet['observed_at'], stamp)
+        quiet['not_before'] = max(quiet['not_before'], stamp + 60)
+        journal.save(quiet)
         request(journal, ROBOTS)
         request(journal, ENTRY)
         final = journal.read()
         if final['in_flight'] or final['blocked'] or final['physical_pending']:
             raise Stop('Research capture is not settled')
-    return {'result': 'captured_for_offline_unilever_inventory_review',
+    return {'result': 'captured_for_offline_unilever_sitemap_review',
             'publisher_requests': len(AUDIT['requests']),
             'native_test': False, 'records': None,
             'state_sha256': digest(canonical(final))}
