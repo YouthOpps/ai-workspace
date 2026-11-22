@@ -1,8 +1,8 @@
-name: Verify the consolidated YouthOpps live release
+name: Verify the IKY production publication and complete live index
 
 on:
   push:
-    branches: [qa/live-catalog-45000261414]
+    branches: [qa/iky491-live-45012232872]
 
 permissions:
   contents: read
@@ -19,13 +19,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/youthopps.github.io
-          ref: 4b2e3d576f757cc31b798e6d65e5e80af1c585c9
+          ref: 5cf48e0f38a845ea3b192aa8d05bb148d5648af8
           path: website
           persist-credentials: false
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/data-source
-          ref: 31d9d5e3297b6959a0dc7e3acff24c9f34907721
+          ref: 8f3da0ec665dd776077b9cf4b9cb0d9c79fb8fcb
           path: data-source
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -41,14 +41,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >-
           python -B .github/qa/verify-live-catalog-44796017283.py
-          31d9d5e3297b6959a0dc7e3acff24c9f34907721 nestle ibm se-arbetsformedlingen-jobsearch be-wbi dk-university-of-copenhagen at-university-of-vienna yildiz-pladis-careers pl-frse hu-fulbright-hungary dk-fulbright-center de-bmw-group
-          --website-revision 4b2e3d576f757cc31b798e6d65e5e80af1c585c9
+          8f3da0ec665dd776077b9cf4b9cb0d9c79fb8fcb gr-iky
+          --website-revision 5cf48e0f38a845ea3b192aa8d05bb148d5648af8
           --output ${{ runner.temp }}/live-catalog-44796017283.json
       - name: Verify every live source status, index and sitemap
         run: >-
           python -B .github/qa/verify-live-source-directory-44796017283.py
-          31d9d5e3297b6959a0dc7e3acff24c9f34907721
-          --website-revision 4b2e3d576f757cc31b798e6d65e5e80af1c585c9
+          8f3da0ec665dd776077b9cf4b9cb0d9c79fb8fcb
+          --website-revision 5cf48e0f38a845ea3b192aa8d05bb148d5648af8
           --output ${{ runner.temp }}/live-source-directory-44796017283.json
       - uses: actions/upload-artifact@v4
         with:
