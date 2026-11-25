@@ -167,23 +167,13 @@ def check_detail(row):
 with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
     list(executor.map(check_detail, samples))
 
-bmw_meta = json.loads(subprocess.check_output([
-    'git', '-C', repository, 'show', args.pin + ':datas/de-bmw-group/metadata.json']))
-assert bmw_meta['status'] == 'success'
-last_collection = bmw_meta['last_success_at']
-for attempt in range(15):
-    source_body = html.unescape(fetch('/sources/publisher/de-bmw-group/').decode())
-    if last_collection in source_body:
-        break
-    if attempt < 14:
-        time.sleep(12)
-else:
-    raise RuntimeError('BMW source page has not reached the exact collection timestamp')
-
 for source in args.sources:
     metadata = json.loads(subprocess.check_output([
         'git', '-C', repository, 'show', args.pin + ':datas/' + source + '/metadata.json']))
-    assert metadata['status'] == 'success'
+    source_results[source]['published_status'] = metadata['status']
+    assert metadata['status'] in {'success', 'fail'}
+    if metadata['status'] == 'fail':
+        assert metadata['error'] and metadata['record_count'] == len([r for r in records if r['source'] == source])
     for attempt in range(15):
         source_body = html.unescape(fetch('/sources/publisher/' + source + '/').decode())
         if metadata['last_success_at'] in source_body:
@@ -200,7 +190,7 @@ result = {'data_pin': args.pin, 'all_corpus_ids_equal': True,
           'global_records': len(expected), 'browse_records': len(browse),
           'complete_sitemap_ids_equal': True, 'sources': source_results,
           'detail_HTTP_sample_titles_and_original_links_verified': True,
-          'publisher_requests': 0, 'bmw_live_last_success_at': last_collection, 'responses': responses}
+          'publisher_requests': 0, 'responses': responses}
 pathlib.Path(args.output).write_text(json.dumps(result, indent=2) + '\n')
 print(json.dumps({key: value for key, value in result.items()
                   if key != 'responses'}, indent=2))

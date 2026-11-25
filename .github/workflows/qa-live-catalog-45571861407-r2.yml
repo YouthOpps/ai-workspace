@@ -2,7 +2,7 @@ name: Verify the consolidated YouthOpps live release
 
 on:
   push:
-    branches: [qa/live-catalog-45571861407]
+    branches: [qa/live-catalog-45571861407-r2]
 
 permissions:
   contents: read
