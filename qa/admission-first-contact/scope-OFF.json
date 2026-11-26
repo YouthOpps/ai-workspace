@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "reviewer_sha256": "3cc135d4cb29bee423fbe1f450ee217f95fd8fe54299221c2dca875768815f16",
   "sources": {
     "amd233": {
