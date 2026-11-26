@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "reviewer_sha256": "7e35726ca1c311be872de776d6a69ae7f1935efa4d977fcd2e632754d5d13bd5",
   "sources": {
     "gm254": {
