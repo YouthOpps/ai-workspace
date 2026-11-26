@@ -1,9 +1,9 @@
-name: AMD careers inventory discovery
+name: AMD official sitemap discovery
 
 on:
   push:
     branches:
-      - qa/amd-inventory-discovery-233
+      - qa/amd-student-inventory-233
 
 permissions:
   contents: read

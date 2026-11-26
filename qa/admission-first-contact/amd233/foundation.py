@@ -24,7 +24,8 @@ import uuid
 FAMILY = 'youthopps-amd-careers-publisher-v1'
 USER_AGENT = 'YouthOppsBot/1.0 (+https://youthopps.org/bot/)'
 ROBOTS = 'https://careers.amd.com/robots.txt'
-ENTRY = 'https://careers.amd.com/students/'
+PREDECESSOR_TARGET = 'https://careers.amd.com/students/'
+ENTRY = 'https://careers.amd.com/jobs?page=1&categories=Student%20%2F%20Intern%20%2F%20Temp'
 URLS = (ROBOTS, ENTRY)
 ROOT_INITIALIZATION_DECISION = None
 ROOT_CAPTURE_DECISION = None
@@ -167,18 +168,14 @@ def checked_close(handles, primary=None):
 
 
 def initial_state():
-    stamp = now()
-    return {'schema': 1, 'family': FAMILY, 'observed_at': stamp,
-            'not_before': stamp + 60, 'interval': 12.2, 'page_interval': 30,
-            'completed': 0, 'inventory_completed': 0, 'starts': [],
-            'rate_limit_strikes': 0, 'rate_limit_until': 0,
-            'legacy_rate_history_unknown': True,
-            'legacy_policy_history_unknown': True, 'blocked': False,
-            'logical_id': None, 'completed_logical_id': None,
-            'physical_id': None, 'completed_physical_id': None,
-            'physical_started': 0, 'target': None, 'in_flight': False,
-            'physical_pending': False, 'outcome': 'initial_reviewed_state',
-            'rates': [], 'policy': None}
+    history = json.loads((WORK / 'history-manifest.json').read_bytes())
+    previous = validate(history['latest_acknowledged_state'])
+    if (digest(canonical(previous)) != '8bd66b2691ac59cd86dfc4d4d9f09c4abb9e625741e98f84509f683562b41eb3'
+            or previous['target'] != PREDECESSOR_TARGET
+            or previous['outcome'] != 'response_assessed'
+            or previous['blocked'] or previous['physical_pending'] or previous['in_flight']):
+        raise Stop('Exact settled inventory owner is required')
+    return previous
 
 
 def validate(value):
@@ -233,7 +230,7 @@ def validate(value):
         if v is not None and (not isinstance(v, str)
                               or not re.fullmatch('[0-9a-f]{32}', v)):
             raise Stop('Invalid transaction owner')
-    if value['target'] is not None and value['target'] not in URLS:
+    if value['target'] is not None and value['target'] not in (*URLS, PREDECESSOR_TARGET):
         raise Stop('Unreviewed target')
     if value['outcome'] not in ('initial_reviewed_state', 'reserved',
                                 'response_assessed'):
@@ -961,7 +958,7 @@ def robot_policy(journal, body, status):
                 if end:
                     pattern += '$'
                 if re.search(pattern, normalize_octets(
-                        urllib.parse.urlsplit(ENTRY).path)):
+                        (urllib.parse.urlsplit(ENTRY).path + chr(63) + urllib.parse.urlsplit(ENTRY).query))):
                     matches.append((len(prefix.replace('*', '')),
                                     name == 'allow'))
         if matches:
@@ -1039,7 +1036,7 @@ def _request(journal, url):
         raise Stop('Unreviewed AMD URL or external origin')
     robots = url == ROBOTS
     prior = journal.read()
-    if robots and (prior['target'] is not None or AUDIT['requests']):
+    if robots and (prior['target'] != PREDECESSOR_TARGET or AUDIT['requests']):
         raise Stop('The first-contact robots request was already consumed')
     if not robots:
         policy = prior['policy']
@@ -1268,6 +1265,11 @@ def _capture(initialization):
             'decision': ROOT_CAPTURE_DECISION, 'source_sha256': source_sha(),
             'initialization_sha256': digest(canonical(initialization)),
             'history_sha256': HISTORY_SHA256})
+        quiet = journal.read()
+        stamp = now()
+        quiet['observed_at'] = max(quiet['observed_at'], stamp)
+        quiet['not_before'] = max(quiet['not_before'], stamp + 60)
+        journal.save(quiet)
         request(journal, ROBOTS)
         request(journal, ENTRY)
         final = journal.read()

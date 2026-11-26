@@ -1,11 +1,53 @@
 {
-  "aggregate_data_reviewed_at": "bddbbf384b1ed77de119c50c0568e8f36435593f",
+  "aggregate_data_reviewed_at": "15aba804b247e561db01d48007407c183722ae2b",
   "candidate_urls": [
     "https://careers.amd.com/robots.txt",
-    "https://careers.amd.com/students/"
+    "https://careers.amd.com/jobs?page=1&categories=Student%20%2F%20Intern%20%2F%20Temp"
   ],
   "issue": 233,
-  "known_producer_absence_reviewed_at": "286f436823a6e4d262469a533e2e22b6b429c1db",
+  "known_producer_absence_reviewed_at": "5f4d0f7c6b485a88e9f2901d6fe515ca5c1094db",
+  "latest_acknowledged_state": {
+    "blocked": false,
+    "completed": 1795275282.3842454,
+    "completed_logical_id": "a08ab6fac53a4f908ba823461d2ea965",
+    "completed_physical_id": "ecd4d963da1243ed9116020d5340e508",
+    "family": "youthopps-amd-careers-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795275282.3842454,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "a08ab6fac53a4f908ba823461d2ea965",
+    "not_before": 1795275294.5842454,
+    "observed_at": 1795275282.3842454,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "ecd4d963da1243ed9116020d5340e508",
+    "physical_pending": false,
+    "physical_started": 1795275279.9350955,
+    "policy": {
+      "body_sha256": "5ef08c756f69e936e0864e8dff8e7420603b5719ecff8ce4447551d861f84954",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 200,
+      "unavailable": false,
+      "url": "https://careers.amd.com/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795275262.7519517,
+      1795275279.9350955
+    ],
+    "target": "https://careers.amd.com/students/"
+  },
+  "previous_artifact": 14713023434,
+  "previous_job": 136893073360,
+  "previous_run": 44919779094,
+  "previous_state_sha256": "8bd66b2691ac59cd86dfc4d4d9f09c4abb9e625741e98f84509f683562b41eb3",
+  "previous_zip_sha256": "a607a4eb050d2a0f3fb3f64895e8c0c8671653e7772461bdaf455645851472f2",
   "publisher": "AMD",
   "publisher_host": "careers.amd.com",
   "publisher_requests": 0,
