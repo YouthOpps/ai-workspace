@@ -4,12 +4,12 @@
   "sources": {
     "amd233": {
       "env_prefix": "AMD233",
-      "foundation_sha256": "cefa574a4270da5a9e88c234036faa5aacb4f1abf906ec0685650f9009411ed9",
-      "history_sha256": "7ab00b646d8930ff412466e199148ce3830e807218be9461851531dd42d15729",
+      "foundation_sha256": "81b0e50c42061a2b5879e4c1103cd4bd0e34c15fd109fadd44c5a819fc733c7e",
+      "history_sha256": "7874c2cd906735d1b55f94a1afc75abb1daad8fbbce66ec7fc36a0b5f628b03e",
       "issue": 233,
       "urls": [
         "https://careers.amd.com/robots.txt",
-        "https://careers.amd.com/jobs?page=1&categories=Student%20%2F%20Intern%20%2F%20Temp"
+        "https://careers.amd.com/careers-home/jobs?page=1&categories=Student%20%2F%20Intern%20%2F%20Temp"
       ]
     }
   }

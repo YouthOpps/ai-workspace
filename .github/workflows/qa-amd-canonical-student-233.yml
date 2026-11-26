@@ -1,9 +1,9 @@
-name: AMD official student category discovery
+name: AMD canonical student category discovery
 
 on:
   push:
     branches:
-      - qa/amd-student-inventory-233
+      - qa/amd-canonical-student-233
 
 permissions:
   contents: read

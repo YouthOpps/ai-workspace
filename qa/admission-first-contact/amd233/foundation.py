@@ -24,8 +24,8 @@ import uuid
 FAMILY = 'youthopps-amd-careers-publisher-v1'
 USER_AGENT = 'YouthOppsBot/1.0 (+https://youthopps.org/bot/)'
 ROBOTS = 'https://careers.amd.com/robots.txt'
-PREDECESSOR_TARGET = 'https://careers.amd.com/students/'
-ENTRY = 'https://careers.amd.com/jobs?page=1&categories=Student%20%2F%20Intern%20%2F%20Temp'
+PREDECESSOR_TARGET = 'https://careers.amd.com/jobs?page=1&categories=Student%20%2F%20Intern%20%2F%20Temp'
+ENTRY = 'https://careers.amd.com/careers-home/jobs?page=1&categories=Student%20%2F%20Intern%20%2F%20Temp'
 URLS = (ROBOTS, ENTRY)
 ROOT_INITIALIZATION_DECISION = None
 ROOT_CAPTURE_DECISION = None
@@ -170,7 +170,7 @@ def checked_close(handles, primary=None):
 def initial_state():
     history = json.loads((WORK / 'history-manifest.json').read_bytes())
     previous = validate(history['latest_acknowledged_state'])
-    if (digest(canonical(previous)) != '8bd66b2691ac59cd86dfc4d4d9f09c4abb9e625741e98f84509f683562b41eb3'
+    if (digest(canonical(previous)) != 'd6bb7cb1d5a3166f2ad9002f6edeb017f49ec80d65741fbaf74641d5cd248f1e'
             or previous['target'] != PREDECESSOR_TARGET
             or previous['outcome'] != 'response_assessed'
             or previous['blocked'] or previous['physical_pending'] or previous['in_flight']):
