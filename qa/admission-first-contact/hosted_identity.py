@@ -13,8 +13,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = "YouthOpps/ai-workspace"
-WORKFLOW = ".github/workflows/qa-gm-complete-inventory-254.yml"
-BRANCH = "qa/gm-complete-inventory-254"
+WORKFLOW = ".github/workflows/qa-gm-official-discovery-assets-254.yml"
+BRANCH = "qa/gm-official-discovery-assets-254"
 REF = "refs/heads/" + BRANCH
 SOURCES = frozenset(("gm254",))
 PIPELINE = "YouthOpps/data-pipeline"
@@ -179,8 +179,8 @@ def exact_checkout(head, source, scope_bytes):
 
 
 def verify_approval(scope, scope_sha256):
-    head_line = f"Approved General Motors complete inventory research head {scope['head_sha']}"
-    scope_line = f"General Motors complete inventory research scope {scope_sha256}"
+    head_line = f"Approved General Motors official assets research head {scope['head_sha']}"
+    scope_line = f"General Motors official assets research scope {scope_sha256}"
     matches = []
     for page in range(1, 6):
         rows = public_pipeline_json(f"/issues/{ISSUE}/comments?per_page=100&page={page}")
@@ -289,7 +289,7 @@ def verify_run(source):
 
 def verify_predecessor():
     """Require every prior owner to retain its only retired attempt and artifact."""
-    predecessors = ((426090445, 44921395475, 136897992143, '55b11540bc617b3b58dc05532122bd97cb0d229e', 'qa/gm-inventory-discovery-254', '.github/workflows/qa-gm-inventory-discovery-254.yml', 'success', 'First contact gm254', 14713554753, 'first-contact-gm254-44921395475-1', 170325, '0f374f794f8f73a0404df6ed32dd2a6dc0cdcb9c69494b033084b87d4d0d8f22'), (426095264, 44921966565, 136899763225, '8cc2e39c30a61a723db6cd779873622ee6f9adfe', 'qa/gm-specific-discovery-254', '.github/workflows/qa-gm-specific-discovery-254.yml', 'success', 'First contact gm254', 14713818663, 'first-contact-gm254-44921966565-1', 151583, '95fe062965bef229c39a46db14168b790b6139092af9541c5e3e4a28dd6ae532'), (431478707, 45803204708, 139851505482, '6f6bca1855828779dd52cb671a2aea472e5d806a', 'qa/gm-students-inventory-254', '.github/workflows/qa-gm-students-inventory-254.yml', 'success', 'First contact gm254', 15108427520, 'first-contact-gm254-45803204708-1', 187336, '6480efaa1e1376b9cb322e573f433e18f8c8d8f29817775cf012b18b41330c70'))
+    predecessors = ((426090445, 44921395475, 136897992143, '55b11540bc617b3b58dc05532122bd97cb0d229e', 'qa/gm-inventory-discovery-254', '.github/workflows/qa-gm-inventory-discovery-254.yml', 'success', 'First contact gm254', 14713554753, 'first-contact-gm254-44921395475-1', 170325, '0f374f794f8f73a0404df6ed32dd2a6dc0cdcb9c69494b033084b87d4d0d8f22'), (426095264, 44921966565, 136899763225, '8cc2e39c30a61a723db6cd779873622ee6f9adfe', 'qa/gm-specific-discovery-254', '.github/workflows/qa-gm-specific-discovery-254.yml', 'success', 'First contact gm254', 14713818663, 'first-contact-gm254-44921966565-1', 151583, '95fe062965bef229c39a46db14168b790b6139092af9541c5e3e4a28dd6ae532'), (431478707, 45803204708, 139851505482, '6f6bca1855828779dd52cb671a2aea472e5d806a', 'qa/gm-students-inventory-254', '.github/workflows/qa-gm-students-inventory-254.yml', 'success', 'First contact gm254', 15108427520, 'first-contact-gm254-45803204708-1', 187336, '6480efaa1e1376b9cb322e573f433e18f8c8d8f29817775cf012b18b41330c70'), (431489305, 45804977685, 139857710828, '9a115d1262fe52ec3d50823e6aecebc436225a41', 'qa/gm-complete-inventory-254', '.github/workflows/qa-gm-complete-inventory-254.yml', 'failure', 'First contact gm254', 15108639793, 'first-contact-gm254-45804977685-1', 331855, '14a41a1929516d8915fa902d877eb9d26fb6864be73e25b5ef5225f4f53320e9'))
     for (workflow, run_id, job_id, head, branch, path, conclusion, job_name,
          artifact_id, artifact_name, size, archive_digest) in predecessors:
         expected = {

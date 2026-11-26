@@ -1,9 +1,9 @@
-name: General Motors complete inventory discovery
+name: General Motors official discovery assets
 
 on:
   push:
     branches:
-      - qa/gm-complete-inventory-254
+      - qa/gm-official-discovery-assets-254
 
 permissions:
   contents: read
@@ -15,7 +15,7 @@ jobs:
     if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.run_attempt == 1
     name: First contact gm254
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 25
     concurrency:
       group: gm-careers-publisher
       cancel-in-progress: false

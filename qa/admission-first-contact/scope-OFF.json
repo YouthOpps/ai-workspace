@@ -1,45 +1,17 @@
 {
-  "enabled": true,
+  "enabled": false,
   "reviewer_sha256": "7e35726ca1c311be872de776d6a69ae7f1935efa4d977fcd2e632754d5d13bd5",
   "sources": {
     "gm254": {
       "env_prefix": "GM254",
-      "foundation_sha256": "0066ba9d3f757a945978cdbcd80ba02f1e6c5b042ed8dfddd18b0a5c96022be8",
-      "history_sha256": "88cdbc6d0fc428972e92cff23e7c93397c7a4d28914483e2fdb6537a062e0425",
+      "foundation_sha256": "0a031178fb0a371366a29ff0c16274b7956e4c307b87046bf763f6b0b0816355",
+      "history_sha256": "73c5c30d6c5358645ee78cc2f3f4547c965d73afde0ad73bdb3c63c461b06975",
       "issue": 254,
       "urls": [
         "https://search-careers.gm.com/robots.txt",
-        "https://search-careers.gm.com/en/jobs/?search=&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=2&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=3&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=4&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=5&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=6&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=7&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=8&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=9&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=10&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=11&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=12&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=13&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=14&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=15&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=16&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=17&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=18&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=19&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=20&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=21&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=22&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=23&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=24&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=25&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=26&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=27&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=28&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=29&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=30&team=Students+%26+Recent+Graduates&pagesize=20",
-        "https://search-careers.gm.com/en/jobs/?page=31&team=Students+%26+Recent+Graduates&pagesize=20"
+        "https://search-careers.gm.com/bundles/scripts/ajaxActions.js?v=CiM4fHIBygHrA2U7J6wBMF4xSXlKQejdUfTOJhX39II1",
+        "https://search-careers.gm.com/bundles/scripts/main.js?v=s_x1IrbtQtnD6LpVJ5hBV4JN7Tqb2Br-6TBctCAwans1",
+        "https://search-careers.gm.com/sitemap.xml"
       ]
     }
   }
