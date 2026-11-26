@@ -1,15 +1,15 @@
 {
-  "enabled": true,
-  "reviewer_sha256": "c8bfa742ffcd2638a1926c8068b58c3f0cc9bcda7077b95ab3ac8a8ac5b01531",
+  "enabled": false,
+  "reviewer_sha256": "7e35726ca1c311be872de776d6a69ae7f1935efa4d977fcd2e632754d5d13bd5",
   "sources": {
     "gm254": {
       "env_prefix": "GM254",
-      "foundation_sha256": "6b8c64b5daa88812087901e8f0a313ea2fa50ee4b260d038113f5a513d17acc8",
-      "history_sha256": "ec6595e70d1c5e99f345e9d2e3b1aaffc596e1fe31cd4ae897dde0ef90299ed5",
+      "foundation_sha256": "769c7756ce7c09a1c9259ef1ea21e96f0049aa2c76cad3d525c622d2dc41ffd1",
+      "history_sha256": "795ab27cf324cd55b313b3ea3f310415b289c137a4e8876b0c3003a69248ce4a",
       "issue": 254,
       "urls": [
         "https://search-careers.gm.com/robots.txt",
-        "https://search-careers.gm.com/en/jobs/jr-202624606/2027-summer-intern-cybersecurity-education-awareness-program-intern/"
+        "https://search-careers.gm.com/en/jobs/?search=&team=Students+%26+Recent+Graduates&pagesize=20"
       ]
     }
   }

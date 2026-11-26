@@ -3,7 +3,7 @@ name: General Motors internship detail discovery
 on:
   push:
     branches:
-      - qa/gm-specific-discovery-254
+      - qa/gm-students-inventory-254
 
 permissions:
   contents: read

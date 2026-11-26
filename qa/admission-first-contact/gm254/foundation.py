@@ -24,8 +24,8 @@ import uuid
 FAMILY = 'youthopps-gm-careers-publisher-v1'
 USER_AGENT = 'YouthOppsBot/1.0 (+https://youthopps.org/bot/)'
 ROBOTS = 'https://search-careers.gm.com/robots.txt'
-PREDECESSOR_TARGET = 'https://search-careers.gm.com/en/early-careers/'
-ENTRY = 'https://search-careers.gm.com/en/jobs/jr-202624606/2027-summer-intern-cybersecurity-education-awareness-program-intern/'
+PREDECESSOR_TARGET = 'https://search-careers.gm.com/en/jobs/jr-202624606/2027-summer-intern-cybersecurity-education-awareness-program-intern/'
+ENTRY = 'https://search-careers.gm.com/en/jobs/?search=&team=Students+%26+Recent+Graduates&pagesize=20'
 URLS = (ROBOTS, ENTRY)
 ROOT_INITIALIZATION_DECISION = None
 ROOT_CAPTURE_DECISION = None
@@ -170,7 +170,7 @@ def checked_close(handles, primary=None):
 def initial_state():
     history = json.loads((WORK / 'history-manifest.json').read_bytes())
     previous = validate(history['latest_acknowledged_state'])
-    if (digest(canonical(previous)) != '69c144c4a24c1f8195f6ba1a8f41ca6941a146cc80f5c28743dfeb41b480625d'
+    if (digest(canonical(previous)) != 'e109b1932260c038a9518ffcc18aeb19d288f7814360721f525eee14cff6b5e8'
             or previous['target'] != PREDECESSOR_TARGET
             or previous['outcome'] != 'response_assessed'
             or previous['blocked'] or previous['physical_pending'] or previous['in_flight']):
@@ -958,7 +958,7 @@ def robot_policy(journal, body, status):
                 if end:
                     pattern += '$'
                 if re.search(pattern, normalize_octets(
-                        urllib.parse.urlsplit(ENTRY).path)):
+                        urllib.parse.urlsplit(ENTRY).path + "?" + urllib.parse.urlsplit(ENTRY).query)):
                     matches.append((len(prefix.replace('*', '')),
                                     name == 'allow'))
         if matches:

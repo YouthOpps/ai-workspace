@@ -1,30 +1,30 @@
 {
-  "aggregate_data_reviewed_at": "c958fa65a69518471473d974c598a47e15185a3c",
+  "aggregate_data_reviewed_at": "15aba804b247e561db01d48007407c183722ae2b",
   "candidate_urls": [
     "https://search-careers.gm.com/robots.txt",
-    "https://search-careers.gm.com/en/jobs/jr-202624606/2027-summer-intern-cybersecurity-education-awareness-program-intern/"
+    "https://search-careers.gm.com/en/jobs/?search=&team=Students+%26+Recent+Graduates&pagesize=20"
   ],
   "issue": 254,
-  "known_producer_absence_reviewed_at": "286f436823a6e4d262469a533e2e22b6b429c1db",
+  "known_producer_absence_reviewed_at": "5f4d0f7c6b485a88e9f2901d6fe515ca5c1094db",
   "latest_acknowledged_state": {
     "blocked": false,
-    "completed": 1795276378.988669,
-    "completed_logical_id": "3c4a374102b24869a5c934c271798628",
-    "completed_physical_id": "a38d0ac080214de39970586943f80e7e",
+    "completed": 1795276800.166076,
+    "completed_logical_id": "95512aadf76e4df5b410b9e336e6405f",
+    "completed_physical_id": "02439af0c3854441b4f6d37fd3581244",
     "family": "youthopps-gm-careers-publisher-v1",
     "in_flight": false,
     "interval": 12.2,
-    "inventory_completed": 1795276378.988669,
+    "inventory_completed": 1795276800.166076,
     "legacy_policy_history_unknown": true,
     "legacy_rate_history_unknown": true,
-    "logical_id": "3c4a374102b24869a5c934c271798628",
-    "not_before": 1795276391.188669,
-    "observed_at": 1795276378.988669,
+    "logical_id": "95512aadf76e4df5b410b9e336e6405f",
+    "not_before": 1795276812.366076,
+    "observed_at": 1795276800.166076,
     "outcome": "response_assessed",
     "page_interval": 30,
-    "physical_id": "a38d0ac080214de39970586943f80e7e",
+    "physical_id": "02439af0c3854441b4f6d37fd3581244",
     "physical_pending": false,
-    "physical_started": 1795276377.1289454,
+    "physical_started": 1795276796.4245398,
     "policy": {
       "body_sha256": "8b2b1c1a8123f06339d60015c1243444af0509f28f21ccf392fdd210852f1693",
       "legacy_allowed": true,
@@ -39,15 +39,17 @@
     "schema": 1,
     "starts": [
       1795276359.0277498,
-      1795276377.1289454
+      1795276377.1289454,
+      1795276773.6263683,
+      1795276796.4245398
     ],
-    "target": "https://search-careers.gm.com/en/early-careers/"
+    "target": "https://search-careers.gm.com/en/jobs/jr-202624606/2027-summer-intern-cybersecurity-education-awareness-program-intern/"
   },
-  "previous_artifact": 14713554753,
-  "previous_job": 136897992143,
-  "previous_run": 44921395475,
-  "previous_state_sha256": "69c144c4a24c1f8195f6ba1a8f41ca6941a146cc80f5c28743dfeb41b480625d",
-  "previous_zip_sha256": "0f374f794f8f73a0404df6ed32dd2a6dc0cdcb9c69494b033084b87d4d0d8f22",
+  "previous_artifact": 14713818663,
+  "previous_job": 136899763225,
+  "previous_run": 44921966565,
+  "previous_state_sha256": "e109b1932260c038a9518ffcc18aeb19d288f7814360721f525eee14cff6b5e8",
+  "previous_zip_sha256": "95fe062965bef229c39a46db14168b790b6139092af9541c5e3e4a28dd6ae532",
   "publisher": "General Motors",
   "publisher_host": "search-careers.gm.com",
   "publisher_requests": 0,
