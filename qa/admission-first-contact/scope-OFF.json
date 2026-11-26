@@ -4,7 +4,7 @@
   "sources": {
     "gm254": {
       "env_prefix": "GM254",
-      "foundation_sha256": "48606099bb06104f1c55a1babbf821ca7fb6899d26c5b6626200f6411fdff7de",
+      "foundation_sha256": "0066ba9d3f757a945978cdbcd80ba02f1e6c5b042ed8dfddd18b0a5c96022be8",
       "history_sha256": "88cdbc6d0fc428972e92cff23e7c93397c7a4d28914483e2fdb6537a062e0425",
       "issue": 254,
       "urls": [

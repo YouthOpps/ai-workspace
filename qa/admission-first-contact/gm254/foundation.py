@@ -1404,6 +1404,12 @@ def collect_pages(journal):
             if len(ids) != total or links.next_links:
                 raise Stop('Unresolved terminal inventory')
             return
+        for name, value in AUDIT['requests'][-1]['headers']:
+            if name.casefold() != 'x-robots-tag':
+                continue
+            directives = re.split(r'[,;:\s]+', value.casefold())
+            if {'nofollow', 'none'}.intersection(directives):
+                raise Stop('Response header restricts following inventory links')
         if links.nofollow or links.next_links != [(URLS[number + 1] + '#results', False)]:
             raise Stop('Current page did not offer the reviewed immediate successor')
     raise Stop('Inventory exceeded the reviewed traversal')
