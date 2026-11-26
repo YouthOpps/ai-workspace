@@ -165,8 +165,8 @@ def exact_checkout(head, source, scope_bytes):
 
 
 def verify_approval(scope, scope_sha256):
-    head_line = f"Approved AMD official sitemap research head {scope['head_sha']}"
-    scope_line = f"AMD official sitemap research scope {scope_sha256}"
+    head_line = f"Approved AMD official student category research head {scope['head_sha']}"
+    scope_line = f"AMD official student category research scope {scope_sha256}"
     matches = []
     for page in range(1, 6):
         rows = public_pipeline_json(f"/issues/{ISSUE}/comments?per_page=100&page={page}")
