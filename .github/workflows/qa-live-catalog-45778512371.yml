@@ -2,7 +2,7 @@ name: Verify the consolidated YouthOpps live release
 
 on:
   push:
-    branches: [qa/live-catalog-45571861407-r2]
+    branches: [qa/live-catalog-45778512371]
 
 permissions:
   contents: read
@@ -19,13 +19,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/youthopps.github.io
-          ref: d3fd7eb04b9faef1f76b2eacbace077b3b3415e5
+          ref: 8f11dbb55003c504e287ce7d025d0530389398d1
           path: website
           persist-credentials: false
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/data-source
-          ref: e76af2ac4e8c50b8e9abad9fc660df021ed0d75d
+          ref: 3e160a8649b3ef3d057fd438f0a0eb657711f33c
           path: data-source
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -41,14 +41,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >-
           python -B .github/qa/verify-live-catalog-44796017283.py
-          e76af2ac4e8c50b8e9abad9fc660df021ed0d75d nestle ibm se-arbetsformedlingen-jobsearch be-wbi dk-university-of-copenhagen at-university-of-vienna yildiz-pladis-careers pl-frse hu-fulbright-hungary dk-fulbright-center de-bmw-group
-          --website-revision d3fd7eb04b9faef1f76b2eacbace077b3b3415e5
+          3e160a8649b3ef3d057fd438f0a0eb657711f33c nestle ibm se-arbetsformedlingen-jobsearch be-wbi dk-university-of-copenhagen at-university-of-vienna yildiz-pladis-careers pl-frse hu-fulbright-hungary dk-fulbright-center de-bmw-group
+          --website-revision 8f11dbb55003c504e287ce7d025d0530389398d1
           --output ${{ runner.temp }}/live-catalog-44796017283.json
       - name: Verify every live source status, index and sitemap
         run: >-
           python -B .github/qa/verify-live-source-directory-44796017283.py
-          e76af2ac4e8c50b8e9abad9fc660df021ed0d75d
-          --website-revision d3fd7eb04b9faef1f76b2eacbace077b3b3415e5
+          3e160a8649b3ef3d057fd438f0a0eb657711f33c
+          --website-revision 8f11dbb55003c504e287ce7d025d0530389398d1
           --output ${{ runner.temp }}/live-source-directory-44796017283.json
       - uses: actions/upload-artifact@v4
         with:
