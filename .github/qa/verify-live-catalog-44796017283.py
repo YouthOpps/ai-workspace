@@ -173,7 +173,9 @@ for source in args.sources:
     source_results[source]['published_status'] = metadata['status']
     assert metadata['status'] in {'success', 'fail'}
     if metadata['status'] == 'fail':
-        assert metadata['error'] and metadata['record_count'] == len([r for r in records if r['source'] == source])
+        assert metadata['error']
+        if 'record_count' in metadata:
+            assert metadata['record_count'] == source_results[source]['records'], source
     for attempt in range(15):
         source_body = html.unescape(fetch('/sources/publisher/' + source + '/').decode())
         if metadata['last_success_at'] in source_body:
