@@ -1,9 +1,9 @@
-name: AMD canonical student category discovery
+name: AMD reviewed category discovery
 
 on:
   push:
     branches:
-      - qa/amd-canonical-student-233
+      - qa/amd-reviewed-category-233
 
 permissions:
   contents: read

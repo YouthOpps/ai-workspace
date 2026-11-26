@@ -13,8 +13,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPOSITORY = "YouthOpps/ai-workspace"
-WORKFLOW = ".github/workflows/qa-amd-canonical-student-233.yml"
-BRANCH = "qa/amd-canonical-student-233"
+WORKFLOW = ".github/workflows/qa-amd-reviewed-category-233.yml"
+BRANCH = "qa/amd-reviewed-category-233"
 REF = "refs/heads/" + BRANCH
 SOURCES = frozenset(("amd233",))
 PIPELINE = "YouthOpps/data-pipeline"
@@ -43,7 +43,7 @@ class GitHubControlFailure(IdentityFailure):
 
 def require(condition, message):
     if not condition:
-        raise RuntimeError(message)
+        raise IdentityFailure(message, {})
 
 
 class RejectRedirect(urllib.request.HTTPRedirectHandler):
@@ -165,8 +165,8 @@ def exact_checkout(head, source, scope_bytes):
 
 
 def verify_approval(scope, scope_sha256):
-    head_line = f"Approved AMD canonical student category research head {scope['head_sha']}"
-    scope_line = f"AMD canonical student category research scope {scope_sha256}"
+    head_line = f"Approved AMD reviewed category research head {scope['head_sha']}"
+    scope_line = f"AMD reviewed category research scope {scope_sha256}"
     matches = []
     for page in range(1, 6):
         rows = public_pipeline_json(f"/issues/{ISSUE}/comments?per_page=100&page={page}")
@@ -194,7 +194,7 @@ def verify_approval(scope, scope_sha256):
         if len(rows) < 100:
             break
     else:
-        raise RuntimeError("Incomplete approval comment pagination")
+        raise IdentityFailure("Incomplete approval comment pagination", {})
     require(len(matches) == 1, "Expected exactly one pre-run unedited maintainer grant")
     return matches[0]
 
@@ -239,7 +239,15 @@ def verify_run(source):
         "triggering_actor.type": "User",
     }, "Run API")
     branch = urllib.parse.quote(BRANCH, safe="")
-    history = github_json(f"/actions/runs?branch={branch}&event=push&per_page=2")
+    # A newly created run can precede its branch index. Retry only an exact empty inventory.
+    deadline = time.monotonic() + 12
+    for poll in range(STATE_POLLS):
+        history = github_json(f"/actions/runs?branch={branch}&event=push&per_page=2")
+        if history.get("total_count") != 0 or history.get("workflow_runs") != []:
+            break
+        if poll + 1 == STATE_POLLS or time.monotonic() + POLL_GAP_SECONDS >= deadline:
+            raise IdentityFailure("New run missing from branch index", {"checks": poll + 1})
+        time.sleep(POLL_GAP_SECONDS)
     require(history["total_count"] == 1 and [x["id"] for x in history["workflow_runs"]] == [run_id],
             "Branch already has a run or history is ambiguous")
 
@@ -270,7 +278,7 @@ def verify_run(source):
 
 def verify_predecessor():
     """Require every prior owner to retain its only retired attempt and artifact."""
-    predecessors = ((426077440, 44919779094, 136893073360, '469b58d11ec18a18c3a12184c1e46081f722552f', 'qa/amd-inventory-discovery-233', '.github/workflows/qa-amd-inventory-discovery-233.yml', 'success', 'First contact amd233', 14713023434, 'first-contact-amd233-44919779094-1', 642033, 'a607a4eb050d2a0f3fb3f64895e8c0c8671653e7772461bdaf455645851472f2'), (431481439, 45803623927, 139852980183, 'b114cd0a96c190e2f93dcc2995075424535058eb', 'qa/amd-student-inventory-233', '.github/workflows/qa-amd-student-inventory-233.yml', 'failure', 'First contact amd233', 15109000816, 'first-contact-amd233-45803623927-1', 51875, 'add11f474ee4c4deb00b55e6bfb515387b9514186738de28405638ae67c0fc98'), (431486019, 45804418485, 139855758115, '5d9b8d179dcf59cb649fa783b8a0e39182f02cfe', 'qa/233-amd-student-redirect-settlement', '.github/workflows/qa-amd-student-redirect-settlement.yml', 'success', 'settle', 15107579523, 'amd233-redirect-settlement', 1453, '5c1f0fef57e94d941fdf10ef535d5204977d269fcf8401a72132f258a2cba266'))
+    predecessors = ((426077440, 44919779094, 136893073360, '469b58d11ec18a18c3a12184c1e46081f722552f', 'qa/amd-inventory-discovery-233', '.github/workflows/qa-amd-inventory-discovery-233.yml', 'success', 'First contact amd233', 14713023434, 'first-contact-amd233-44919779094-1', 642033, 'a607a4eb050d2a0f3fb3f64895e8c0c8671653e7772461bdaf455645851472f2'), (431481439, 45803623927, 139852980183, 'b114cd0a96c190e2f93dcc2995075424535058eb', 'qa/amd-student-inventory-233', '.github/workflows/qa-amd-student-inventory-233.yml', 'failure', 'First contact amd233', 15109000816, 'first-contact-amd233-45803623927-1', 51875, 'add11f474ee4c4deb00b55e6bfb515387b9514186738de28405638ae67c0fc98'), (431486019, 45804418485, 139855758115, '5d9b8d179dcf59cb649fa783b8a0e39182f02cfe', 'qa/233-amd-student-redirect-settlement', '.github/workflows/qa-amd-student-redirect-settlement.yml', 'success', 'settle', 15107579523, 'amd233-redirect-settlement', 1453, '5c1f0fef57e94d941fdf10ef535d5204977d269fcf8401a72132f258a2cba266'), (431488037, 45804743890, 139856888944, 'db9eb05eac4b1610caf76c07f6bbdb5edbec6277', 'qa/amd-canonical-student-233', '.github/workflows/qa-amd-canonical-student-233.yml', 'failure', 'First contact amd233', 15109280236, 'first-contact-amd233-45804743890-1', 548, '6f87f276f71dc1168f19b026502917d66b817d1221a93d30d4f6a8b3d9ea69e3'))
     for (workflow, run_id, job_id, head, branch, path, conclusion, job_name,
          artifact_id, artifact_name, size, archive_digest) in predecessors:
         expected = {
