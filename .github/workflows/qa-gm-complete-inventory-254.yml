@@ -1,9 +1,9 @@
-name: General Motors internship detail discovery
+name: General Motors complete inventory discovery
 
 on:
   push:
     branches:
-      - qa/gm-students-inventory-254
+      - qa/gm-complete-inventory-254
 
 permissions:
   contents: read
@@ -15,7 +15,7 @@ jobs:
     if: github.repository == 'YouthOpps/ai-workspace' && github.event.created == true && github.run_attempt == 1
     name: First contact gm254
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 150
     concurrency:
       group: gm-careers-publisher
       cancel-in-progress: false

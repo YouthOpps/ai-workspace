@@ -1,4 +1,4 @@
-"""OFF two-request General Motors careers policy research foundation, not a source adapter."""
+"""Bounded paginated General Motors careers policy research foundation, not a source adapter."""
 
 import contextlib
 import copy
@@ -24,16 +24,16 @@ import uuid
 FAMILY = 'youthopps-gm-careers-publisher-v1'
 USER_AGENT = 'YouthOppsBot/1.0 (+https://youthopps.org/bot/)'
 ROBOTS = 'https://search-careers.gm.com/robots.txt'
-PREDECESSOR_TARGET = 'https://search-careers.gm.com/en/jobs/jr-202624606/2027-summer-intern-cybersecurity-education-awareness-program-intern/'
+PREDECESSOR_TARGET = 'https://search-careers.gm.com/en/jobs/?search=&team=Students+%26+Recent+Graduates&pagesize=20'
 ENTRY = 'https://search-careers.gm.com/en/jobs/?search=&team=Students+%26+Recent+Graduates&pagesize=20'
-URLS = (ROBOTS, ENTRY)
+URLS = (ROBOTS, ENTRY, *(ENTRY.replace('search=&', f'page={page}&') for page in range(2, 32)))
 ROOT_INITIALIZATION_DECISION = None
 ROOT_CAPTURE_DECISION = None
 HISTORY_SHA256 = None
 MACHINE_SHA256 = None
 PARENT = Path('/tmp')
 WORK = Path('/workspace/work/gm254')
-MAX_BODY = 8 * 1024 * 1024
+MAX_BODY = 512 * 1024
 MAX_STATE = 16384
 MAX_CLOCK = 253402300799
 BODY_SECONDS = 25
@@ -170,7 +170,7 @@ def checked_close(handles, primary=None):
 def initial_state():
     history = json.loads((WORK / 'history-manifest.json').read_bytes())
     previous = validate(history['latest_acknowledged_state'])
-    if (digest(canonical(previous)) != 'e109b1932260c038a9518ffcc18aeb19d288f7814360721f525eee14cff6b5e8'
+    if (digest(canonical(previous)) != '7de725db0e0fa328983238056bd20a61faaae7f3905380dce276b5ca0885a566'
             or previous['target'] != PREDECESSOR_TARGET
             or previous['outcome'] != 'response_assessed'
             or previous['blocked'] or previous['physical_pending'] or previous['in_flight']):
@@ -1040,9 +1040,11 @@ def _request(journal, url):
         raise Stop('The first-contact robots request was already consumed')
     if not robots:
         policy = prior['policy']
-        if (prior['target'] != ROBOTS or policy is None
+        position = len(AUDIT['requests'])
+        if (not 1 <= position < len(URLS) or URLS[position] != url
+                or prior['target'] != URLS[position - 1] or policy is None
                 or not policy['new_allowed'] or not policy['legacy_allowed']
-                or len(AUDIT['requests']) != 1):
+                or policy['body_sha256'] != '8b2b1c1a8123f06339d60015c1243444af0509f28f21ccf392fdd210852f1693'):
             raise Stop('Exact current policy is required for the entry')
     wait_for_request(journal, not robots)
     gate('capture')
@@ -1205,6 +1207,208 @@ def read_private_claim(parent, name):
         checked_close([(fd, expected)], primary)
 
 
+
+from dataclasses import dataclass, field
+from html.parser import HTMLParser
+import re
+from urllib.parse import urlsplit
+
+
+NATIVE_ID = re.compile(r'jr-[0-9]+', re.IGNORECASE)
+YOUTH_TEAM = 'Students & Recent Graduates'
+VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link',
+        'meta', 'param', 'source', 'track', 'wbr'}
+
+
+class InventoryError(ValueError):
+    pass
+
+
+@dataclass
+class Card:
+    identifier: str = ''
+    href: str = ''
+    team: list[str] = field(default_factory=list)
+    title: list[str] = field(default_factory=list)
+    team_markers: int = 0
+
+
+class InventoryParser(HTMLParser):
+    """Bind a visible team and canonical link to the card's own native ID."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.tags = []
+        self.cards = []
+        self.current = None
+        self.summary = []
+        self.grid = False
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        classes = (attrs.get('class') or '').split()
+        role = None
+        if tag == 'p' and 'job-count' in classes:
+            role = 'summary'
+        elif tag == 'div' and attrs.get('id') == 'js-job-search-results':
+            if self.grid:
+                raise InventoryError('Duplicate results container')
+            self.grid = True
+            role = 'results'
+        elif self.has('results') and tag == 'div' and 'card-job' in classes:
+            if self.current:
+                raise InventoryError('Nested job card')
+            self.current = Card()
+            role = 'card'
+        elif self.current:
+            if 'js-job' in classes:
+                identifier = attrs.get('data-id', '')
+                if self.current.identifier or not NATIVE_ID.fullmatch(identifier):
+                    raise InventoryError('Invalid job card identity')
+                self.current.identifier = identifier.upper()
+            elif tag == 'li' and 'list-inline-item' in classes:
+                role = 'metadata'
+            elif tag == 'use' and (attrs.get('xlink:href') or attrs.get('href', '')).endswith('#briefcase'):
+                self.current.team_markers += 1
+                if self.current.team_markers != 1:
+                    raise InventoryError('Conflicting team markers on a job card')
+                for frame in reversed(self.tags):
+                    if frame[1] == 'metadata':
+                        frame[1] = 'team'
+                        break
+            elif tag == 'a' and 'stretched-link' in classes:
+                if self.current.href:
+                    raise InventoryError('Duplicate job card link')
+                self.current.href = attrs.get('href', '')
+                role = 'title'
+        if tag not in VOID:
+            self.tags.append([tag, role])
+
+    def has(self, role):
+        return any(frame[1] == role for frame in self.tags)
+
+    def handle_endtag(self, tag):
+        # The site uses HTML void elements and SVG. Unmatched closing tags
+        # outside the search inventory do not define the result structure.
+        for index in range(len(self.tags) - 1, -1, -1):
+            if self.tags[index][0] == tag:
+                removed = self.tags[index:]
+                del self.tags[index:]
+                if any(frame[1] == 'card' for frame in removed):
+                    if self.current.team_markers != 1:
+                        raise InventoryError('Missing job card team')
+                    self.cards.append(self.current)
+                    self.current = None
+                return
+
+    def handle_data(self, value):
+        if self.has('summary'):
+            self.summary.append(value)
+        if self.current and self.has('team'):
+            self.current.team.append(value)
+        if self.current and self.has('title'):
+            self.current.title.append(value)
+
+
+def text(parts):
+    return ' '.join(' '.join(parts).split())
+
+
+def parse_page(body):
+    parser = InventoryParser()
+    parser.feed(body.decode('utf-8'))
+    parser.close()
+    number = r'(0|[1-9][0-9]*|[1-9][0-9]{0,2}(?:,[0-9]{3})+)'
+    summary = re.fullmatch(rf'Showing {number} to {number} of {number} matching jobs',
+                           text(parser.summary))
+    if not summary or not parser.grid or parser.current:
+        raise InventoryError('Incomplete search inventory')
+    first, last, total = (int(value.replace(',', '')) for value in summary.groups())
+    if not 1 <= first <= last <= total or len(parser.cards) != last - first + 1:
+        raise InventoryError('Result count does not match the visible cards')
+    rows = {}
+    for card in parser.cards:
+        team, title = text(card.team), text(card.title)
+        link = urlsplit(card.href)
+        path = re.fullmatch(r'/en/jobs/(jr-[0-9]+)/[^/]+/', link.path, re.IGNORECASE)
+        official_link = card.href.startswith('/en/jobs/') or card.href.startswith(
+            'https://search-careers.gm.com/en/jobs/')
+        if (not official_link or not path or
+                link.query or link.fragment or path[1].upper() != card.identifier or
+                card.identifier in rows or not team or not title):
+            raise InventoryError('Inconsistent requisition, team, title or detail link')
+        rows[card.identifier] = {'title': title, 'team': team,
+                                 'url': 'https://search-careers.gm.com' + link.path}
+    return first, last, total, rows
+
+
+def reconcile(pages):
+    """Require complete contiguous, stable and nonduplicated inventory first."""
+    rows = {}
+    expected_total = None
+    for body in pages:
+        first, _, total, page = parse_page(body)
+        if expected_total is None:
+            expected_total = total
+        if total != expected_total or first != len(rows) + 1 or rows.keys() & page.keys():
+            raise InventoryError('Inventory changed or a page is missing')
+        rows.update(page)
+    if not rows or len(rows) != expected_total:
+        raise InventoryError('Inventory is incomplete')
+    return {key: row for key, row in rows.items() if row['team'] == YOUTH_TEAM}
+
+
+class Pagination(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.nav = []
+        self.next_links = []
+        self.nofollow = False
+
+    def handle_starttag(self, tag, attributes):
+        attrs = dict(attributes)
+        if tag == 'nav':
+            self.nav.append(attrs.get('aria-label') == 'Pagination')
+        if tag == 'meta' and (attrs.get('name') or '').casefold() in ('robots', 'youthoppsbot'):
+            tokens = re.split(r'[,\s]+', (attrs.get('content') or '').casefold())
+            self.nofollow |= bool({'nofollow', 'none'}.intersection(tokens))
+        if tag == 'a' and self.nav and self.nav[-1] and 'page-link' in (attrs.get('class') or '').split():
+            rel = (attrs.get('rel') or '').casefold().split()
+            if 'next' in rel:
+                self.next_links.append((attrs.get('href'), 'nofollow' in rel))
+
+    def handle_endtag(self, tag):
+        if tag == 'nav' and self.nav:
+            self.nav.pop()
+
+
+def collect_pages(journal):
+    policy = request(journal, ROBOTS)
+    if digest(policy) != '8b2b1c1a8123f06339d60015c1243444af0509f28f21ccf392fdd210852f1693':
+        raise Stop('Changed group/path policy requires independent review')
+    ids = set()
+    total = None
+    for number, url in enumerate(URLS[1:], 1):
+        body = request(journal, url)
+        first, last, current_total, rows = parse_page(body)
+        if total is None:
+            total = current_total
+        if (total > (len(URLS) - 1) * 20 or current_total != total or
+                first != (number - 1) * 20 + 1 or last != min(number * 20, total) or ids.intersection(rows)):
+            raise Stop('Unstable inventory, duplicate or excess page scope')
+        ids.update(rows)
+        links = Pagination()
+        links.feed(body.decode('utf-8'))
+        links.close()
+        if last == total:
+            if len(ids) != total or links.next_links:
+                raise Stop('Unresolved terminal inventory')
+            return
+        if links.nofollow or links.next_links != [(URLS[number + 1] + '#results', False)]:
+            raise Stop('Current page did not offer the reviewed immediate successor')
+    raise Stop('Inventory exceeded the reviewed traversal')
+
+
 def _capture(initialization):
     """One-use research only; no records, forms, assets or further frontier."""
     gate('capture')
@@ -1270,12 +1474,11 @@ def _capture(initialization):
         quiet['observed_at'] = max(quiet['observed_at'], stamp)
         quiet['not_before'] = max(quiet['not_before'], stamp + 60)
         journal.save(quiet)
-        request(journal, ROBOTS)
-        request(journal, ENTRY)
+        collect_pages(journal)
         final = journal.read()
         if final['in_flight'] or final['blocked'] or final['physical_pending']:
             raise Stop('Research capture is not settled')
-    return {'result': 'captured_for_offline_gm_detail_review',
+    return {'result': 'captured_for_offline_gm_inventory_review',
             'publisher_requests': len(AUDIT['requests']),
             'native_test': False, 'records': None,
             'state_sha256': digest(canonical(final))}
