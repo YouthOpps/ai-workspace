@@ -1210,7 +1210,10 @@ def read_private_claim(parent, name):
 
 def collect_assets(journal):
     policy = request(journal, ROBOTS)
-    if digest(policy) != '8b2b1c1a8123f06339d60015c1243444af0509f28f21ccf392fdd210852f1693':
+    policy_types = [value.partition(';')[0].strip().lower()
+                    for key, value in AUDIT['requests'][-1]['headers'] if key.lower() == 'content-type']
+    if (policy_types != ['text/plain'] or
+            digest(policy) != '8b2b1c1a8123f06339d60015c1243444af0509f28f21ccf392fdd210852f1693'):
         raise Stop('Changed robots policy must be independently assessed')
     for url in URLS[1:]:
         body = request(journal, url)
