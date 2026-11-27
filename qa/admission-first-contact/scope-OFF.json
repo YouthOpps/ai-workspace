@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "47ed57b5c818f7b10df94fdd89c310cbbad223947271f2aabe3fac569ade3b7d",
+  "sources": {
+    "iaea505": {
+      "env_prefix": "IAEA505",
+      "foundation_sha256": "b6b3ffb5cb5cb9384ea0685a8b32d7770aa28bc08c049cf566a75af2cb3bd0a8",
+      "history_sha256": "5b5b779528337855ea55f99ddf2e84c2507733476f07553a7d82ae8d3c8869df",
+      "issue": 505,
+      "urls": [
+        "https://www.iaea.org/robots.txt",
+        "https://www.iaea.org/about/employment/internships"
+      ]
+    }
+  }
+}
