@@ -1,9 +1,9 @@
-name: OIST careers inventory discovery
+name: OIST canonical program discovery
 
 on:
   push:
     branches:
-      - qa/oist-inventory-discovery-503
+      - qa/oist-canonical-program-503
 
 permissions:
   contents: read

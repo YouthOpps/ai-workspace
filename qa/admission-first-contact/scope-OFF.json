@@ -4,12 +4,12 @@
   "sources": {
     "oist503": {
       "env_prefix": "OIST503",
-      "foundation_sha256": "920497cfebc0dbe33ae72ea6cf22b03a6f4f2ef103c36c113a6dc50bf42a1442",
-      "history_sha256": "6c961f4f525d64960b40984688bbc37cf51e8a250e6608754520dfe08bf81aae",
+      "foundation_sha256": "e8fae2bb0c84fee725947502e7abbdf1f013128ebf4379599a6f212508daee5a",
+      "history_sha256": "ca6b6c7fb9990948a4a9ab0268febdedf61c4ab3f1905693d2df834157850184",
       "issue": 503,
       "urls": [
         "https://www.oist.jp/robots.txt",
-        "https://www.oist.jp/admissions/research-internship"
+        "https://www.oist.jp/admissions/research-internship/program-description"
       ]
     }
   }
