@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "reviewer_sha256": "52142fa8914e54217cf7b7dcf776b1a9fcafa04080298e1649bf6c8fc42d5969",
   "sources": {
     "kaust504": {
