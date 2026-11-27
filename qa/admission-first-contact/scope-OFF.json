@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "reviewer_sha256": "52142fa8914e54217cf7b7dcf776b1a9fcafa04080298e1649bf6c8fc42d5969",
+  "sources": {
+    "kaust504": {
+      "env_prefix": "KAUST504",
+      "foundation_sha256": "850c5aae3ff62eea6aa66f86597de6f79d82e6caf16cb0110a9369c27c9c4136",
+      "history_sha256": "8671f0b261081cd4aa5bf1d2fb033a8bb9d067b370dcb500b578657a7ff2ad76",
+      "issue": 504,
+      "urls": [
+        "https://admissions.kaust.edu.sa/robots.txt",
+        "https://admissions.kaust.edu.sa/study/internships"
+      ]
+    }
+  }
+}
