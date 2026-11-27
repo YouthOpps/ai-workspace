@@ -2,7 +2,7 @@ name: Verify the consolidated YouthOpps live release
 
 on:
   push:
-    branches: [qa/live-catalog-45958282410]
+    branches: [qa/live-catalog-45961475369]
 
 permissions:
   contents: read
@@ -19,13 +19,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/youthopps.github.io
-          ref: 16988009c49f282cec94f33dc3677a370abea0c5
+          ref: c3454929dc1d3dbf9f90251e70895eea613d6c94
           path: website
           persist-credentials: false
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/data-source
-          ref: 4be7cae4f3916eb524da350936e4c3d734fb240a
+          ref: b90d9f7e4ffbd09892dc6a83fd26b6e111c44ff0
           path: data-source
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -41,14 +41,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >-
           python -B .github/qa/verify-live-catalog-44796017283.py
-          4be7cae4f3916eb524da350936e4c3d734fb240a at-grants-at cz-charles-university volkswagen-group nestle ibm se-arbetsformedlingen-jobsearch be-wbi dk-university-of-copenhagen at-university-of-vienna yildiz-pladis-careers pl-frse hu-fulbright-hungary dk-fulbright-center de-bmw-group
-          --website-revision 16988009c49f282cec94f33dc3677a370abea0c5
+          b90d9f7e4ffbd09892dc6a83fd26b6e111c44ff0 youth-for-europe at-grants-at cz-charles-university volkswagen-group nestle ibm se-arbetsformedlingen-jobsearch be-wbi dk-university-of-copenhagen at-university-of-vienna yildiz-pladis-careers pl-frse hu-fulbright-hungary dk-fulbright-center de-bmw-group
+          --website-revision c3454929dc1d3dbf9f90251e70895eea613d6c94
           --output ${{ runner.temp }}/live-catalog-44796017283.json
       - name: Verify every live source status, index and sitemap
         run: >-
           python -B .github/qa/verify-live-source-directory-44796017283.py
-          4be7cae4f3916eb524da350936e4c3d734fb240a
-          --website-revision 16988009c49f282cec94f33dc3677a370abea0c5
+          b90d9f7e4ffbd09892dc6a83fd26b6e111c44ff0
+          --website-revision c3454929dc1d3dbf9f90251e70895eea613d6c94
           --output ${{ runner.temp }}/live-source-directory-44796017283.json
       - uses: actions/upload-artifact@v4
         with:
