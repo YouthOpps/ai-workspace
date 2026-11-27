@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "reviewer_sha256": "57b3fb177f570b41bc1dd252f936a8c485290aad3a3c78ca29e3ee5ba9777032",
   "sources": {
     "oist503": {
