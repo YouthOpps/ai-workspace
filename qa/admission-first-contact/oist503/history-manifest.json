@@ -1,0 +1,13 @@
+{
+  "aggregate_data_reviewed_at": "4be7cae4f3916eb524da350936e4c3d734fb240a",
+  "candidate_urls": [
+    "https://www.oist.jp/robots.txt",
+    "https://www.oist.jp/admissions/research-internship"
+  ],
+  "issue": 503,
+  "known_producer_absence_reviewed_at": "d0c2731027b50c6e85928883133c38cfe8153053",
+  "publisher": "OIST",
+  "publisher_host": "www.oist.jp",
+  "publisher_requests": 0,
+  "unknown_history_preserved": true
+}

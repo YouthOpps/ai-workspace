@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "reviewer_sha256": "57b3fb177f570b41bc1dd252f936a8c485290aad3a3c78ca29e3ee5ba9777032",
+  "sources": {
+    "oist503": {
+      "env_prefix": "OIST503",
+      "foundation_sha256": "920497cfebc0dbe33ae72ea6cf22b03a6f4f2ef103c36c113a6dc50bf42a1442",
+      "history_sha256": "6c961f4f525d64960b40984688bbc37cf51e8a250e6608754520dfe08bf81aae",
+      "issue": 503,
+      "urls": [
+        "https://www.oist.jp/robots.txt",
+        "https://www.oist.jp/admissions/research-internship"
+      ]
+    }
+  }
+}
