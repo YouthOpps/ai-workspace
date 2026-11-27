@@ -1,13 +1,83 @@
 {
-  "aggregate_data_reviewed_at": "4be7cae4f3916eb524da350936e4c3d734fb240a",
+  "aggregate_data_reviewed_at": "b90d9f7e4ffbd09892dc6a83fd26b6e111c44ff0",
   "candidate_urls": [
     "https://admissions.kaust.edu.sa/robots.txt",
-    "https://admissions.kaust.edu.sa/study/internships"
+    "https://admissions.kaust.edu.sa/internship/search"
   ],
   "issue": 504,
-  "known_producer_absence_reviewed_at": "d0c2731027b50c6e85928883133c38cfe8153053",
+  "known_producer_absence_reviewed_at": "aa81ccf90526070d10dc2cffb7856d98f2c0cb43",
+  "latest_acknowledged_state": {
+    "blocked": false,
+    "completed": 1795765459.6477802,
+    "completed_logical_id": "6883e2cd44ec4b1e86e3aba5e78f332d",
+    "completed_physical_id": "1995fdb6ec3443f5a81cacb10e0173da",
+    "family": "youthopps-kaust-careers-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795765459.6477802,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "6883e2cd44ec4b1e86e3aba5e78f332d",
+    "not_before": 1795765471.8477802,
+    "observed_at": 1795765459.6477802,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "1995fdb6ec3443f5a81cacb10e0173da",
+    "physical_pending": false,
+    "physical_started": 1795765457.8542085,
+    "policy": {
+      "body_sha256": "69525542454ccaf90cce01ed11fb71603699acf16fc1ee41b0e0223a82a5b8f5",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 404,
+      "unavailable": true,
+      "url": "https://admissions.kaust.edu.sa/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795765440.4168277,
+      1795765441.910184,
+      1795765457.8542085,
+      1795765459.3059623
+    ],
+    "target": "https://admissions.kaust.edu.sa/study/internships"
+  },
+  "previous_artifact": 15181200453,
+  "previous_job": 140376451985,
+  "previous_run": 45960351478,
+  "previous_state_sha256": "cf1eef37e0edb328ee5195ee5f95f979f3072ce37cc04cb5d563f600ab7dc31b",
+  "previous_zip_sha256": "2a5891a13f7d9e1028171990d0a53b679fa0073b21f1f7826d302f6da6c23327",
   "publisher": "KAUST",
   "publisher_host": "admissions.kaust.edu.sa",
   "publisher_requests": 0,
+  "settled_by": {
+    "discovered_inventory": "https://admissions.kaust.edu.sa/internship/search",
+    "head_sha": "4d7a68cee5c5ca8ba754f9867ae586d5bc0fc18d",
+    "previous_archive_id": 15181200453,
+    "previous_archive_sha256": "2a5891a13f7d9e1028171990d0a53b679fa0073b21f1f7826d302f6da6c23327",
+    "previous_owner": {
+      "created_at": "2026-11-27T07:42:49Z",
+      "head_sha": "62f90276e1c584fed85daf351600d524569d2d13",
+      "job_id": 140376451985,
+      "ref": "refs/heads/qa/kaust-inventory-discovery-504",
+      "repository": "YouthOpps/ai-workspace",
+      "run_attempt": 1,
+      "run_id": 45960351478,
+      "scope_sha256": "abe09f9fe7ec9a1ecf3225859144b06a59ce1d558b2ef885bcd7012e8a0e5e73",
+      "source": "kaust504",
+      "workflow": ".github/workflows/qa-kaust-inventory-discovery-504.yml",
+      "workflow_id": 432476070
+    },
+    "previous_pending_state_sha256": "cf1eef37e0edb328ee5195ee5f95f979f3072ce37cc04cb5d563f600ab7dc31b",
+    "publisher_requests": 0,
+    "repository": "YouthOpps/ai-workspace",
+    "review_sha256": "b73298ada680010ce7f7c9dd2a6f086ae9e87d25186f7453730ac15797328ee4",
+    "run_id": 45961207207,
+    "state_sha256": "b2c7e818e11be97cecb8561c83a03535cddf1452a257fc80546451af098da7a4"
+  },
+  "settlement_artifact_sha256": "sha256:5aeee0730eb3e501c9ff023b9a71df975dea2413df74d98b39dc61a1f3d1e53b",
   "unknown_history_preserved": true
 }

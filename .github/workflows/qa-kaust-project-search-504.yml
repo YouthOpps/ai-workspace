@@ -1,9 +1,9 @@
-name: KAUST internship inventory discovery
+name: KAUST project search discovery
 
 on:
   push:
     branches:
-      - qa/kaust-inventory-discovery-504
+      - qa/kaust-project-search-504
 
 permissions:
   contents: read
