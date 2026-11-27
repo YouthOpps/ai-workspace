@@ -1,0 +1,105 @@
+{
+  "original_state": {
+    "blocked": false,
+    "completed": 1795765442.7747824,
+    "completed_logical_id": "e4b904bb75f3405a8cdc0a5c28743062",
+    "completed_physical_id": "cf3bd9675f6c4352809024bb356178b5",
+    "family": "youthopps-kaust-careers-publisher-v1",
+    "in_flight": true,
+    "interval": 12.2,
+    "inventory_completed": 0,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "6883e2cd44ec4b1e86e3aba5e78f332d",
+    "not_before": 1795765454.9747825,
+    "observed_at": 1795765457.8542085,
+    "outcome": "reserved",
+    "page_interval": 30,
+    "physical_id": "1995fdb6ec3443f5a81cacb10e0173da",
+    "physical_pending": true,
+    "physical_started": 1795765457.8542085,
+    "policy": {
+      "body_sha256": "69525542454ccaf90cce01ed11fb71603699acf16fc1ee41b0e0223a82a5b8f5",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 404,
+      "unavailable": true,
+      "url": "https://admissions.kaust.edu.sa/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795765440.4168277,
+      1795765457.8542085
+    ],
+    "target": "https://admissions.kaust.edu.sa/study/internships"
+  },
+  "proof": {
+    "closed": true,
+    "complete": true,
+    "decoded_hash": "4b2cd085e7e4fd61d97b171c398e4197a990ce8061b5b3394b80239432527d0d",
+    "inventory": "https://admissions.kaust.edu.sa/internship/search",
+    "responses": [
+      {
+        "completion": 87.042861843,
+        "request_id": "cf3bd9675f6c4352809024bb356178b5",
+        "start": 86.178832415,
+        "status": 404,
+        "url": "https://admissions.kaust.edu.sa/robots.txt",
+        "wall_completion": 1795765442.7742136,
+        "wall_start": 1795765441.910184
+      },
+      {
+        "completion": 103.916428225,
+        "request_id": "1995fdb6ec3443f5a81cacb10e0173da",
+        "start": 103.574610703,
+        "status": 200,
+        "url": "https://admissions.kaust.edu.sa/study/internships",
+        "wall_completion": 1795765459.6477802,
+        "wall_start": 1795765459.3059623
+      }
+    ],
+    "stop": "Unassessed encoding; raw body retained"
+  },
+  "proposed_state": {
+    "blocked": false,
+    "completed": 1795765459.6477802,
+    "completed_logical_id": "6883e2cd44ec4b1e86e3aba5e78f332d",
+    "completed_physical_id": "1995fdb6ec3443f5a81cacb10e0173da",
+    "family": "youthopps-kaust-careers-publisher-v1",
+    "in_flight": false,
+    "interval": 12.2,
+    "inventory_completed": 1795765459.6477802,
+    "legacy_policy_history_unknown": true,
+    "legacy_rate_history_unknown": true,
+    "logical_id": "6883e2cd44ec4b1e86e3aba5e78f332d",
+    "not_before": 1795765471.8477802,
+    "observed_at": 1795765459.6477802,
+    "outcome": "response_assessed",
+    "page_interval": 30,
+    "physical_id": "1995fdb6ec3443f5a81cacb10e0173da",
+    "physical_pending": false,
+    "physical_started": 1795765457.8542085,
+    "policy": {
+      "body_sha256": "69525542454ccaf90cce01ed11fb71603699acf16fc1ee41b0e0223a82a5b8f5",
+      "legacy_allowed": true,
+      "new_allowed": true,
+      "status": 404,
+      "unavailable": true,
+      "url": "https://admissions.kaust.edu.sa/robots.txt"
+    },
+    "rate_limit_strikes": 0,
+    "rate_limit_until": 0,
+    "rates": [],
+    "schema": 1,
+    "starts": [
+      1795765440.4168277,
+      1795765441.910184,
+      1795765457.8542085,
+      1795765459.3059623
+    ],
+    "target": "https://admissions.kaust.edu.sa/study/internships"
+  }
+}
