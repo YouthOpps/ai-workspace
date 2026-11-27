@@ -1,8 +1,8 @@
-name: Verify published KAUST project inventory
+name: Verify published BMW Group youth vacancies
 
 on:
   push:
-    branches: [qa/kaust-live-45964140880]
+    branches: [qa/bmw-live-45968389213]
 
 permissions:
   contents: read
@@ -19,13 +19,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/youthopps.github.io
-          ref: bab63687857a5f4be27fe2641530fd2766ce2f3e
+          ref: 8e53e3abca433a6154a9e585b570268d5736a201
           path: website
           persist-credentials: false
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/data-source
-          ref: 8fedbdb365a2810326ea369c7ece1c4c79b9a9aa
+          ref: 103963e052da50b3423a7cc32d2eb8371aed0f35
           path: data-source
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -36,7 +36,7 @@ jobs:
         env:
           DATA_PATH: ${{ github.workspace }}/data-source/datas
         run: npm run build
-      - name: Wait for the KAUST source directory from this deployment
+      - name: Wait for the BMW source directory from this deployment
         run: |
           python - <<'PYCODE'
           import re
@@ -45,7 +45,7 @@ jobs:
           import urllib.request
           from pathlib import Path
 
-          route = '/sources/publisher/sa-kaust-vsrp/'
+          route = '/sources/publisher/de-bmw-group/'
           local = (Path('website/dist') / route.strip('/') / 'index.html').read_bytes()
           marker, = re.findall(rb'data-index="([^"]+)"', local)
           for attempt in range(36):
@@ -67,14 +67,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >-
           python -B .github/qa/verify-live-catalog-44796017283.py
-          8fedbdb365a2810326ea369c7ece1c4c79b9a9aa sa-kaust-vsrp
-          --website-revision bab63687857a5f4be27fe2641530fd2766ce2f3e
+          103963e052da50b3423a7cc32d2eb8371aed0f35 de-bmw-group
+          --website-revision 8e53e3abca433a6154a9e585b570268d5736a201
           --output ${{ runner.temp }}/live-catalog-44796017283.json
       - name: Verify every live source status, index and sitemap
         run: >-
           python -B .github/qa/verify-live-source-directory-44796017283.py
-          8fedbdb365a2810326ea369c7ece1c4c79b9a9aa
-          --website-revision bab63687857a5f4be27fe2641530fd2766ce2f3e
+          103963e052da50b3423a7cc32d2eb8371aed0f35
+          --website-revision 8e53e3abca433a6154a9e585b570268d5736a201
           --output ${{ runner.temp }}/live-source-directory-44796017283.json
       - uses: actions/upload-artifact@v4
         with:
