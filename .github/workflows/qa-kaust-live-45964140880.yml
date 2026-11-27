@@ -1,0 +1,86 @@
+name: Verify published KAUST project inventory
+
+on:
+  push:
+    branches: [qa/kaust-live-45964140880]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.repository == 'YouthOpps/ai-workspace' && github.event.created && !github.event.deleted && github.run_attempt == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/youthopps.github.io
+          ref: bab63687857a5f4be27fe2641530fd2766ce2f3e
+          path: website
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: YouthOpps/data-source
+          ref: 8fedbdb365a2810326ea369c7ece1c4c79b9a9aa
+          path: data-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build the reviewed site against the exact published data
+        working-directory: website
+        env:
+          DATA_PATH: ${{ github.workspace }}/data-source/datas
+        run: npm run build
+      - name: Wait for the KAUST source directory from this deployment
+        run: |
+          python - <<'PYCODE'
+          import re
+          import time
+          import urllib.error
+          import urllib.request
+          from pathlib import Path
+
+          route = '/sources/publisher/sa-kaust-vsrp/'
+          local = (Path('website/dist') / route.strip('/') / 'index.html').read_bytes()
+          marker, = re.findall(rb'data-index="([^"]+)"', local)
+          for attempt in range(36):
+              url = 'https://youthopps.org' + route + '?deployment_check=' + str(time.time_ns())
+              req = urllib.request.Request(url, headers={'User-Agent': 'YouthOppsBot/1.0 (+https://youthopps.org/bot/)', 'Cache-Control': 'no-cache'})
+              try:
+                  with urllib.request.urlopen(req, timeout=15) as response:
+                      if response.status == 200 and marker in response.read(2_000_000):
+                          break
+              except urllib.error.HTTPError as error:
+                  if error.code not in {404, 429, 502, 503, 504}:
+                      raise
+              time.sleep(20)
+          else:
+              raise RuntimeError('Timed out waiting for the expected published source index')
+          PYCODE
+      - name: Compare published site to the exact data revision
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python -B .github/qa/verify-live-catalog-44796017283.py
+          8fedbdb365a2810326ea369c7ece1c4c79b9a9aa sa-kaust-vsrp
+          --website-revision bab63687857a5f4be27fe2641530fd2766ce2f3e
+          --output ${{ runner.temp }}/live-catalog-44796017283.json
+      - name: Verify every live source status, index and sitemap
+        run: >-
+          python -B .github/qa/verify-live-source-directory-44796017283.py
+          8fedbdb365a2810326ea369c7ece1c4c79b9a9aa
+          --website-revision bab63687857a5f4be27fe2641530fd2766ce2f3e
+          --output ${{ runner.temp }}/live-source-directory-44796017283.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: live-catalog-44796017283
+          path: |
+            ${{ runner.temp }}/live-catalog-44796017283.json
+            ${{ runner.temp }}/live-source-directory-44796017283.json
+          if-no-files-found: error
+          retention-days: 7
