@@ -1,8 +1,8 @@
-name: Verify published BMW Group youth vacancies
+name: Verify November 28 complete published catalogue
 
 on:
   push:
-    branches: [qa/bmw-live-45968389213]
+    branches: [qa/live-audit-20261128]
 
 permissions:
   contents: read
@@ -19,13 +19,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/youthopps.github.io
-          ref: 8e53e3abca433a6154a9e585b570268d5736a201
+          ref: 1b13d658488111d61f8aabcc5ae9a3565b9bc62c
           path: website
           persist-credentials: false
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/data-source
-          ref: 103963e052da50b3423a7cc32d2eb8371aed0f35
+          ref: ce39bf91909405683501ee60b0332bebecddecc4
           path: data-source
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -67,14 +67,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >-
           python -B .github/qa/verify-live-catalog-44796017283.py
-          103963e052da50b3423a7cc32d2eb8371aed0f35 de-bmw-group
-          --website-revision 8e53e3abca433a6154a9e585b570268d5736a201
+          ce39bf91909405683501ee60b0332bebecddecc4 de-bmw-group
+          --website-revision 1b13d658488111d61f8aabcc5ae9a3565b9bc62c
           --output ${{ runner.temp }}/live-catalog-44796017283.json
       - name: Verify every live source status, index and sitemap
         run: >-
           python -B .github/qa/verify-live-source-directory-44796017283.py
-          103963e052da50b3423a7cc32d2eb8371aed0f35
-          --website-revision 8e53e3abca433a6154a9e585b570268d5736a201
+          ce39bf91909405683501ee60b0332bebecddecc4
+          --website-revision 1b13d658488111d61f8aabcc5ae9a3565b9bc62c
           --output ${{ runner.temp }}/live-source-directory-44796017283.json
       - uses: actions/upload-artifact@v4
         with:
