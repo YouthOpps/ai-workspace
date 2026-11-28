@@ -1,8 +1,8 @@
-name: Verify November 28 complete published catalogue
+name: Verify November 28 final recovery catalogue
 
 on:
   push:
-    branches: [qa/live-audit-20261128]
+    branches: [qa/live-audit-20261128-final]
 
 permissions:
   contents: read
@@ -19,13 +19,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/youthopps.github.io
-          ref: 1b13d658488111d61f8aabcc5ae9a3565b9bc62c
+          ref: 2ad769c0c07792c44951cd9fbffd8155307de4f4
           path: website
           persist-credentials: false
       - uses: actions/checkout@v4
         with:
           repository: YouthOpps/data-source
-          ref: ce39bf91909405683501ee60b0332bebecddecc4
+          ref: 728d23a136eb0f4356ed95bdb1bb682c7c552dcc
           path: data-source
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -45,7 +45,7 @@ jobs:
           import urllib.request
           from pathlib import Path
 
-          route = '/sources/publisher/de-bmw-group/'
+          route = '/sources/publisher/pl-fulbright-poland/'
           local = (Path('website/dist') / route.strip('/') / 'index.html').read_bytes()
           marker, = re.findall(rb'data-index="([^"]+)"', local)
           for attempt in range(36):
@@ -67,14 +67,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: >-
           python -B .github/qa/verify-live-catalog-44796017283.py
-          ce39bf91909405683501ee60b0332bebecddecc4 de-bmw-group
-          --website-revision 1b13d658488111d61f8aabcc5ae9a3565b9bc62c
+          728d23a136eb0f4356ed95bdb1bb682c7c552dcc pl-fulbright-poland
+          --website-revision 2ad769c0c07792c44951cd9fbffd8155307de4f4
           --output ${{ runner.temp }}/live-catalog-44796017283.json
       - name: Verify every live source status, index and sitemap
         run: >-
           python -B .github/qa/verify-live-source-directory-44796017283.py
-          ce39bf91909405683501ee60b0332bebecddecc4
-          --website-revision 1b13d658488111d61f8aabcc5ae9a3565b9bc62c
+          728d23a136eb0f4356ed95bdb1bb682c7c552dcc
+          --website-revision 2ad769c0c07792c44951cd9fbffd8155307de4f4
           --output ${{ runner.temp }}/live-source-directory-44796017283.json
       - uses: actions/upload-artifact@v4
         with:
