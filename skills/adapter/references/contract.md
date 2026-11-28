@@ -131,6 +131,38 @@ Keep the authenticated predecessor archive and its original owner envelope byte-
 
 The attestation alone grants no publication or publisher access. A separately reviewed source-specific consumer and one-shot native grant must bind the attestation, historical sequence and intended consumer revision and reject reuse or changed history before publisher access. Retain the actual resulting native state, including interrupted or failed access. Hand it back under a distinct reviewed production grant and verify the first normal publication and live index before closing the product issue. A failed handback keeps publisher access paused.
 
+### Proven pre-transport interruption recovery
+
+An independently reviewed, source-specific transition may recover an established
+source after a lost journal only when complete exact-attempt evidence proves
+that no publisher opener was invoked during every excluded attempt. Identify
+the original code, workflow, run, attempt and job; verify complete logs and
+artifact inventories. A logged request intention or completion alone is not
+transport evidence. When such logging precedes a coordination gate, the exact
+exception origin and complete reachable control flow must prove that the gate
+failed before the opener. Any possible physical request, unknown exception
+origin, incomplete log or contradictory evidence keeps the existing hold.
+
+Restore the last authenticated source-owned state and retain all of its actual
+publisher restrictions, policy observations, physical history, stronger gaps,
+strikes, embargoes and unknown-history flags. Do not manufacture a terminal
+journal for the failed attempt. Record that attempt permanently as an excluded
+pre-transport interruption, including its evidence digests. Preserve its logged
+reservation/completion bounds conservatively and enforce a new startup quiet
+period. A local integrity failure or unassessed pending marker created solely
+before transport latches the failed process closed; this reviewed transition
+may release that process-local barrier in a new isolated process. It cannot
+release a predecessor's unresolved physical request or publisher refusal.
+
+A wall-clock read used only for local startup quiet or completion spacing is
+not an unknown publisher Retry-After. Independently verify the exact code paths
+that can alter constraints and preserve actual response-derived MAX values.
+Never reinterpret a lost response or an ambiguous pending request through this
+exception. Pin the finite excluded attempts and the genuine predecessor in
+source code, reject extra attempts or mismatches, and verify the transition and
+all rejection paths before any further publisher request. Normal independent
+source acceptance and publication checks still apply.
+
 When hosted research or QA relies on a production pause, verify the exact
 workflow ID, path and disabled state before history restoration or state
 initialization. Verify them again after startup quiet and immediately before
